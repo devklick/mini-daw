@@ -19,10 +19,14 @@ function SequencerBeat({ trackNo, beatNo }: SequencerBeatProps) {
   const lastTrack = trackNo === tracksLength - 1;
   const firstBeat = beatNo === 0;
   const lastBeat = beatNo === beatsLength - 1;
-  const roundNW = firstTrack && firstBeat;
-  const roundNE = firstTrack && lastBeat;
-  const roundSW = lastTrack && firstBeat;
-  const roundSE = lastTrack && lastBeat;
+  const n = firstTrack;
+  const e = lastBeat;
+  const s = lastTrack;
+  const w = firstBeat;
+  const nw = firstTrack && firstBeat;
+  const ne = firstTrack && lastBeat;
+  const sw = lastTrack && firstBeat;
+  const se = lastTrack && lastBeat;
 
   const isEven = beatNo % 2 === 0;
 
@@ -31,10 +35,14 @@ function SequencerBeat({ trackNo, beatNo }: SequencerBeatProps) {
       className={clsx("sequencer-beat", {
         "sequencer-beat--odd": !isEven,
         "sequencer-beat--even": isEven,
-        "sequencer-beat--round-nw": roundNW,
-        "sequencer-beat--round-ne": roundNE,
-        "sequencer-beat--round-se": roundSE,
-        "sequencer-beat--round-sw": roundSW,
+        "sequencer-beat--n": n,
+        "sequencer-beat--e": e,
+        "sequencer-beat--s": s,
+        "sequencer-beat--w": w,
+        "sequencer-beat--nw": nw,
+        "sequencer-beat--ne": ne,
+        "sequencer-beat--se": se,
+        "sequencer-beat--sw": sw,
       })}
       style={{
         gridTemplateColumns: `repeat(${stepsPerBeat}, 1fr)`,

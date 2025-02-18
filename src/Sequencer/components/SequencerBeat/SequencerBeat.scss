@@ -2,6 +2,7 @@
     display: flex;
     height: 100%;
     width: 100%;
+    box-sizing: border-box;
 
     &--odd {
         background-color: rgb(58, 58, 58);
@@ -10,16 +11,28 @@
         background-color: rgb(77, 77, 77);
     }
 
-    &--round-nw {
+    &--n {
+        border-top: 1px solid grey;
+    }
+    &--e {
+        border-right: 1px solid grey;
+    }
+    &--s {
+        border-bottom: 1px solid grey;
+    }
+    &--w {
+        border-left: 1px solid grey;
+    }
+    &--nw {
         border-top-left-radius: 6px;
     }
-    &--round-ne {
+    &--ne {
         border-top-right-radius: 6px;
     }
-    &--round-sw {
+    &--sw {
         border-bottom-left-radius: 6px;
     }
-    &--round-se {
+    &--se {
         border-bottom-right-radius: 6px;
     }
 }
