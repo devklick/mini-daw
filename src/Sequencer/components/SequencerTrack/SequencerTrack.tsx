@@ -1,5 +1,5 @@
 import useSequencerStore from "../../stores/useSequencerStore";
-import SequencerStep from "../SequencerStep";
+import SequencerBeat from "../SequencerBeat";
 
 import "./SequencerTrack.scss";
 
@@ -9,19 +9,20 @@ interface SequencerTrackProps {
 
 function SequencerTrack({ trackNo }: SequencerTrackProps) {
   const trackName = useSequencerStore((s) => s.tracks[trackNo].name);
-  const stepsPerBeat = useSequencerStore((s) => s.stepsPerBeat);
   const beatsPerBar = useSequencerStore((s) => s.beatsPerBar);
   const barsPerSequence = useSequencerStore((s) => s.barsPerSequence);
-  const stepsInSequence = stepsPerBeat * beatsPerBar * barsPerSequence;
-
+  const beatsInSequence = beatsPerBar * barsPerSequence;
   return (
     <div className="sequencer-track">
-      <div className="track-info">
+      <div className="sequencer-track__info">
         <span>{trackName}</span>
       </div>
-      <div className="track-steps">
-        {Array.from({ length: stepsInSequence }).map((_, i) => (
-          <SequencerStep trackNo={trackNo} stepNo={i} key={`step-${i}`} />
+      <div
+        className={"sequencer-track__beats"}
+        style={{ gridTemplateColumns: `repeat(${beatsInSequence}, 1fr)` }}
+      >
+        {Array.from({ length: beatsInSequence }).map((_, i) => (
+          <SequencerBeat trackNo={trackNo} beatNo={i} />
         ))}
       </div>
     </div>

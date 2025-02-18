@@ -6,7 +6,7 @@
     flex-direction: row;
     gap: 4px;
 
-    .track-info {
+    &__info {
         width: 120px;
         border: 1px solid grey;
         border-radius: 4px;
@@ -14,10 +14,8 @@
         margin: 4px 0;
     }
 
-    .track-steps {
+    &__beats {
+        display: grid;
         width: 100%;
-        height: auto;
-        display: flex;
-        flex-direction: row;
     }
 }

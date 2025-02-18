@@ -1,34 +1,9 @@
 @use "/src/global" as *;
 
-.track-step-group {
-    display: flex;
-    height: 100%;
-    width: 100%;
-
-    &--odd {
-        background-color: rgb(58, 58, 58);
-    }
-    &--even {
-        background-color: rgb(77, 77, 77);
-    }
-
-    &--round-nw {
-        border-top-left-radius: 6px;
-    }
-    &--round-ne {
-        border-top-right-radius: 6px;
-    }
-    &--round-sw {
-        border-bottom-left-radius: 6px;
-    }
-    &--round-se {
-        border-bottom-right-radius: 6px;
-    }
-}
 .track-step {
     width: 100%;
     height: 100%;
-    padding: 10%;
+    padding: min(4%, 4px);
     box-sizing: border-box;
     &-toggle {
         all: unset;
@@ -41,11 +16,11 @@
             background-color: $color-primary;
             box-shadow:
                 1px 1px 3px 0 rgba(0, 0, 0, 0.5),
-                1px 1px 3px 0 $color-primary-highlight inset;
+                1px 1px 3px 1px $color-primary-highlight inset;
         }
         &--inactive {
             background-color: $color-secondary;
-            box-shadow: 1px 1px 3px 0 inset rgba(0, 0, 0, 0.5);
+            box-shadow: 1px 1px 3px 1px inset rgba(0, 0, 0, 0.7);
         }
     }
 }

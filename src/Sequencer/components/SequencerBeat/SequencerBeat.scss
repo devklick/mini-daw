@@ -1,0 +1,25 @@
+.sequencer-beat {
+    display: flex;
+    height: 100%;
+    width: 100%;
+
+    &--odd {
+        background-color: rgb(58, 58, 58);
+    }
+    &--even {
+        background-color: rgb(77, 77, 77);
+    }
+
+    &--round-nw {
+        border-top-left-radius: 6px;
+    }
+    &--round-ne {
+        border-top-right-radius: 6px;
+    }
+    &--round-sw {
+        border-bottom-left-radius: 6px;
+    }
+    &--round-se {
+        border-bottom-right-radius: 6px;
+    }
+}
