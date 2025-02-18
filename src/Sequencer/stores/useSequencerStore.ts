@@ -22,34 +22,40 @@ interface SequencerStoreState {
   toggleTrackStep(trackNo: number, stepNo: number): void;
 }
 
-const useSequencerStore = create<SequencerStoreState>()((set) => ({
+const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   tracks: [],
   stepsPerBeat: 4,
   beatsPerBar: 4,
   barsPerSequence: 1,
   addTrack(track) {
+    const { beatsPerBar, stepsPerBeat, barsPerSequence } = get();
+    const steps = Array.from(
+      { length: beatsPerBar * stepsPerBeat * barsPerSequence },
+      () => false
+    );
+
+    const updatedTrack: SequencerTrack = { ...track, steps };
+
     set((state) => {
-      return { tracks: [...state.tracks, track] };
+      return { tracks: [...state.tracks, updatedTrack] };
     });
   },
   toggleTrackStep(trackNo, stepNo) {
     set((state) => {
-      // TODO: Tidy this up with immer
-      const tracks = Array.from(state.tracks);
-      const track = tracks[trackNo];
-      if (!track) return {};
+      return {
+        tracks: state.tracks.map((track, index) => {
+          if (index !== trackNo) return track;
 
-      const newSteps = [...track.steps];
-      newSteps[stepNo] = !newSteps[stepNo];
+          const newSteps = track.steps.map((step, stepIndex) =>
+            stepIndex === stepNo ? !step : step
+          );
 
-      const updatedTrack = {
-        ...track,
-        steps: newSteps,
+          return {
+            ...track,
+            steps: newSteps,
+          };
+        }),
       };
-
-      tracks[trackNo] = updatedTrack;
-
-      return { tracks };
     });
   },
 }));

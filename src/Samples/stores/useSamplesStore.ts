@@ -67,9 +67,10 @@ export function useAddSamples() {
           const id = getLast(url.split("/"));
 
           const audio = new Audio(url);
-          audio.addEventListener("loadedmetadata", () => {
-            setSampleLength(id, Number(audio.duration.toFixed(2)));
-          });
+
+          audio.addEventListener("loadedmetadata", () =>
+            setSampleLength(id, Number(audio.duration.toFixed(2)))
+          );
 
           return {
             id,

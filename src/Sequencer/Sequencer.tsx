@@ -6,10 +6,11 @@ import "./Sequencer.scss";
 
 function Sequencer() {
   const trackCount = useSequencerStore((s) => s.tracks.length);
+
   return (
     <div className="sequencer">
       {Array.from({ length: trackCount }).map((_, i) => (
-        <SequencerTrack trackNo={i} key={i} />
+        <SequencerTrack trackNo={i} key={`track-${i}`} />
       ))}
       <SequencerControls />
     </div>
