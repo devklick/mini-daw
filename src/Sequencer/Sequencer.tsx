@@ -1,6 +1,7 @@
 import SequencerTrack from "./components/SequencerTrack";
 import useSequencerStore from "./stores/useSequencerStore";
 import SequencerControls from "./components/SequencerControls";
+import SequencerHeader from "./components/SequencerHeader/SequencerHeader";
 
 import "./Sequencer.scss";
 
@@ -9,6 +10,7 @@ function Sequencer() {
 
   return (
     <div className="sequencer">
+      <SequencerHeader />
       {Array.from({ length: trackCount }).map((_, i) => (
         <SequencerTrack trackNo={i} key={`track-${i}`} />
       ))}

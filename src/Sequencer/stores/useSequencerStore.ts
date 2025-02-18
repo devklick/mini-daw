@@ -20,6 +20,9 @@ interface SequencerStoreState {
   tracks: ReadonlyArray<Readonly<SequencerTrack>>;
   addTrack(track: Readonly<SequencerTrack>): void;
   toggleTrackStep(trackNo: number, stepNo: number): void;
+  setStepsPerBeat(stepsPerBeat: number): void;
+  setBeatsPerBar(beatsPerBar: number): void;
+  setBarsPerSequence(barsPerSequence: number): void;
 }
 
 const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
@@ -57,6 +60,15 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
         }),
       };
     });
+  },
+  setBarsPerSequence(barsPerSequence) {
+    set({ barsPerSequence });
+  },
+  setBeatsPerBar(beatsPerBar) {
+    set({ beatsPerBar });
+  },
+  setStepsPerBeat(stepsPerBeat) {
+    set({ stepsPerBeat });
   },
 }));
 
