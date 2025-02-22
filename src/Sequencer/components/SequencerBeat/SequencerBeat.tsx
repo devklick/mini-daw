@@ -48,9 +48,10 @@ function SequencerBeat({ trackNo, beatNo }: SequencerBeatProps) {
         gridTemplateColumns: `repeat(${stepsPerBeat}, 1fr)`,
       }}
     >
-      {Array.from({ length: stepsPerBeat }).map((_, i) => (
-        <SequencerStep stepNo={beatNo * stepsPerBeat + i} trackNo={trackNo} />
-      ))}
+      {Array.from({ length: stepsPerBeat }).map((_, i) => {
+        const stepNo = beatNo * stepsPerBeat + i;
+        return <SequencerStep stepNo={stepNo} trackNo={trackNo} key={stepNo} />;
+      })}
     </div>
   );
 }

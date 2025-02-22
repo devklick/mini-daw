@@ -11,6 +11,26 @@ interface SequencerTrack {
   name: string;
   sample: SampleInfo;
   steps: Array<boolean>;
+  mute: boolean;
+  /**
+   * - Min: 0
+   * - Max: 100
+   * @default 80
+   */
+  volume: number;
+
+  /**
+   * - Min: -12
+   * - Max: 12
+   * @default 0
+   */
+  pitch: number;
+  /**
+   * - Min: -100 (left only)
+   * - Max: 100 (right only)
+   * @default 0 (centre)
+   */
+  pan: number;
 }
 
 interface SequencerStoreState {
@@ -18,11 +38,20 @@ interface SequencerStoreState {
   beatsPerBar: number;
   barsPerSequence: number;
   tracks: ReadonlyArray<Readonly<SequencerTrack>>;
+  currentStep: number;
   addTrack(track: Readonly<SequencerTrack>): void;
+  addSampleAsTrack(sample: SampleInfo): void;
+  assignNewSampleToTrack(trackId: string, sample: SampleInfo): void;
   toggleTrackStep(trackNo: number, stepNo: number): void;
   setStepsPerBeat(stepsPerBeat: number): void;
   setBeatsPerBar(beatsPerBar: number): void;
   setBarsPerSequence(barsPerSequence: number): void;
+  deleteTrack(trackId: string): void;
+  setTrackVolume(trackId: string, volume: number): void;
+  setTrackPitch(trackId: string, pitch: number): void;
+  setTrackPan(trackId: string, pan: number): void;
+  setCurrentStep(currentStep: number): void;
+  getStepCount(): number;
 }
 
 const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
@@ -30,6 +59,7 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   stepsPerBeat: 4,
   beatsPerBar: 4,
   barsPerSequence: 1,
+  currentStep: 1,
   addTrack(track) {
     const { beatsPerBar, stepsPerBeat, barsPerSequence } = get();
     const steps = Array.from(
@@ -49,8 +79,11 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
         tracks: state.tracks.map((track, index) => {
           if (index !== trackNo) return track;
 
-          const newSteps = track.steps.map((step, stepIndex) =>
-            stepIndex === stepNo ? !step : step
+          const { beatsPerBar, stepsPerBeat, barsPerSequence } = state;
+
+          const newSteps = Array.from(
+            { length: beatsPerBar * stepsPerBeat * barsPerSequence },
+            (_, i) => (i === stepNo ? !track.steps[i] : track.steps[i] ?? false)
           );
 
           return {
@@ -69,6 +102,82 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   },
   setStepsPerBeat(stepsPerBeat) {
     set({ stepsPerBeat });
+  },
+  addSampleAsTrack(sample) {
+    set((state) => ({
+      tracks: [
+        ...state.tracks,
+        {
+          id: crypto.randomUUID(),
+          name: getFirst(sample.name.split(".")),
+          sample,
+          steps: [],
+          mute: false,
+          pan: 0,
+          pitch: 0,
+          volume: 80,
+        },
+      ],
+    }));
+  },
+  assignNewSampleToTrack(trackId, sample) {
+    set((state) => {
+      // TODO: Implement...
+      const trackIndex = state.tracks.findIndex((t) => t.id === trackId);
+      if (trackIndex < 0) return {};
+      const track = {
+        ...state.tracks[trackIndex],
+        sample,
+      };
+
+      const updatedTracks = [...state.tracks];
+      updatedTracks[trackIndex] = track;
+
+      return { tracks: updatedTracks };
+    });
+  },
+  deleteTrack(trackId) {
+    set((state) => ({
+      tracks: state.tracks.filter((t) => t.id !== trackId),
+    }));
+  },
+  setTrackVolume(trackId, volume) {
+    set((state) => {
+      console.log("Setting track", trackId, "volume", volume);
+      return {
+        tracks: state.tracks.map((track) => {
+          if (track.id !== trackId) return track;
+          return { ...track, volume };
+        }),
+      };
+    });
+  },
+  setTrackPan(trackId, pan) {
+    set((state) => {
+      return {
+        tracks: state.tracks.map((track) => {
+          if (track.id !== trackId) return track;
+          return { ...track, pan };
+        }),
+      };
+    });
+  },
+  setTrackPitch(trackId, pitch) {
+    set((state) => {
+      return {
+        tracks: state.tracks.map((track) => {
+          if (track.id !== trackId) return track;
+          return { ...track, pitch };
+        }),
+      };
+    });
+  },
+  setCurrentStep(currentStep) {
+    set({ currentStep });
+  },
+  getStepCount() {
+    const { stepsPerBeat, beatsPerBar, barsPerSequence } = get();
+    return stepsPerBeat * beatsPerBar * barsPerSequence;
   },
 }));
 
@@ -93,9 +202,15 @@ export function useLoadSequencer() {
         sample: sample,
         steps: [],
         id: crypto.randomUUID(),
+        mute: false,
+        pan: 0,
+        pitch: 0,
+        volume: 80,
       });
     });
-  }, [addTrack, loadSamplesStatus, samples]);
+    // dont want this to run every time samples chang
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addTrack, loadSamplesStatus]);
 }
 
 export function useSequencer() {
@@ -107,6 +222,7 @@ export function useSequencer() {
   const audioContext = useRef<AudioContext | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const currentStep = useRef(0);
+  const setCurrentStep = useSequencerStore((s) => s.setCurrentStep);
 
   // TODO: Configurable bpm in global state
   const bpm = 130;
@@ -130,6 +246,7 @@ export function useSequencer() {
     const loadBuffers = async () => {
       if (!audioContext.current) return;
       for (const track of tracks) {
+        if (trackBuffers.current[track.id]) return;
         const response = await fetch(track.sample.url);
         const arrayBuff = await response.arrayBuffer();
         const audioBuff = await audioContext.current.decodeAudioData(arrayBuff);
@@ -142,19 +259,21 @@ export function useSequencer() {
 
   useEffect(() => {
     if (!audioContext.current) return;
-    let frameId: number | null = null;
     let nextStepTime = 0;
+    let frameId: number | null = null;
     const tick = () => {
       if (!audioContext.current) return;
       const { currentTime } = audioContext.current;
+      const { tracks } = useSequencerStore.getState();
       while (nextStepTime < currentTime + 0.01) {
         for (const track of tracks) {
-          if (track.steps[currentStep.current]) {
-            playSample(track.id);
+          if (!track.mute && track.steps[currentStep.current]) {
+            playSample(track);
           }
         }
         currentStep.current = (currentStep.current + 1) % totalSteps;
         nextStepTime += stepInterval;
+        setCurrentStep(currentStep.current);
       }
       frameId = requestAnimationFrame(tick);
     };
@@ -171,14 +290,28 @@ export function useSequencer() {
         cancelAnimationFrame(frameId);
       }
     };
-  });
+  }, [isPlaying, stepInterval, totalSteps]);
 
-  function playSample(trackId: string) {
-    const audioBuffer = trackBuffers.current[trackId];
+  function playSample(track: SequencerTrack) {
+    const audioBuffer = trackBuffers.current[track.id];
+    const { pan, pitch, volume } = track;
     if (!audioBuffer || !audioContext.current) return;
+
     const bufferSource = audioContext.current.createBufferSource();
     bufferSource.buffer = audioBuffer;
-    bufferSource.connect(audioContext.current.destination);
+
+    bufferSource.detune.value = pitch * 100;
+
+    const gainNode = audioContext.current.createGain();
+    gainNode.gain.value = volume / 100;
+
+    const pannerNode = audioContext.current.createStereoPanner();
+    pannerNode.pan.value = pan / 100;
+
+    bufferSource.connect(gainNode);
+    gainNode.connect(pannerNode);
+    pannerNode.connect(audioContext.current.destination);
+
     bufferSource.start();
   }
 

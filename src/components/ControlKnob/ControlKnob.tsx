@@ -1,0 +1,88 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import clsx from "clsx";
+
+import useMouseDownOnElement from "../../hooks/mouseHooks/useMouseDownOnElement";
+
+import "./ControlKnob.scss";
+
+interface ControlKnobProps {
+  min: number;
+  max: number;
+  defaultValue: number;
+  onChange?: (value: number) => void;
+  size?: "small";
+}
+
+function ControlKnob({
+  max = 200,
+  min = 0,
+  defaultValue = 100,
+  size = "small",
+  onChange,
+}: ControlKnobProps) {
+  const knobRef = useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(defaultValue);
+  const [mouseDown] = useMouseDownOnElement({ element: knobRef });
+  const lastYRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
+
+  const valueToAngle = (val: number) => {
+    const range = max - min;
+    const percentage = (val - min) / range;
+    const minAngle = -140;
+    const maxAngle = 140;
+    const rotationRange = maxAngle - minAngle;
+    return percentage * rotationRange + minAngle;
+  };
+
+  const handleMouseMove = useCallback(
+    (event: MouseEvent) => {
+      if (!mouseDown || lastYRef.current === null) return;
+
+      const deltaY = lastYRef.current - event.clientY;
+      lastYRef.current = event.clientY;
+
+      const sensitivity = 0.5;
+      const newValue = Math.max(
+        min,
+        Math.min(max, value + deltaY * sensitivity)
+      );
+      setValue(newValue);
+      if (onChange) onChange(newValue);
+    },
+    [max, min, mouseDown, onChange, value]
+  );
+  const handleDown = (event: React.MouseEvent) => {
+    lastYRef.current = event.clientY;
+  };
+
+  useEffect(() => {
+    const handleMouseUp = () => (lastYRef.current = null);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [handleMouseMove, mouseDown]);
+
+  return (
+    <div
+      ref={knobRef}
+      onMouseDown={handleDown}
+      className={clsx("control-knob", `control-knob--${size}`)}
+    >
+      <div
+        className="control-knob__inner"
+        style={{ transform: `rotate(${valueToAngle(value)}deg)` }}
+      >
+        <span className="control-knob__pointer" />
+      </div>
+    </div>
+  );
+}
+
+export default ControlKnob;

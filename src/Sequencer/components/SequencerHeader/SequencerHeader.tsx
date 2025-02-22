@@ -11,28 +11,34 @@ function SequencerHeader() {
   return (
     <div className="sequencer-header">
       <div className="sequencer-header__timing">
-        <div className="sequencer-header__field">
+        <div className="sequencer-header__field" key={"step/beat"}>
           <label>{`Steps/Beat`}</label>
           <input
             type="number"
+            min={1}
+            max={16}
             value={stepsBerBeat}
             onChange={(e) => setStepsPerBeat(Number(e.currentTarget.value))}
           ></input>
         </div>
 
-        <div className="sequencer-header__field">
+        <div className="sequencer-header__field" key={"beat/bar"}>
           <label>{`Beats/Bar`}</label>
           <input
             type="number"
+            min={1}
+            max={16}
             value={beatsPerBar}
             onChange={(e) => setBeatsPerBar(Number(e.currentTarget.value))}
           ></input>
         </div>
 
-        <div className="sequencer-header__field">
+        <div className="sequencer-header__field" key={"bar/seq"}>
           <label>{`Bars/Seq`}</label>
           <input
             type="number"
+            min={1}
+            max={4}
             value={barsPerSequence}
             onChange={(e) => setBarsPerSequence(Number(e.currentTarget.value))}
           ></input>

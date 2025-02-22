@@ -1,0 +1,28 @@
+@use "/src/global" as *;
+.menu-items {
+    width: auto;
+    white-space: nowrap;
+    box-sizing: border-box;
+    box-shadow: 0 0 2px rgb(0, 0, 0, 0.5);
+    background-color: $color-secondary;
+
+    &--relative {
+        position: relative;
+    }
+    &--absolute {
+        position: absolute;
+    }
+
+    &__content {
+        box-sizing: border-box;
+    }
+}
+
+.menu-item {
+    padding: 5px 12px;
+    height: 20px;
+    border: 1px solid $color-tertiary;
+    &:hover {
+        background-color: grey;
+    }
+}

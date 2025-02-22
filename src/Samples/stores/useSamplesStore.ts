@@ -144,6 +144,7 @@ export function useLoadDefaultSamples() {
   if (initState === "loading" || initState === "loaded") {
     return;
   }
+
   setInitState("loading");
 
   const samples = import.meta.glob("/src/assets/samples/*.{mp3,wav}", {
