@@ -1,0 +1,22 @@
+.sequencer-tracks {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    gap: 8px;
+
+    &__headers {
+        display: flex;
+        flex-direction: column;
+        width: auto;
+    }
+
+    &__steps {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        position: relative;
+        gap: 4px;
+        padding: 4px;
+        box-sizing: border-box;
+    }
+}

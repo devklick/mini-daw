@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-// import useSystemSettings from "../../stores/systemSettingsStore";
 
 import "./MenuItems.scss";
 
@@ -28,7 +27,6 @@ function MenuItems({
   close,
   closeOnClick = true,
 }: MenuItemsProps) {
-  // const settings = useSystemSettings();
   return (
     <div
       className={clsx("menu-items", `menu-items--${positionType}`)}
@@ -70,7 +68,6 @@ function MenuItem({
   const hoverOpenDelayRef = useRef<number>(null);
   const hoverCloseDelayRef = useRef<number>(null);
   const [open, setOpen] = useState<boolean>(false);
-  // const settings = useSystemSettings();
 
   useEffect(() => {
     return () => {
@@ -145,7 +142,6 @@ function MenuItem({
       onClick={handleOnClick}
       onMouseEnter={handleOnMouseEnter}
       onMouseLeave={handleOnMouseLeave}
-      // hoverColor={settings.accentColor}
     >
       <span>{title}</span>
       {items && open && (

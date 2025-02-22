@@ -28,12 +28,12 @@ function SequencerTrackHeader({ trackNo }: SequencerTrackHeaderProps) {
   const pitch = useSequencerStore((s) => s.tracks[trackNo].pitch);
 
   return (
-    <div className={clsx("sequencer-track-button")}>
+    <div className={clsx("sequencer-track-header")}>
       <ContextMenuTarget
         items={[{ title: "Delete Track", action: () => deleteTrack(trackId) }]}
       >
         <DropZone
-          dragOverClassName="sequencer-track-button--drag-over"
+          dragOverClassName="sequencer-track-header--drag-over"
           onDrop={(item) => {
             const sample = getSample(item.id);
             if (!sample) return;
@@ -41,16 +41,13 @@ function SequencerTrackHeader({ trackNo }: SequencerTrackHeaderProps) {
           }}
         >
           <span>{trackName}</span>
-          <div className="sequencer-track-button__knobs">
+          <div className="sequencer-track-header__knobs">
             <div>
               <ContextMenuTarget
                 items={[
                   {
                     title: "Reset",
-                    action: () => {
-                      console.log("Reset volume to 80");
-                      setVolume(trackId, 80);
-                    },
+                    action: () => setVolume(trackId, 80),
                     closeOnClick: true,
                   },
                 ]}
@@ -108,4 +105,11 @@ function SequencerTrackHeader({ trackNo }: SequencerTrackHeaderProps) {
     </div>
   );
 }
+
+function Placeholder() {
+  return <div className="track-header__placeholder"></div>;
+}
+
+SequencerTrackHeader.Placeholder = Placeholder;
+
 export default SequencerTrackHeader;

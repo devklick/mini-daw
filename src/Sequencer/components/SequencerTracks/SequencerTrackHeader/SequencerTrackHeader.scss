@@ -1,10 +1,10 @@
 @use "/src/global" as *;
 
-.sequencer-track-button {
+.sequencer-track-header {
     width: 120px;
     height: 44px;
     vertical-align: middle;
-    outline: 1px solid grey;
+    border: 1px solid grey;
     border-radius: 4px;
     box-sizing: border-box;
     margin: 4px 0;
@@ -15,7 +15,7 @@
 
     &--drag-over {
         border-radius: 4px;
-        outline: 2px dashed grey;
+        outline: 3px double $color-primary;
         background-color: $color-primary;
     }
 

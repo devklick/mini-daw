@@ -1,0 +1,32 @@
+@use "/src/global" as *;
+
+.sequencer-steps-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    display: flex;
+    flex-direction: row;
+
+    &__part {
+        width: 100%;
+        height: 100%;
+        background-color: #3a3a3a;
+
+        &:nth-of-type(even) {
+            background-color: #4d4d4d;
+        }
+
+        &:first-of-type {
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+        }
+
+        &:last-of-type {
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+        }
+    }
+}

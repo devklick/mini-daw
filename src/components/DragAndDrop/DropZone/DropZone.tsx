@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useDndStore, { DndItem } from "../stores/useDndStore";
 
 import "./DropZone.scss";
@@ -15,8 +15,21 @@ function DropZone({ onDrop, children, dragOverClassName }: DropZoneProps) {
   const isDragging = !!item;
   const clearDragging = useDndStore((s) => s.clearDragging);
   const [dragOver, setDragOver] = useState(false);
-  // TODO: Need to fix a bug where, when dragging a sample over a track then pressing escape,
-  // the drag-over style is still incorrectly being used.
+
+  /**
+   * When there's no longer an item being dragged, clear the state so that
+   * this drop zone is no longer highlighted as the current target whenever
+   * a draggable item is next picked up.
+   *
+   * This handles scenarios such as cancelling the drag with the escape key,
+   * where no 'drag end' events fire.
+   */
+  useEffect(() => {
+    if (!isDragging) {
+      setDragOver(false);
+    }
+  }, [isDragging]);
+
   return (
     <div
       className={clsx("drop-zone", {
@@ -27,12 +40,13 @@ function DropZone({ onDrop, children, dragOverClassName }: DropZoneProps) {
       onDragOver={(e) => e.preventDefault()}
       onDragEnter={() => setDragOver(true)}
       onDragLeave={(e) => {
+        // This prevents the drop zone from being lost when hovering
+        // over child elements within the drop zone element
         if (!e.currentTarget.contains(e.relatedTarget as Node)) {
           setDragOver(false);
         }
       }}
       onDrop={() => {
-        setDragOver(false);
         clearDragging();
         if (item) onDrop(item);
       }}

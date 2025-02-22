@@ -42,7 +42,7 @@ function SampleBrowser() {
             <span>{sample.pattern}</span>
             <button
               onClick={() => {
-                // Click and dirty test of samples in browser
+                // Quick and dirty test of samples in browser
                 if (activeSample.current) activeSample.current.audio.pause();
                 activeSample.current = {
                   id: sample.id,

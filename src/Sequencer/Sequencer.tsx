@@ -1,21 +1,17 @@
-import SequencerTrack from "./components/SequencerTrack";
-import useSequencerStore from "./stores/useSequencerStore";
 import SequencerControls from "./components/SequencerControls";
 import SequencerHeader from "./components/SequencerHeader/SequencerHeader";
 
 import "./Sequencer.scss";
 import SequencerFooter from "./components/SequencerFooter";
+import SequencerTracks from "./components/SequencerTracks";
 
 function Sequencer() {
-  const trackCount = useSequencerStore((s) => s.tracks.length);
-
   return (
     <div className="sequencer">
+      {/* Controls to be moved into page header - should not be part of sequencer */}
       <SequencerControls />
       <SequencerHeader />
-      {Array.from({ length: trackCount }).map((_, i) => (
-        <SequencerTrack trackNo={i} key={`track-${i}`} />
-      ))}
+      <SequencerTracks />
       <SequencerFooter />
     </div>
   );

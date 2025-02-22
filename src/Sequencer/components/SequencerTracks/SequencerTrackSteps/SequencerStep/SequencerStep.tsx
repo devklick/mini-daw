@@ -1,6 +1,6 @@
 import clsx from "clsx";
-import useSequencerStore from "../../stores/useSequencerStore";
 import "./SequencerStep.scss";
+import useSequencerStore from "../../../../stores/useSequencerStore";
 
 interface SequencerStepProps {
   trackNo: number;
@@ -12,7 +12,7 @@ function SequencerStep({ stepNo, trackNo }: SequencerStepProps) {
   const toggleTrackStep = useSequencerStore((s) => s.toggleTrackStep);
 
   return (
-    <div className="track-step">
+    <div className={"track-step"}>
       <button
         onClick={() => toggleTrackStep(trackNo, stepNo)}
         className={clsx("track-step-toggle", {

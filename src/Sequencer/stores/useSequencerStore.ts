@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { create } from "zustand";
 import useSampleStore, {
   SampleInfo,
@@ -39,6 +39,8 @@ interface SequencerStoreState {
   barsPerSequence: number;
   tracks: ReadonlyArray<Readonly<SequencerTrack>>;
   currentStep: number;
+  currentBeat: number;
+  playing: boolean;
   addTrack(track: Readonly<SequencerTrack>): void;
   addSampleAsTrack(sample: SampleInfo): void;
   assignNewSampleToTrack(trackId: string, sample: SampleInfo): void;
@@ -51,7 +53,7 @@ interface SequencerStoreState {
   setTrackPitch(trackId: string, pitch: number): void;
   setTrackPan(trackId: string, pan: number): void;
   setCurrentStep(currentStep: number): void;
-  getStepCount(): number;
+  setPlaying(playing: boolean): void;
 }
 
 const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
@@ -60,6 +62,8 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   beatsPerBar: 4,
   barsPerSequence: 1,
   currentStep: 1,
+  currentBeat: 1,
+  playing: false,
   addTrack(track) {
     const { beatsPerBar, stepsPerBeat, barsPerSequence } = get();
     const steps = Array.from(
@@ -122,7 +126,6 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   },
   assignNewSampleToTrack(trackId, sample) {
     set((state) => {
-      // TODO: Implement...
       const trackIndex = state.tracks.findIndex((t) => t.id === trackId);
       if (trackIndex < 0) return {};
       const track = {
@@ -142,42 +145,36 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
     }));
   },
   setTrackVolume(trackId, volume) {
-    set((state) => {
-      console.log("Setting track", trackId, "volume", volume);
-      return {
-        tracks: state.tracks.map((track) => {
-          if (track.id !== trackId) return track;
-          return { ...track, volume };
-        }),
-      };
-    });
+    set((state) => ({
+      tracks: state.tracks.map((track) => {
+        if (track.id !== trackId) return track;
+        return { ...track, volume };
+      }),
+    }));
   },
   setTrackPan(trackId, pan) {
-    set((state) => {
-      return {
-        tracks: state.tracks.map((track) => {
-          if (track.id !== trackId) return track;
-          return { ...track, pan };
-        }),
-      };
-    });
+    set((state) => ({
+      tracks: state.tracks.map((track) => {
+        if (track.id !== trackId) return track;
+        return { ...track, pan };
+      }),
+    }));
   },
   setTrackPitch(trackId, pitch) {
-    set((state) => {
-      return {
-        tracks: state.tracks.map((track) => {
-          if (track.id !== trackId) return track;
-          return { ...track, pitch };
-        }),
-      };
-    });
+    set((state) => ({
+      tracks: state.tracks.map((track) => {
+        if (track.id !== trackId) return track;
+        return { ...track, pitch };
+      }),
+    }));
   },
   setCurrentStep(currentStep) {
-    set({ currentStep });
+    const { stepsPerBeat } = get();
+    const currentBeat = Math.floor(currentStep / stepsPerBeat);
+    set({ currentStep, currentBeat });
   },
-  getStepCount() {
-    const { stepsPerBeat, beatsPerBar, barsPerSequence } = get();
-    return stepsPerBeat * beatsPerBar * barsPerSequence;
+  setPlaying(playing) {
+    set({ playing });
   },
 }));
 
@@ -220,7 +217,8 @@ export function useSequencer() {
   const barsPerSequence = useSequencerStore((s) => s.barsPerSequence);
   const trackBuffers = useRef<Record<string, AudioBuffer>>({});
   const audioContext = useRef<AudioContext | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const isPlaying = useSequencerStore((s) => s.playing);
+  const setIsPlaying = useSequencerStore((s) => s.setPlaying);
   const currentStep = useRef(0);
   const setCurrentStep = useSequencerStore((s) => s.setCurrentStep);
 
@@ -290,7 +288,7 @@ export function useSequencer() {
         cancelAnimationFrame(frameId);
       }
     };
-  }, [isPlaying, stepInterval, totalSteps]);
+  }, [isPlaying, setCurrentStep, stepInterval, totalSteps]);
 
   function playSample(track: SequencerTrack) {
     const audioBuffer = trackBuffers.current[track.id];
