@@ -1,28 +1,11 @@
-import useSampleStore from "../../../Samples/stores/useSamplesStore";
-import useDndStore from "../../../components/DragAndDrop/stores/useDndStore";
-import useSequencerStore from "../../stores/useSequencerStore";
+import SequencerTrackHeader from "../SequencerTracks/SequencerTrackHeader";
 import "./SequencerFooter.scss";
+import SequencerProgress from "./SequencerProgress";
 
 function SequencerFooter() {
-  const dnd = useDndStore();
-  const getSample = useSampleStore((s) => s.getSample);
-  const addSampleAsTrack = useSequencerStore((s) => s.addSampleAsTrack);
-
   return (
     <div className="sequencer-footer">
-      <div className="sequencer-footer__add-track">
-        <button
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={() => {
-            if (!dnd.item) return;
-            const sample = getSample(dnd.item.id);
-            if (!sample) return;
-            addSampleAsTrack(sample);
-          }}
-        >
-          Add Track
-        </button>
-      </div>
+      {/* <SequencerTrackHeader.DropNewTrack /> */}
     </div>
   );
 }

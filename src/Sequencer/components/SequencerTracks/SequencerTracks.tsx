@@ -4,6 +4,7 @@ import SequencerStepsBackground from "./SequencerStepsBackground";
 import SequencerTrackHeader from "./SequencerTrackHeader";
 
 import "./SequencerTracks.scss";
+import SequencerProgress from "../SequencerFooter/SequencerProgress";
 
 function SequencerTracks() {
   const trackCount = useSequencerStore((s) => s.tracks.length);
@@ -14,13 +15,14 @@ function SequencerTracks() {
         {template.map((_, i) => (
           <SequencerTrackHeader trackNo={i} key={i} />
         ))}
-        <SequencerTrackHeader.Placeholder />
+        <SequencerTrackHeader.DropNewTrack />
       </div>
       <div className="sequencer-tracks__steps">
         <SequencerStepsBackground />
         {template.map((_, i) => (
           <SequencerTrackSteps trackNo={i} key={i} />
         ))}
+        <SequencerProgress />
       </div>
     </div>
   );

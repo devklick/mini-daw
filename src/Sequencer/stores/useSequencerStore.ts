@@ -240,7 +240,7 @@ export function useSequencer() {
   const setCurrentStep = useSequencerStore((s) => s.setCurrentStep);
 
   // TODO: Configurable bpm in global state
-  const bpm = 130;
+  const bpm = 167;
   const secondsPerBeat = 60 / bpm;
   const stepInterval = secondsPerBeat / stepsPerBeat;
   const totalSteps = stepsPerBeat * beatsPerBar * barsPerSequence;
@@ -281,6 +281,7 @@ export function useSequencer() {
       const { currentTime } = audioContext.current;
       const { tracks } = useSequencerStore.getState();
       while (nextStepTime < currentTime + 0.01) {
+        setCurrentStep(currentStep.current);
         for (const track of tracks) {
           if (!track.mute && track.steps[currentStep.current]) {
             playSample(track);
@@ -288,7 +289,6 @@ export function useSequencer() {
         }
         currentStep.current = (currentStep.current + 1) % totalSteps;
         nextStepTime += stepInterval;
-        setCurrentStep(currentStep.current);
       }
       frameId = requestAnimationFrame(tick);
     };

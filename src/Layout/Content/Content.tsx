@@ -5,7 +5,7 @@ interface ContentProps {
   children: React.ReactNode;
 }
 function Content({ children }: ContentProps) {
-  return <div className="content">{children}</div>;
+  return <main className="content">{children}</main>;
 }
 
 export default Content;

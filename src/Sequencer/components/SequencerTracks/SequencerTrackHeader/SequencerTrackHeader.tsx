@@ -54,10 +54,26 @@ function SequencerTrackHeader({ trackNo }: SequencerTrackHeaderProps) {
   );
 }
 
-function Placeholder() {
-  return <div className="track-header__placeholder"></div>;
+function DropNewTrack() {
+  const getSample = useSampleStore((s) => s.getSample);
+  const addSampleAsTrack = useSequencerStore((s) => s.addSampleAsTrack);
+  return (
+    <div className="sequencer-track-header">
+      <DropZone
+        onDrop={(item) => {
+          const sample = getSample(item.id);
+          if (!sample) return;
+          addSampleAsTrack(sample);
+        }}
+      >
+        <span className="sequencer-track-header__track-name">
+          <i>Drop Sample</i>
+        </span>
+      </DropZone>
+    </div>
+  );
 }
 
-SequencerTrackHeader.Placeholder = Placeholder;
+SequencerTrackHeader.DropNewTrack = DropNewTrack;
 
 export default SequencerTrackHeader;

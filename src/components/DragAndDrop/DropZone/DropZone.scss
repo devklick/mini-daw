@@ -1,8 +1,11 @@
+@use "/src/global" as *;
+
 .drop-zone {
     width: 100%;
     height: 100%;
 
     &--drag-over {
-        // TODO: ?
+        border-radius: 3px;
+        outline: 5px double $color-primary;
     }
 }
