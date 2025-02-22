@@ -1,0 +1,12 @@
+.layout {
+    width: 100%;
+    height: 100%;
+    display: grid;
+
+    grid-template-areas:
+        "header header header"
+        "left-panel main-content right-panel";
+
+    grid-template-rows: 40px auto;
+    grid-template-columns: max(240px, 20%) auto max(240px, 20%);
+}

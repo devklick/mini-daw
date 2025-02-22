@@ -11,6 +11,7 @@ interface ControlKnobProps {
   defaultValue: number;
   onChange?: (value: number) => void;
   size?: "small";
+  disabled?: boolean;
 }
 
 function ControlKnob({
@@ -19,6 +20,7 @@ function ControlKnob({
   defaultValue = 100,
   size = "small",
   onChange,
+  disabled,
 }: ControlKnobProps) {
   const knobRef = useRef<HTMLDivElement>(null);
   const [value, setValue] = useState(defaultValue);
@@ -73,13 +75,21 @@ function ControlKnob({
     <div
       ref={knobRef}
       onMouseDown={handleDown}
-      className={clsx("control-knob", `control-knob--${size}`)}
+      className={clsx("control-knob", `control-knob--${size}`, {
+        [`control-knob--disabled`]: disabled,
+      })}
     >
       <div
-        className="control-knob__inner"
+        className={clsx("control-knob__inner", {
+          ["control-knob__inner--disabled"]: disabled,
+        })}
         style={{ transform: `rotate(${valueToAngle(value)}deg)` }}
       >
-        <span className="control-knob__pointer" />
+        <span
+          className={clsx("control-knob__pointer", {
+            ["control-knob__pointer--disabled"]: disabled,
+          })}
+        />
       </div>
     </div>
   );

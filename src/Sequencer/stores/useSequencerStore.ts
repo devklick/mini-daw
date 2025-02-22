@@ -6,7 +6,7 @@ import useSampleStore, {
 } from "../../Samples/stores/useSamplesStore";
 import { getFirst } from "../../utils/arrayUtils";
 
-interface SequencerTrack {
+export interface SequencerTrack {
   id: string;
   name: string;
   sample: SampleInfo;
@@ -34,6 +34,7 @@ interface SequencerTrack {
 }
 
 interface SequencerStoreState {
+  selectedTrack: number;
   stepsPerBeat: number;
   beatsPerBar: number;
   barsPerSequence: number;
@@ -54,6 +55,8 @@ interface SequencerStoreState {
   setTrackPan(trackId: string, pan: number): void;
   setCurrentStep(currentStep: number): void;
   setPlaying(playing: boolean): void;
+  setSelectedTrack(trackNo: number): void;
+  setTrackName(trackNo: number, trackName: string): void;
 }
 
 const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
@@ -63,6 +66,7 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   barsPerSequence: 1,
   currentStep: 1,
   currentBeat: 1,
+  selectedTrack: 1,
   playing: false,
   addTrack(track) {
     const { beatsPerBar, stepsPerBeat, barsPerSequence } = get();
@@ -175,6 +179,19 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   },
   setPlaying(playing) {
     set({ playing });
+  },
+  setSelectedTrack(trackNo) {
+    set({ selectedTrack: trackNo });
+  },
+  setTrackName(trackNo, trackName) {
+    set((state) => ({
+      tracks: state.tracks.map((track, i) => {
+        if (trackNo === i) {
+          return { ...track, name: trackName };
+        }
+        return track;
+      }),
+    }));
   },
 }));
 

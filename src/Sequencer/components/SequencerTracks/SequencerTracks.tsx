@@ -12,14 +12,14 @@ function SequencerTracks() {
     <div className="sequencer-tracks">
       <div className="sequencer-tracks__headers">
         {template.map((_, i) => (
-          <SequencerTrackHeader trackNo={i} />
+          <SequencerTrackHeader trackNo={i} key={i} />
         ))}
         <SequencerTrackHeader.Placeholder />
       </div>
       <div className="sequencer-tracks__steps">
         <SequencerStepsBackground />
         {template.map((_, i) => (
-          <SequencerTrackSteps trackNo={i} />
+          <SequencerTrackSteps trackNo={i} key={i} />
         ))}
       </div>
     </div>

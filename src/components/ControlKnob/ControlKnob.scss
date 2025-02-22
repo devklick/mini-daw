@@ -4,7 +4,12 @@
     border-radius: 50%;
     background: radial-gradient($color-secondary 20%, $color-tertiary);
     box-shadow: 1px 1px 1px black;
-    border: 1px solid $color-tertiary;
+    outline: 1px solid $color-primary;
+
+    &--disabled {
+        outline: none;
+        background: $color-tertiary;
+    }
 
     &--small {
         width: 20px;
@@ -29,5 +34,9 @@
         background: $color-primary;
         position: absolute;
         top: 2px;
+
+        &--disabled {
+            background-color: $color-secondary;
+        }
     }
 }

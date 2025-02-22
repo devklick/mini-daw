@@ -13,8 +13,8 @@ function SequencerStepsBackground() {
 
   return (
     <div className="sequencer-steps-background">
-      {Array.from({ length: beatsInSequence }, () => (
-        <div className="sequencer-steps-background__part" />
+      {Array.from({ length: beatsInSequence }, (_, i) => (
+        <div className="sequencer-steps-background__part" key={i} />
       ))}
     </div>
   );

@@ -1,0 +1,33 @@
+@use "/src/global" as *;
+.track-property {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid grey;
+    background-color: $color-tertiary;
+    border-radius: 4px;
+    :not(last-of-type) {
+        border-bottom: none;
+    }
+
+    &__top {
+        width: 100%;
+        background-color: $color-secondary;
+        padding: 6px;
+        box-sizing: border-box;
+        border-radius: 4px 4px 0 0;
+        &__inner {
+            display: flex;
+            justify-content: space-between;
+            flex-direction: row;
+
+            &-left {
+                display: flex;
+                justify-content: space-between;
+                flex-direction: row;
+                gap: 10px;
+            }
+        }
+    }
+}
