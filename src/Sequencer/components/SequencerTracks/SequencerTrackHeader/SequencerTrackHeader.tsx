@@ -22,6 +22,7 @@ function SequencerTrackHeader({ trackNo }: SequencerTrackHeaderProps) {
   const setSelectedTrack = useSequencerStore((s) => s.setSelectedTrack);
   const selectedTrack = useSequencerStore((s) => s.selectedTrack);
   const isSelected = trackNo == selectedTrack;
+  const setTrackName = useSequencerStore((s) => s.setTrackName);
 
   return (
     <div
@@ -31,7 +32,10 @@ function SequencerTrackHeader({ trackNo }: SequencerTrackHeaderProps) {
       onClick={() => setSelectedTrack(trackNo)}
     >
       <ContextMenuTarget
-        items={[{ title: "Delete Track", action: () => deleteTrack(trackId) }]}
+        items={[
+          { title: "Rename Track", action: () => null },
+          { title: "Delete Track", action: () => deleteTrack(trackId) },
+        ]}
       >
         <DropZone
           dragOverClassName="sequencer-track-header--drag-over"
@@ -41,7 +45,9 @@ function SequencerTrackHeader({ trackNo }: SequencerTrackHeaderProps) {
             assignNewSampleToTrack(trackId, sample);
           }}
         >
-          <span>{trackName}</span>
+          <span className="sequencer-track-header__track-name">
+            {trackName}
+          </span>
         </DropZone>
       </ContextMenuTarget>
     </div>

@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 
+// AKA DickPick
+import KnobImage from "./assets/knob.svg?react";
+
 import useMouseDownOnElement from "../../hooks/mouseHooks/useMouseDownOnElement";
 
 import "./ControlKnob.scss";
@@ -85,6 +88,7 @@ function ControlKnob({
         })}
         style={{ transform: `rotate(${valueToAngle(value)}deg)` }}
       >
+        <KnobImage width={"100%"} />
         <span
           className={clsx("control-knob__pointer", {
             ["control-knob__pointer--disabled"]: disabled,

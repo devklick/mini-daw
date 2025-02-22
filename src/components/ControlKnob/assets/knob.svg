@@ -1,0 +1,27 @@
+<svg class="knob" width="20" height="20" stroke="black" stroke-width="6" fill="#2a2b31"  viewBox="-53 -53 106 106" xmlns="http://www.w3.org/2000/svg">
+    <!-- Outer Circle -->
+    <circle class="knob-outer"  cx="0" cy="0" r="49" />
+
+    <!-- Inner Circle -->
+    <circle class="knob-inner" fill="#2a2b31" cx="0" cy="0" r="25" />
+
+    <!-- Knurling Lines -->
+    <g class="knob-knurling">
+        <!-- Use <use> elements for reusability -->
+        <use href="#knurl-line" transform="rotate(20)" />
+        <use href="#knurl-line" transform="rotate(60)" />
+        <use href="#knurl-line" transform="rotate(100)" />
+        <use href="#knurl-line" transform="rotate(140)" />
+        <use href="#knurl-line" transform="rotate(180)" />
+        <use href="#knurl-line" transform="rotate(220)" />
+        <use href="#knurl-line" transform="rotate(260)" />
+        <use href="#knurl-line" transform="rotate(300)" />
+        <use href="#knurl-line" transform="rotate(340)" />
+    </g>
+
+    <!-- Define a single knurl line for reuse -->
+    <defs>
+        <line id="knurl-line" stroke="black" x1="0" y1="25" x2="0" y2="50" />
+    </defs>
+
+</svg>

@@ -2,9 +2,7 @@
 
 .control-knob {
     border-radius: 50%;
-    background: radial-gradient($color-secondary 20%, $color-tertiary);
-    box-shadow: 1px 1px 1px black;
-    outline: 1px solid $color-primary;
+    box-shadow: 1px 1px 3px black;
 
     &--disabled {
         outline: none;
@@ -24,16 +22,15 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        user-select: none;
         position: relative;
     }
 
     &__pointer {
-        width: 1px;
-        height: calc(50% - 2px);
+        width: 2px;
+        height: 50%;
         background: $color-primary;
         position: absolute;
-        top: 2px;
+        top: 0;
 
         &--disabled {
             background-color: $color-secondary;

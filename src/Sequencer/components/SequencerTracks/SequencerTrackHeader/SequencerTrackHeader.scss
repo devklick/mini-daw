@@ -6,20 +6,22 @@
     border: 1px solid grey;
     border-radius: 4px;
     box-sizing: border-box;
-    padding: 4px;
     margin: 4px;
 
     &--selected {
         border: 1px solid $color-primary;
     }
-    span {
+    &__track-name {
+        display: inline-block;
+        line-height: 28px;
+        vertical-align: middle;
         text-overflow: ellipsis;
         overflow: hidden;
     }
 
     &--drag-over {
-        border-radius: 4px;
-        outline: 2px dashed $color-primary;
-        background-color: $color-primary;
+        border-radius: 3px;
+        outline: 5px double $color-primary;
+        // background-color: $color-primary;
     }
 }

@@ -7,9 +7,7 @@
     border: 1px solid grey;
     background-color: $color-tertiary;
     border-radius: 4px;
-    :not(last-of-type) {
-        border-bottom: none;
-    }
+    box-sizing: border-box;
 
     &__top {
         width: 100%;
