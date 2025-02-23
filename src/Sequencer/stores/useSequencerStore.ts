@@ -113,6 +113,7 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
     set({ stepsPerBeat });
   },
   addSampleAsTrack(sample) {
+    console.log("Adding sample as track");
     set((state) => ({
       tracks: [
         ...state.tracks,

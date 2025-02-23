@@ -11,16 +11,16 @@ interface SamplesListItemProps {
 
 function SamplesListItem({ sample }: SamplesListItemProps) {
   const setSelectedSample = useSampleStore((s) => s.setSelectedSample);
-  const selectedSampleId = useSampleStore((s) => s.selectedSampleId);
-  const isSelected = selectedSampleId === sample.id;
+  const selectedSampleUrl = useSampleStore((s) => s.selectedSampleUrl);
+  const isSelected = selectedSampleUrl === sample.url;
   return (
     <li
       className={clsx("samples-list-item", {
         ["samples-list-item--selected"]: isSelected,
       })}
-      onClick={() => setSelectedSample(sample.id)}
+      onClick={() => setSelectedSample(sample.url)}
     >
-      <Draggable itemId={sample.id} itemType="sample">
+      <Draggable itemId={sample.url} itemType="sample">
         {sample.name}
       </Draggable>
     </li>

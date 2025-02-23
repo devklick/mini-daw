@@ -2,13 +2,13 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { getLast } from "../../utils/arrayUtils";
 import { clone } from "../../utils/mutabilityUtils";
+import { useEffect } from "react";
 
 type Instrument = "kick" | "snare" | "hat" | "unknown";
 type Pattern = "oneshot" | "loop" | "unknown";
 type StoreInitState = "waiting" | "loading" | "loaded";
 
 export interface SampleInfo {
-  id: string;
   name: string;
   instrument: Instrument;
   pattern: Pattern;
@@ -18,22 +18,22 @@ export interface SampleInfo {
 
 interface SamplesStoreState {
   samples: Readonly<Record<string, Readonly<SampleInfo>>>;
-  selectedSampleId: string | null;
+  selectedSampleUrl: string | null;
   initState: StoreInitState;
   searchValue: string | null;
   setInitState(initState: StoreInitState): void;
-  getSample(id: string): Readonly<SampleInfo> | undefined;
+  getSample(url: string): Readonly<SampleInfo> | undefined;
   addSample(sample: Readonly<SampleInfo>): void;
   addSamples(samples: Readonly<Array<Readonly<SampleInfo>>>): void;
-  removeSample(id: string): void;
+  removeSample(url: string): void;
   setSearchValue(value: string | null): void;
-  setSelectedSample(sampleId: string | null): void;
+  setSelectedSample(url: string | null): void;
 }
 
 const useSampleStore = create<SamplesStoreState>()(
   immer((set, get) => ({
     samples: {},
-    selectedSampleId: null,
+    selectedSampleUrl: null,
     initState: "waiting",
     searchValue: null,
     setInitState(initState) {
@@ -41,27 +41,27 @@ const useSampleStore = create<SamplesStoreState>()(
     },
     addSample(sample) {
       set((state) => {
-        state.samples[sample.id] = sample;
+        state.samples[sample.url] = sample;
       });
     },
     addSamples(samples) {
       set((state) => {
-        samples.forEach((sample) => (state.samples[sample.id] = sample));
+        samples.forEach((sample) => (state.samples[sample.url] = sample));
       });
     },
-    removeSample(id) {
+    removeSample(url) {
       set((state) => {
-        if (state.samples[id]) delete state.samples[id];
+        if (state.samples[url]) delete state.samples[url];
       });
     },
-    getSample(id) {
-      return get().samples[id];
+    getSample(url) {
+      return get().samples[url];
     },
     setSearchValue(searchValue) {
       set({ searchValue });
     },
-    setSelectedSample(sampleId) {
-      set({ selectedSampleId: sampleId });
+    setSelectedSample(url) {
+      set({ selectedSampleUrl: url });
     },
   }))
 );
@@ -76,22 +76,19 @@ export function useAddSamples() {
         .filter((file) => file.type.startsWith("audio/"))
         .map((file) => {
           const url = URL.createObjectURL(file);
-          const id = getLast(url.split("/"));
-
           const audio = new Audio(url);
 
           audio.addEventListener("loadedmetadata", () =>
-            setSampleLength(id, Number(audio.duration.toFixed(2)))
+            setSampleLength(url, Number(audio.duration.toFixed(2)))
           );
 
           return {
-            id,
             url,
             name: file.name,
             instrument: "unknown",
             length: 0,
             pattern: "unknown",
-          };
+          } satisfies SampleInfo;
         })
     );
   };
@@ -106,12 +103,12 @@ export function useUpdateSample() {
   };
 
   return function (
-    id: string,
+    url: string,
     fields: Partial<
       Pick<SampleInfo, "name" | "pattern" | "length" | "instrument">
     >
   ) {
-    const sample = getSample(id);
+    const sample = getSample(url);
     if (!sample) return;
     const updatedSample: SampleInfo = clone(sample, { writable: true });
     for (const [key, value] of Object.entries(fields)) {
@@ -128,20 +125,20 @@ export function useUpdateSample() {
 
 export function useSetSampleName() {
   const updateSample = useUpdateSample();
-  return (id: string, name: string) => updateSample(id, { name });
+  return (url: string, name: string) => updateSample(url, { name });
 }
 export function useSetSampleLength() {
   const updateSample = useUpdateSample();
-  return (id: string, length: number) => updateSample(id, { length });
+  return (url: string, length: number) => updateSample(url, { length });
 }
 export function useSetSampleInstrument() {
   const updateSample = useUpdateSample();
-  return (id: string, instrument: Instrument) =>
-    updateSample(id, { instrument });
+  return (url: string, instrument: Instrument) =>
+    updateSample(url, { instrument });
 }
 export function useSetSamplePattern() {
   const updateSample = useUpdateSample();
-  return (id: string, pattern: Pattern) => updateSample(id, { pattern });
+  return (url: string, pattern: Pattern) => updateSample(url, { pattern });
 }
 
 /**
@@ -153,49 +150,50 @@ export function useLoadDefaultSamples() {
   const addSample = useSampleStore((s) => s.addSample);
   const setSampleLength = useSetSampleLength();
 
-  if (initState === "loading" || initState === "loaded") {
-    return;
-  }
+  useEffect(() => {
+    if (initState === "loading" || initState === "loaded") {
+      return;
+    }
 
-  setInitState("loading");
+    setInitState("loading");
 
-  const samples = import.meta.glob("/src/assets/samples/*.{mp3,wav}", {
-    eager: true,
-  });
-  const samplesCount = Object.keys(samples).length;
-  let loadedCount = 0;
-
-  for (const path in samples) {
-    const url = String((samples[path] as { default: string }).default);
-    const fileName = getLast(path.split("/"));
-    const audio = new Audio(url);
-
-    const id = crypto.randomUUID();
-    const sample: SampleInfo = {
-      id,
-      instrument: fileName.includes("Kick")
-        ? "kick"
-        : fileName.includes("Hat")
-        ? "hat"
-        : fileName.includes("Snare")
-        ? "snare"
-        : "unknown",
-      length: 0,
-      pattern: "oneshot",
-      name: fileName,
-      url,
-    };
-    addSample(sample);
-    audio.addEventListener("loadedmetadata", () => {
-      setSampleLength(id, Number(audio.duration.toFixed(2)));
-      loadedCount++;
-
-      if (loadedCount === samplesCount) {
-        setInitState("loaded");
-        return;
-      }
+    const samples = import.meta.glob("/src/assets/samples/*.{mp3,wav}", {
+      eager: true,
     });
-  }
+    const samplesCount = Object.keys(samples).length;
+    let loadedCount = 0;
+
+    for (const path in samples) {
+      if (useSampleStore.getState().samples[path]) continue;
+      const url = String((samples[path] as { default: string }).default);
+      const fileName = getLast(path.split("/"));
+      const audio = new Audio(url);
+
+      const sample: SampleInfo = {
+        instrument: fileName.includes("Kick")
+          ? "kick"
+          : fileName.includes("Hat")
+          ? "hat"
+          : fileName.includes("Snare")
+          ? "snare"
+          : "unknown",
+        length: 0,
+        pattern: "oneshot",
+        name: fileName,
+        url,
+      };
+      addSample(sample);
+      audio.addEventListener("loadedmetadata", () => {
+        setSampleLength(url, Number(audio.duration.toFixed(2)));
+        loadedCount++;
+
+        if (loadedCount === samplesCount) {
+          setInitState("loaded");
+          return;
+        }
+      });
+    }
+  }, [addSample, initState, setInitState, setSampleLength]);
 }
 
 export default useSampleStore;

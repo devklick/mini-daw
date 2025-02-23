@@ -40,6 +40,7 @@ function SequencerTrackHeader({ trackNo }: SequencerTrackHeaderProps) {
         <DropZone
           dragOverClassName="sequencer-track-header--drag-over"
           onDrop={(item) => {
+            console.log("dropped");
             const sample = getSample(item.id);
             if (!sample) return;
             assignNewSampleToTrack(trackId, sample);
@@ -61,6 +62,7 @@ function DropNewTrack() {
     <div className="sequencer-track-header">
       <DropZone
         onDrop={(item) => {
+          console.log("dropped", item);
           const sample = getSample(item.id);
           if (!sample) return;
           addSampleAsTrack(sample);

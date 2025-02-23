@@ -32,7 +32,7 @@ function SampleBrowser() {
           <li className="sample" key={i}>
             <span
               draggable
-              onDragStart={() => dnd.setDragging(sample.id, "sample")}
+              onDragStart={() => dnd.setDragging(sample.url, "sample")}
               onDragEnd={() => dnd.clearDragging()}
             >
               {sample.name}
@@ -45,7 +45,7 @@ function SampleBrowser() {
                 // Quick and dirty test of samples in browser
                 if (activeSample.current) activeSample.current.audio.pause();
                 activeSample.current = {
-                  id: sample.id,
+                  id: sample.url,
                   audio: new Audio(sample.url),
                 };
                 activeSample.current.audio.play();
