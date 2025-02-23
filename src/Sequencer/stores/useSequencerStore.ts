@@ -34,7 +34,7 @@ export interface SequencerTrack {
 }
 
 interface SequencerStoreState {
-  selectedTrack: number;
+  selectedTrack: number | null;
   stepsPerBeat: number;
   beatsPerBar: number;
   barsPerSequence: number;
@@ -55,7 +55,7 @@ interface SequencerStoreState {
   setTrackPan(trackId: string, pan: number): void;
   setCurrentStep(currentStep: number): void;
   setPlaying(playing: boolean): void;
-  setSelectedTrack(trackNo: number): void;
+  setSelectedTrack(trackNo: number | null): void;
   setTrackName(trackNo: number, trackName: string): void;
 }
 
@@ -66,7 +66,7 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   barsPerSequence: 1,
   currentStep: 1,
   currentBeat: 1,
-  selectedTrack: 1,
+  selectedTrack: 0,
   playing: false,
   addTrack(track) {
     const { beatsPerBar, stepsPerBeat, barsPerSequence } = get();
@@ -126,6 +126,7 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
           volume: 80,
         },
       ],
+      selectedTrack: state.tracks.length,
     }));
   },
   assignNewSampleToTrack(trackId, sample) {
@@ -140,13 +141,20 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
       const updatedTracks = [...state.tracks];
       updatedTracks[trackIndex] = track;
 
-      return { tracks: updatedTracks };
+      const selectedTrack = trackIndex;
+
+      return { tracks: updatedTracks, selectedTrack };
     });
   },
   deleteTrack(trackId) {
-    set((state) => ({
-      tracks: state.tracks.filter((t) => t.id !== trackId),
-    }));
+    set((state) => {
+      const updatedTracks = state.tracks.filter((t) => t.id !== trackId);
+      const selectedTrack =
+        updatedTracks.length && state.selectedTrack
+          ? Math.min(state.selectedTrack, updatedTracks.length - 1)
+          : null;
+      return { tracks: updatedTracks, selectedTrack };
+    });
   },
   setTrackVolume(trackId, volume) {
     set((state) => ({
@@ -261,7 +269,7 @@ export function useSequencer() {
     const loadBuffers = async () => {
       if (!audioContext.current) return;
       for (const track of tracks) {
-        if (trackBuffers.current[track.id]) return;
+        if (trackBuffers.current[track.id]) continue;
         const response = await fetch(track.sample.url);
         const arrayBuff = await response.arrayBuffer();
         const audioBuff = await audioContext.current.decodeAudioData(arrayBuff);

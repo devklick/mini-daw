@@ -52,6 +52,7 @@ function TrackProperty<Name extends PropertyKeys>({
                 min={min ?? 0}
                 onChange={handleChange}
                 size="small"
+                disabled={disabled}
               />
             )}
           </div>

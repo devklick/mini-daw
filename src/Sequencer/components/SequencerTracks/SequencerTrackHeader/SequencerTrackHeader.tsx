@@ -22,7 +22,6 @@ function SequencerTrackHeader({ trackNo }: SequencerTrackHeaderProps) {
   const setSelectedTrack = useSequencerStore((s) => s.setSelectedTrack);
   const selectedTrack = useSequencerStore((s) => s.selectedTrack);
   const isSelected = trackNo == selectedTrack;
-  const setTrackName = useSequencerStore((s) => s.setTrackName);
 
   return (
     <div
@@ -36,6 +35,7 @@ function SequencerTrackHeader({ trackNo }: SequencerTrackHeaderProps) {
           { title: "Rename Track", action: () => null },
           { title: "Delete Track", action: () => deleteTrack(trackId) },
         ]}
+        onOpen={() => setSelectedTrack(trackNo)}
       >
         <DropZone
           dragOverClassName="sequencer-track-header--drag-over"

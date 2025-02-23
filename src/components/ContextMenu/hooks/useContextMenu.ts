@@ -3,6 +3,7 @@ import useToggle from "../../../hooks/stateHooks/useToggle";
 
 interface UseContextMenuParams<Element extends HTMLElement> {
   targetElement: React.RefObject<Element | null>;
+  onOpen?(): void;
 }
 
 interface UseContextMenuReturnOpen {
@@ -20,6 +21,7 @@ export type UseContextMenuReturn =
 
 function useContextMenu<Element extends HTMLElement>({
   targetElement,
+  onOpen,
 }: UseContextMenuParams<Element>): UseContextMenuReturn {
   const [isOpen, { setToggle: setOpen }] = useToggle();
   const position = useRef({ x: 0, y: 0 });
@@ -31,9 +33,10 @@ function useContextMenu<Element extends HTMLElement>({
       e.stopPropagation();
       e.preventDefault();
       setOpen(true);
+      onOpen?.();
     }
     targetElement.current.addEventListener("contextmenu", handleRightClick);
-  }, [setOpen, targetElement]);
+  }, [onOpen, setOpen, targetElement]);
 
   const setClosed = () => setOpen(false);
 

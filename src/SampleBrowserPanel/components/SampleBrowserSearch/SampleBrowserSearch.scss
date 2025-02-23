@@ -1,0 +1,51 @@
+@use "/src/global" as *;
+.sample-browser-search {
+    width: 100%;
+    border: 1px solid $color-tertiary;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 4px;
+    box-sizing: border-box;
+    gap: 4px;
+
+    &:focus-within {
+        border: 1px solid grey;
+    }
+
+    &__input {
+        all: unset;
+        text-align: start;
+        width: 100%;
+    }
+
+    &__clear {
+        all: unset;
+        border: 1px solid grey;
+        border-radius: 3px;
+        padding: 0 4px;
+        position: relative;
+        width: 20px;
+        height: 20px;
+        box-sizing: border-box;
+
+        span {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+
+            &:active {
+                top: 1px;
+                left: 1px;
+            }
+        }
+
+        &:disabled {
+            border: 1px solid $color-tertiary;
+            color: $color-tertiary;
+        }
+    }
+}

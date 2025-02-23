@@ -18,18 +18,24 @@ export interface SampleInfo {
 
 interface SamplesStoreState {
   samples: Readonly<Record<string, Readonly<SampleInfo>>>;
+  selectedSampleId: string | null;
   initState: StoreInitState;
+  searchValue: string | null;
   setInitState(initState: StoreInitState): void;
   getSample(id: string): Readonly<SampleInfo> | undefined;
   addSample(sample: Readonly<SampleInfo>): void;
   addSamples(samples: Readonly<Array<Readonly<SampleInfo>>>): void;
   removeSample(id: string): void;
+  setSearchValue(value: string | null): void;
+  setSelectedSample(sampleId: string | null): void;
 }
 
 const useSampleStore = create<SamplesStoreState>()(
   immer((set, get) => ({
     samples: {},
+    selectedSampleId: null,
     initState: "waiting",
+    searchValue: null,
     setInitState(initState) {
       set({ initState });
     },
@@ -50,6 +56,12 @@ const useSampleStore = create<SamplesStoreState>()(
     },
     getSample(id) {
       return get().samples[id];
+    },
+    setSearchValue(searchValue) {
+      set({ searchValue });
+    },
+    setSelectedSample(sampleId) {
+      set({ selectedSampleId: sampleId });
     },
   }))
 );

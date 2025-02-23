@@ -1,6 +1,4 @@
-import SequencerTrackHeader from "../SequencerTracks/SequencerTrackHeader";
 import "./SequencerFooter.scss";
-import SequencerProgress from "./SequencerProgress";
 
 function SequencerFooter() {
   return (

@@ -8,6 +8,7 @@ import "./ContextMenu.scss";
 interface ContextMenuTargetProps {
   items: Array<Omit<MenuItemProps, "close">>;
   children: React.ReactNode;
+  onOpen?: () => void;
 }
 
 /**
@@ -15,9 +16,13 @@ interface ContextMenuTargetProps {
  * serves as the click area to detect a right-click, and opens the context
  * menu when the right-click happens.
  */
-export function ContextMenuTarget({ children, items }: ContextMenuTargetProps) {
+export function ContextMenuTarget({
+  children,
+  items,
+  onOpen,
+}: ContextMenuTargetProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const contextMenu = useContextMenu({ targetElement: ref });
+  const contextMenu = useContextMenu({ targetElement: ref, onOpen });
   return (
     <div ref={ref} className="context-menu-target">
       {contextMenu.isOpen && (
