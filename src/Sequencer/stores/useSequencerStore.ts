@@ -248,7 +248,7 @@ export function useSequencer() {
   const setCurrentStep = useSequencerStore((s) => s.setCurrentStep);
 
   // TODO: Configurable bpm in global state
-  const bpm = 167;
+  const bpm = 127;
   const secondsPerBeat = 60 / bpm;
   const stepInterval = secondsPerBeat / stepsPerBeat;
   const totalSteps = stepsPerBeat * beatsPerBar * barsPerSequence;

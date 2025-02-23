@@ -1,5 +1,6 @@
 .track-properties-panel {
     display: flex;
+    height: 100%;
     flex-direction: column;
-    gap: 6px;
+    justify-content: space-between;
 }
