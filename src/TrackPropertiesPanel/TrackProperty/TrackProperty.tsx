@@ -1,4 +1,6 @@
+import clsx from "clsx";
 import ControlKnob from "../../components/ControlKnob";
+import useToggle from "../../hooks/stateHooks/useToggle";
 import useSequencerStore, {
   SequencerTrack,
 } from "../../Sequencer/stores/useSequencerStore";
@@ -33,12 +35,24 @@ function TrackProperty<Name extends PropertyKeys>({
   max,
 }: TrackPropertyProps<Name>) {
   const value = useSequencerStore((s) => s.tracks[trackNo]?.[name]);
+  const [expanded, { toggle }] = useToggle();
+
   function handleChange(newValue: unknown) {
     onChange(newValue as Readonly<SequencerTrack>[Name]);
   }
+
   return (
-    <div className="track-property">
-      <div className="track-property__top">
+    <div
+      className={clsx("track-property", {
+        ["track-property--expanded"]: expanded,
+      })}
+    >
+      <div
+        className={clsx("track-property__top", {
+          ["track-property__top--expanded"]: expanded,
+        })}
+        onClick={toggle}
+      >
         <div className="track-property__top__inner">
           <div className="track-property__top__inner-left">
             <label>{label}</label>
@@ -59,7 +73,7 @@ function TrackProperty<Name extends PropertyKeys>({
         </div>
       </div>
 
-      <p>{description}</p>
+      {expanded && <p>{description}</p>}
     </div>
   );
 }

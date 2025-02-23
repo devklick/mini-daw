@@ -61,6 +61,8 @@ function ControlKnob({
     [max, min, mouseDown, onChange, value]
   );
   const handleDown = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    event.preventDefault();
     lastYRef.current = event.clientY;
   };
 
@@ -78,6 +80,7 @@ function ControlKnob({
     <div
       ref={knobRef}
       onMouseDown={handleDown}
+      onClick={(e) => e.stopPropagation()}
       className={clsx("control-knob", `control-knob--${size}`, {
         [`control-knob--disabled`]: disabled,
       })}
