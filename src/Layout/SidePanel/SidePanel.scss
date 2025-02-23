@@ -2,11 +2,10 @@
 .side-panel {
     width: 100%;
     height: 100%;
-    border: 1px solid grey; //temp to see layout
+    border: 1px solid grey;
     border-bottom: none;
     box-sizing: border-box;
     padding: 6px;
-    margin-top: -1px;
     background-color: $color-secondary;
     &--right {
         grid-area: right-panel;
