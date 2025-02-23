@@ -1,7 +1,9 @@
+import { useBpm } from "../../stores/useDawStore";
 import "./Header.scss";
 
 function Header() {
-  return <header className="header">Header</header>;
+  const [bpm] = useBpm();
+  return <header className="header">{bpm}</header>;
 }
 
 export default Header;

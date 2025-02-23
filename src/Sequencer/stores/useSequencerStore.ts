@@ -5,7 +5,7 @@ import useSampleStore, {
   useLoadDefaultSamples,
 } from "../../Samples/stores/useSamplesStore";
 import { getFirst } from "../../utils/arrayUtils";
-import { useAudioContext } from "../../stores/useDawStore";
+import { useAudioContext, useBpm } from "../../stores/useDawStore";
 
 export interface SequencerTrack {
   id: string;
@@ -249,7 +249,7 @@ export function useSequencer() {
   const setCurrentStep = useSequencerStore((s) => s.setCurrentStep);
 
   // TODO: Configurable bpm in global state
-  const bpm = 127;
+  const [bpm] = useBpm();
   const secondsPerBeat = 60 / bpm;
   const stepInterval = secondsPerBeat / stepsPerBeat;
   const totalSteps = stepsPerBeat * beatsPerBar * barsPerSequence;
