@@ -113,7 +113,6 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
     set({ stepsPerBeat });
   },
   addSampleAsTrack(sample) {
-    console.log("Adding sample as track");
     set((state) => ({
       tracks: [
         ...state.tracks,
@@ -238,11 +237,10 @@ export function useLoadSequencer() {
 }
 
 export function useSequencer() {
-  const tracks = useSequencerStore((s) => s.tracks);
   const stepsPerBeat = useSequencerStore((s) => s.stepsPerBeat);
   const beatsPerBar = useSequencerStore((s) => s.beatsPerBar);
   const barsPerSequence = useSequencerStore((s) => s.barsPerSequence);
-  const trackBuffers = useRef<Record<string, AudioBuffer>>({});
+  const sampleBuffers = useSampleStore((s) => s.sampleBuffers);
   const audioContext = useAudioContext();
   const isPlaying = useSequencerStore((s) => s.playing);
   const setIsPlaying = useSequencerStore((s) => s.setPlaying);
@@ -255,27 +253,11 @@ export function useSequencer() {
   const stepInterval = secondsPerBeat / stepsPerBeat;
   const totalSteps = stepsPerBeat * beatsPerBar * barsPerSequence;
 
-  /**
-   * Fetch the audio samples and convert to audio buffers
-   */
-  useEffect(() => {
-    const loadBuffers = async () => {
-      if (!audioContext) return;
-      for (const track of tracks) {
-        if (trackBuffers.current[track.id]) continue;
-        const response = await fetch(track.sample.url);
-        const arrayBuff = await response.arrayBuffer();
-        const audioBuff = await audioContext.decodeAudioData(arrayBuff);
-        trackBuffers.current[track.id] = audioBuff;
-      }
-    };
-
-    loadBuffers();
-  }, [audioContext, tracks]);
+  useEffect(() => {}, [sampleBuffers]);
 
   const playSample = useCallback(
     (track: SequencerTrack) => {
-      const audioBuffer = trackBuffers.current[track.id];
+      const audioBuffer = sampleBuffers[track.sample.url];
       const { pan, pitch, volume } = track;
       if (!audioBuffer || !audioContext) return;
 
@@ -296,7 +278,7 @@ export function useSequencer() {
 
       bufferSource.start();
     },
-    [audioContext]
+    [audioContext, sampleBuffers]
   );
 
   useEffect(() => {

@@ -13,7 +13,6 @@ function useGetBufferData({ sampleUrl, trackId }: UseGetBufferDataParams) {
   useEffect(() => {
     const fetchAudio = async () => {
       if (!sampleUrl) return;
-      console.log("Fetching audio");
       const response = await fetch(sampleUrl);
       const arrayBuffer = await response.arrayBuffer();
       const decodedBuffer = await audioContext.decodeAudioData(arrayBuffer);

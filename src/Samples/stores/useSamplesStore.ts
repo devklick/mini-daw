@@ -3,6 +3,7 @@ import { immer } from "zustand/middleware/immer";
 import { getLast } from "../../utils/arrayUtils";
 import { clone } from "../../utils/mutabilityUtils";
 import { useEffect } from "react";
+import { useAudioContext } from "../../stores/useDawStore";
 
 type Instrument = "kick" | "snare" | "hat" | "unknown";
 type Pattern = "oneshot" | "loop" | "unknown";
@@ -18,6 +19,7 @@ export interface SampleInfo {
 
 interface SamplesStoreState {
   samples: Readonly<Record<string, Readonly<SampleInfo>>>;
+  sampleBuffers: Record<string, AudioBuffer>;
   selectedSampleUrl: string | null;
   initState: StoreInitState;
   searchValue: string | null;
@@ -28,11 +30,13 @@ interface SamplesStoreState {
   removeSample(url: string): void;
   setSearchValue(value: string | null): void;
   setSelectedSample(url: string | null): void;
+  addSampleBuffer(url: string, buffer: AudioBuffer): void;
 }
 
 const useSampleStore = create<SamplesStoreState>()(
   immer((set, get) => ({
     samples: {},
+    sampleBuffers: {},
     selectedSampleUrl: null,
     initState: "waiting",
     searchValue: null,
@@ -62,6 +66,11 @@ const useSampleStore = create<SamplesStoreState>()(
     },
     setSelectedSample(url) {
       set({ selectedSampleUrl: url });
+    },
+    addSampleBuffer(url, buffer) {
+      set((state) => {
+        state.sampleBuffers[url] = buffer;
+      });
     },
   }))
 );
@@ -141,6 +150,18 @@ export function useSetSamplePattern() {
   return (url: string, pattern: Pattern) => updateSample(url, { pattern });
 }
 
+export function useLoadSampleBuffer() {
+  const audioContext = useAudioContext();
+  const addSampleBuffer = useSampleStore((s) => s.addSampleBuffer);
+
+  return async function (url: string) {
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    const decodedBuffer = await audioContext.decodeAudioData(arrayBuffer);
+    addSampleBuffer(url, decodedBuffer);
+  };
+}
+
 /**
  * Loads the default samples
  */
@@ -149,51 +170,56 @@ export function useLoadDefaultSamples() {
   const setInitState = useSampleStore((s) => s.setInitState);
   const addSample = useSampleStore((s) => s.addSample);
   const setSampleLength = useSetSampleLength();
+  const loadSampleBuffer = useLoadSampleBuffer();
 
   useEffect(() => {
-    if (initState === "loading" || initState === "loaded") {
-      return;
-    }
+    const load = async () => {
+      if (initState === "loading" || initState === "loaded") {
+        return;
+      }
 
-    setInitState("loading");
+      setInitState("loading");
 
-    const samples = import.meta.glob("/src/assets/samples/*.{mp3,wav}", {
-      eager: true,
-    });
-    const samplesCount = Object.keys(samples).length;
-    let loadedCount = 0;
-
-    for (const path in samples) {
-      if (useSampleStore.getState().samples[path]) continue;
-      const url = String((samples[path] as { default: string }).default);
-      const fileName = getLast(path.split("/"));
-      const audio = new Audio(url);
-
-      const sample: SampleInfo = {
-        instrument: fileName.includes("Kick")
-          ? "kick"
-          : fileName.includes("Hat")
-          ? "hat"
-          : fileName.includes("Snare")
-          ? "snare"
-          : "unknown",
-        length: 0,
-        pattern: "oneshot",
-        name: fileName,
-        url,
-      };
-      addSample(sample);
-      audio.addEventListener("loadedmetadata", () => {
-        setSampleLength(url, Number(audio.duration.toFixed(2)));
-        loadedCount++;
-
-        if (loadedCount === samplesCount) {
-          setInitState("loaded");
-          return;
-        }
+      const samples = import.meta.glob("/src/assets/samples/*.{mp3,wav}", {
+        eager: true,
       });
-    }
-  }, [addSample, initState, setInitState, setSampleLength]);
+      const samplesCount = Object.keys(samples).length;
+      let loadedCount = 0;
+
+      for (const path in samples) {
+        if (useSampleStore.getState().samples[path]) continue;
+        const url = String((samples[path] as { default: string }).default);
+        const fileName = getLast(path.split("/"));
+        const audio = new Audio(url);
+
+        const sample: SampleInfo = {
+          instrument: fileName.includes("Kick")
+            ? "kick"
+            : fileName.includes("Hat")
+            ? "hat"
+            : fileName.includes("Snare")
+            ? "snare"
+            : "unknown",
+          length: 0,
+          pattern: "oneshot",
+          name: fileName,
+          url,
+        };
+        addSample(sample);
+        loadSampleBuffer(sample.url);
+        audio.addEventListener("loadedmetadata", () => {
+          setSampleLength(url, Number(audio.duration.toFixed(2)));
+          loadedCount++;
+
+          if (loadedCount === samplesCount) {
+            setInitState("loaded");
+            return;
+          }
+        });
+      }
+    };
+    load();
+  }, [addSample, initState, loadSampleBuffer, setInitState, setSampleLength]);
 }
 
 export default useSampleStore;

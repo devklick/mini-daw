@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import "./WaveFormVisualizer.scss";
-import { useAudioContext } from "../../stores/useDawStore";
+import useSampleStore from "../../Samples/stores/useSamplesStore";
 
 interface WaveformVisualizerProps {
   url: string;
@@ -9,23 +9,7 @@ interface WaveformVisualizerProps {
 }
 function WaveformVisualizer({ url, width = "100%" }: WaveformVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
-  const audioContext = useAudioContext();
-
-  // TODO: WIP - need to update this to work for samples and tracks.
-  // Track waveform visualizations should take into account the volume, pan & pitch of the track
-  // Ideally we shouldnt need to fetch the audio multiple times. This is already done in useSequencer,
-  // however perhaps it should be done on init and stored in the useSequencerStore
-  useEffect(() => {
-    const fetchAudio = async () => {
-      const response = await fetch(url);
-      const arrayBuffer = await response.arrayBuffer();
-      const decodedBuffer = await audioContext.decodeAudioData(arrayBuffer);
-      setAudioBuffer(decodedBuffer);
-    };
-
-    fetchAudio();
-  }, [audioContext, url]);
+  const audioBuffer = useSampleStore((s) => s.sampleBuffers[url]);
 
   const draw = useCallback(
     (ctx: CanvasRenderingContext2D, width: number, height: number) => {
@@ -67,13 +51,6 @@ function WaveformVisualizer({ url, width = "100%" }: WaveformVisualizerProps) {
 
     const resizeCanvas = () => {
       const { width, height } = canvas.getBoundingClientRect();
-      console.log({
-        canvas: {
-          width: canvas.width,
-          height: canvas.height,
-          style: { width, height },
-        },
-      });
       if (canvas.width !== width || canvas.height !== height) {
         canvas.width = width;
         canvas.height = height;
