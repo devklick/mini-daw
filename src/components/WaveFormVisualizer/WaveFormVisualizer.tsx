@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./WaveFormVisualizer.scss";
+import { useAudioContext } from "../../stores/useDawStore";
 
 interface WaveformVisualizerProps {
   url: string;
@@ -9,6 +10,7 @@ interface WaveformVisualizerProps {
 function WaveformVisualizer({ url, width = "100%" }: WaveformVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
+  const audioContext = useAudioContext();
 
   // TODO: WIP - need to update this to work for samples and tracks.
   // Track waveform visualizations should take into account the volume, pan & pitch of the track
@@ -16,7 +18,6 @@ function WaveformVisualizer({ url, width = "100%" }: WaveformVisualizerProps) {
   // however perhaps it should be done on init and stored in the useSequencerStore
   useEffect(() => {
     const fetchAudio = async () => {
-      const audioContext = new AudioContext();
       const response = await fetch(url);
       const arrayBuffer = await response.arrayBuffer();
       const decodedBuffer = await audioContext.decodeAudioData(arrayBuffer);
@@ -24,7 +25,7 @@ function WaveformVisualizer({ url, width = "100%" }: WaveformVisualizerProps) {
     };
 
     fetchAudio();
-  }, [url]);
+  }, [audioContext, url]);
 
   const draw = useCallback(
     (ctx: CanvasRenderingContext2D, width: number, height: number) => {

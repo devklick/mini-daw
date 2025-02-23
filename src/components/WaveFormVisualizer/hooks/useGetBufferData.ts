@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useAudioContext } from "../../../stores/useDawStore";
 
 interface UseGetBufferDataParams {
   sampleUrl?: string;
@@ -6,13 +7,13 @@ interface UseGetBufferDataParams {
 }
 
 function useGetBufferData({ sampleUrl, trackId }: UseGetBufferDataParams) {
+  const audioContext = useAudioContext();
   const [bufferData, setBufferData] =
     useState<Float32Array<ArrayBufferLike> | null>(null);
   useEffect(() => {
     const fetchAudio = async () => {
       if (!sampleUrl) return;
       console.log("Fetching audio");
-      const audioContext = new AudioContext();
       const response = await fetch(sampleUrl);
       const arrayBuffer = await response.arrayBuffer();
       const decodedBuffer = await audioContext.decodeAudioData(arrayBuffer);
@@ -21,7 +22,7 @@ function useGetBufferData({ sampleUrl, trackId }: UseGetBufferDataParams) {
     };
 
     fetchAudio();
-  }, [sampleUrl]);
+  }, [audioContext, sampleUrl]);
 
   useEffect(() => {}, [trackId]);
 

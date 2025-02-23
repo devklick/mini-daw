@@ -1,10 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { create } from "zustand";
 import useSampleStore, {
   SampleInfo,
   useLoadDefaultSamples,
 } from "../../Samples/stores/useSamplesStore";
 import { getFirst } from "../../utils/arrayUtils";
+import { useAudioContext } from "../../stores/useDawStore";
 
 export interface SequencerTrack {
   id: string;
@@ -241,7 +242,7 @@ export function useSequencer() {
   const beatsPerBar = useSequencerStore((s) => s.beatsPerBar);
   const barsPerSequence = useSequencerStore((s) => s.barsPerSequence);
   const trackBuffers = useRef<Record<string, AudioBuffer>>({});
-  const audioContext = useRef<AudioContext | null>(null);
+  const audioContext = useAudioContext();
   const isPlaying = useSequencerStore((s) => s.playing);
   const setIsPlaying = useSequencerStore((s) => s.setPlaying);
   const currentStep = useRef(0);
@@ -254,39 +255,56 @@ export function useSequencer() {
   const totalSteps = stepsPerBeat * beatsPerBar * barsPerSequence;
 
   /**
-   * Create our audio context
-   */
-  useEffect(() => {
-    if (!audioContext.current) {
-      audioContext.current = new window.AudioContext();
-    }
-  }, []);
-
-  /**
    * Fetch the audio samples and convert to audio buffers
    */
   useEffect(() => {
     const loadBuffers = async () => {
-      if (!audioContext.current) return;
+      if (!audioContext) return;
       for (const track of tracks) {
         if (trackBuffers.current[track.id]) continue;
         const response = await fetch(track.sample.url);
         const arrayBuff = await response.arrayBuffer();
-        const audioBuff = await audioContext.current.decodeAudioData(arrayBuff);
+        const audioBuff = await audioContext.decodeAudioData(arrayBuff);
         trackBuffers.current[track.id] = audioBuff;
       }
     };
 
     loadBuffers();
-  }, [tracks]);
+  }, [audioContext, tracks]);
+
+  const playSample = useCallback(
+    (track: SequencerTrack) => {
+      const audioBuffer = trackBuffers.current[track.id];
+      const { pan, pitch, volume } = track;
+      if (!audioBuffer || !audioContext) return;
+
+      const bufferSource = audioContext.createBufferSource();
+      bufferSource.buffer = audioBuffer;
+
+      bufferSource.detune.value = pitch * 100;
+
+      const gainNode = audioContext.createGain();
+      gainNode.gain.value = volume / 100;
+
+      const pannerNode = audioContext.createStereoPanner();
+      pannerNode.pan.value = pan / 100;
+
+      bufferSource.connect(gainNode);
+      gainNode.connect(pannerNode);
+      pannerNode.connect(audioContext.destination);
+
+      bufferSource.start();
+    },
+    [audioContext]
+  );
 
   useEffect(() => {
-    if (!audioContext.current) return;
+    if (!audioContext) return;
     let nextStepTime = 0;
     let frameId: number | null = null;
     const tick = () => {
-      if (!audioContext.current) return;
-      const { currentTime } = audioContext.current;
+      if (!audioContext) return;
+      const { currentTime } = audioContext;
       const { tracks } = useSequencerStore.getState();
       while (nextStepTime < currentTime + 0.01) {
         setCurrentStep(currentStep.current);
@@ -301,7 +319,7 @@ export function useSequencer() {
       frameId = requestAnimationFrame(tick);
     };
     if (isPlaying) {
-      nextStepTime = audioContext.current.currentTime;
+      nextStepTime = audioContext.currentTime;
       frameId = requestAnimationFrame(tick);
     } else {
       if (frameId) cancelAnimationFrame(frameId);
@@ -313,30 +331,14 @@ export function useSequencer() {
         cancelAnimationFrame(frameId);
       }
     };
-  }, [isPlaying, setCurrentStep, stepInterval, totalSteps]);
-
-  function playSample(track: SequencerTrack) {
-    const audioBuffer = trackBuffers.current[track.id];
-    const { pan, pitch, volume } = track;
-    if (!audioBuffer || !audioContext.current) return;
-
-    const bufferSource = audioContext.current.createBufferSource();
-    bufferSource.buffer = audioBuffer;
-
-    bufferSource.detune.value = pitch * 100;
-
-    const gainNode = audioContext.current.createGain();
-    gainNode.gain.value = volume / 100;
-
-    const pannerNode = audioContext.current.createStereoPanner();
-    pannerNode.pan.value = pan / 100;
-
-    bufferSource.connect(gainNode);
-    gainNode.connect(pannerNode);
-    pannerNode.connect(audioContext.current.destination);
-
-    bufferSource.start();
-  }
+  }, [
+    audioContext,
+    isPlaying,
+    playSample,
+    setCurrentStep,
+    stepInterval,
+    totalSteps,
+  ]);
 
   const play = () => setIsPlaying(true);
   const stop = () => setIsPlaying(false);
