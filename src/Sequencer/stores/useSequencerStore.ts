@@ -253,8 +253,6 @@ export function useSequencer() {
   const stepInterval = secondsPerBeat / stepsPerBeat;
   const totalSteps = stepsPerBeat * beatsPerBar * barsPerSequence;
 
-  useEffect(() => {}, [sampleBuffers]);
-
   const playSample = useCallback(
     (track: SequencerTrack) => {
       const audioBuffer = sampleBuffers[track.sample.url];
