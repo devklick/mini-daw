@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import "./WaveFormVisualizer.scss";
 import useSampleStore from "../../Samples/stores/useSamplesStore";
+import useComputeWaveformPoints from "./hooks/useComputeWavformPoints";
 
 interface WaveformVisualizerProps {
   url: string;
@@ -10,6 +11,11 @@ interface WaveformVisualizerProps {
 function WaveformVisualizer({ url, width = "100%" }: WaveformVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioBuffer = useSampleStore((s) => s.sampleBuffers[url]);
+  const points = useComputeWaveformPoints({
+    height: canvasRef.current?.height ?? 100,
+    width: canvasRef.current?.width ?? 10,
+    sampleUrl: url,
+  });
 
   const draw = useCallback(
     (ctx: CanvasRenderingContext2D, width: number, height: number) => {
@@ -17,21 +23,12 @@ function WaveformVisualizer({ url, width = "100%" }: WaveformVisualizerProps) {
 
       ctx.clearRect(0, 0, width, height);
 
-      const channelData = audioBuffer.getChannelData(0);
-      const samples = Math.floor(width * 2);
-      const step = Math.max(1, Math.floor(channelData.length / samples));
-
       ctx.strokeStyle = "#9e42c2";
       ctx.lineWidth = 1;
       ctx.beginPath();
 
-      for (let i = 0; i < samples; i++) {
-        const sampleIndex = i * step;
-        const amplitude = channelData[sampleIndex] || 0;
-
-        const x = (i / samples) * width;
-        const y = height / 2 + amplitude * (height / 2);
-
+      for (let i = 0; i < points.length; i++) {
+        const [x, y] = points[i];
         if (i === 0) {
           ctx.moveTo(x, y);
         } else {
@@ -41,7 +38,7 @@ function WaveformVisualizer({ url, width = "100%" }: WaveformVisualizerProps) {
 
       ctx.stroke();
     },
-    [audioBuffer]
+    [audioBuffer, points]
   );
 
   useEffect(() => {
