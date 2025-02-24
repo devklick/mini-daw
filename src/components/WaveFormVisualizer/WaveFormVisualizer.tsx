@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef } from "react";
-import "./WaveFormVisualizer.scss";
 import useSampleStore from "../../Samples/stores/useSamplesStore";
-import useComputeWaveformPoints from "./hooks/useComputeWavformPoints";
+import useComputeWaveformPoints from "./hooks/useComputeWaveformPoints";
 
+import "./WaveFormVisualizer.scss";
 interface WaveformVisualizerProps {
   url: string;
   width?: number | string;
@@ -11,9 +11,7 @@ interface WaveformVisualizerProps {
 function WaveformVisualizer({ url, width = "100%" }: WaveformVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioBuffer = useSampleStore((s) => s.sampleBuffers[url]);
-  const points = useComputeWaveformPoints({
-    height: canvasRef.current?.height ?? 0,
-    width: canvasRef.current?.width ?? 0,
+  const computePoints = useComputeWaveformPoints({
     sampleUrl: url,
   });
 
@@ -27,6 +25,8 @@ function WaveformVisualizer({ url, width = "100%" }: WaveformVisualizerProps) {
       ctx.lineWidth = 1;
       ctx.beginPath();
 
+      const points = computePoints(width, height) ?? [];
+
       for (let i = 0; i < points.length; i++) {
         const [x, y] = points[i];
         if (i === 0) {
@@ -38,7 +38,7 @@ function WaveformVisualizer({ url, width = "100%" }: WaveformVisualizerProps) {
 
       ctx.stroke();
     },
-    [audioBuffer, points]
+    [audioBuffer, computePoints]
   );
 
   useEffect(() => {
