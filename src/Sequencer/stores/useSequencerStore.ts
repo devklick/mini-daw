@@ -4,7 +4,7 @@ import useSampleStore, {
   SampleInfo,
   useLoadDefaultSamples,
 } from "../../Samples/stores/useSamplesStore";
-import { getFirst } from "../../utils/arrayUtils";
+import { getFirst, getLast } from "../../utils/arrayUtils";
 import { useAudioContext, useBpm } from "../../stores/useDawStore";
 
 export interface SequencerTrack {
@@ -206,6 +206,26 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
 
 export default useSequencerStore;
 
+export function useIsPlaying() {
+  const isPlaying = useSequencerStore((s) => s.playing);
+  const setIsPlaying = useSequencerStore((s) => s.setPlaying);
+
+  return [isPlaying, setIsPlaying] as const;
+}
+
+export function useSequencerSteps() {
+  const stepsPerBeat = useSequencerStore((s) => s.stepsPerBeat);
+  const beatsPerBar = useSequencerStore((s) => s.beatsPerBar);
+  const barsPerSequence = useSequencerStore((s) => s.barsPerSequence);
+
+  return {
+    stepsPerBeat,
+    beatsPerBar,
+    barsPerSequence,
+    totalSteps: stepsPerBeat * beatsPerBar * barsPerSequence,
+  };
+}
+
 /**
  * Loads the default samples and populates the sequencer with a track per sample
  */
@@ -236,47 +256,54 @@ export function useLoadSequencer() {
   }, [addTrack, loadSamplesStatus]);
 }
 
-export function useSequencer() {
-  const stepsPerBeat = useSequencerStore((s) => s.stepsPerBeat);
-  const beatsPerBar = useSequencerStore((s) => s.beatsPerBar);
-  const barsPerSequence = useSequencerStore((s) => s.barsPerSequence);
-  const sampleBuffers = useSampleStore((s) => s.sampleBuffers);
+export function useWireTrackBufferNodes() {
   const audioContext = useAudioContext();
-  const isPlaying = useSequencerStore((s) => s.playing);
-  const setIsPlaying = useSequencerStore((s) => s.setPlaying);
+  const audioBuffers = useSampleStore((s) => s.sampleBuffers);
+
+  return function (track: SequencerTrack) {
+    const audioBuffer = audioBuffers[track.sample.url];
+    if (!audioBuffer) throw new Error("Sample buffer not found");
+
+    const { pan, pitch, volume } = track;
+
+    const bufferSource = audioContext.createBufferSource();
+    bufferSource.buffer = audioBuffer;
+
+    bufferSource.detune.value = pitch * 100;
+
+    const gainNode = audioContext.createGain();
+    gainNode.gain.value = volume / 100;
+
+    const pannerNode = audioContext.createStereoPanner();
+    pannerNode.pan.value = pan / 100;
+
+    bufferSource.connect(gainNode);
+    gainNode.connect(pannerNode);
+    pannerNode.connect(audioContext.destination);
+
+    return [bufferSource, [gainNode, pannerNode]] as const;
+  };
+}
+
+export function useSequencer() {
+  const { stepsPerBeat, totalSteps } = useSequencerSteps();
+  const audioContext = useAudioContext();
   const currentStep = useRef(0);
   const setCurrentStep = useSequencerStore((s) => s.setCurrentStep);
-
-  // TODO: Configurable bpm in global state
+  const wireTrackNodes = useWireTrackBufferNodes();
+  const [isPlaying, setIsPlaying] = useIsPlaying();
   const [bpm] = useBpm();
+
   const secondsPerBeat = 60 / bpm;
   const stepInterval = secondsPerBeat / stepsPerBeat;
-  const totalSteps = stepsPerBeat * beatsPerBar * barsPerSequence;
 
   const playSample = useCallback(
     (track: SequencerTrack) => {
-      const audioBuffer = sampleBuffers[track.sample.url];
-      const { pan, pitch, volume } = track;
-      if (!audioBuffer || !audioContext) return;
-
-      const bufferSource = audioContext.createBufferSource();
-      bufferSource.buffer = audioBuffer;
-
-      bufferSource.detune.value = pitch * 100;
-
-      const gainNode = audioContext.createGain();
-      gainNode.gain.value = volume / 100;
-
-      const pannerNode = audioContext.createStereoPanner();
-      pannerNode.pan.value = pan / 100;
-
-      bufferSource.connect(gainNode);
-      gainNode.connect(pannerNode);
-      pannerNode.connect(audioContext.destination);
-
+      const [bufferSource, nodes] = wireTrackNodes(track);
+      getLast(nodes).connect(audioContext.destination);
       bufferSource.start();
     },
-    [audioContext, sampleBuffers]
+    [audioContext.destination, wireTrackNodes]
   );
 
   useEffect(() => {

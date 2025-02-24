@@ -1,4 +1,6 @@
-import useSequencerStore from "../../../stores/useSequencerStore";
+import useSequencerStore, {
+  useSequencerSteps,
+} from "../../../stores/useSequencerStore";
 import SequencerStep from "./SequencerStep";
 import "./SequencerTrackSteps.scss";
 
@@ -7,14 +9,11 @@ interface SequencerTrackStepsProps {
 }
 
 function SequencerTrackSteps({ trackNo }: SequencerTrackStepsProps) {
-  const stepsPerBeat = useSequencerStore((s) => s.stepsPerBeat);
-  const beatsPerBar = useSequencerStore((s) => s.beatsPerBar);
-  const barsPerSequence = useSequencerStore((s) => s.barsPerSequence);
-  const stepCount = stepsPerBeat * beatsPerBar * barsPerSequence;
+  const { totalSteps } = useSequencerSteps();
   const setSelected = useSequencerStore((s) => s.setSelectedTrack);
   return (
     <div className="sequencer-track-steps" onClick={() => setSelected(trackNo)}>
-      {Array.from({ length: stepCount }, (_, i) => (
+      {Array.from({ length: totalSteps }, (_, i) => (
         <SequencerStep trackNo={trackNo} stepNo={i} key={i} />
       ))}
     </div>

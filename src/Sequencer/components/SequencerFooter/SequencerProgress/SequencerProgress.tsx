@@ -1,12 +1,11 @@
-import useSequencerStore from "../../../stores/useSequencerStore";
+import useSequencerStore, {
+  useSequencerSteps,
+} from "../../../stores/useSequencerStore";
 import "./SequencerProgress.scss";
 
 function SequencerProgress() {
   const currentStep = useSequencerStore((s) => s.currentStep);
-  const stepsPerBeat = useSequencerStore((s) => s.stepsPerBeat);
-  const beatsPerBar = useSequencerStore((s) => s.beatsPerBar);
-  const barsPerSequence = useSequencerStore((s) => s.barsPerSequence);
-  const totalSteps = stepsPerBeat * beatsPerBar * barsPerSequence;
+  const { totalSteps } = useSequencerSteps();
   const isPlaying = useSequencerStore((s) => s.playing);
   const position = (100 / totalSteps) * currentStep;
   return (
