@@ -23,6 +23,7 @@ function useComputeWaveformPoints({
    * add an AnalyserNode
    */
   useEffect(() => {
+    if (!sampleBuffer) return;
     const channelData = sampleBuffer.getChannelData(0);
     const samples = Math.floor(width * 2);
     const step = Math.max(1, Math.floor(channelData.length / samples));

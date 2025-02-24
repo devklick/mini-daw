@@ -12,8 +12,8 @@ function WaveformVisualizer({ url, width = "100%" }: WaveformVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioBuffer = useSampleStore((s) => s.sampleBuffers[url]);
   const points = useComputeWaveformPoints({
-    height: canvasRef.current?.height ?? 100,
-    width: canvasRef.current?.width ?? 10,
+    height: canvasRef.current?.height ?? 0,
+    width: canvasRef.current?.width ?? 0,
     sampleUrl: url,
   });
 
