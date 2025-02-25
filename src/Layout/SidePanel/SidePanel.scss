@@ -1,16 +1,41 @@
 @use "/src/global" as *;
 .side-panel {
-    width: 100%;
     height: 100%;
     border: 1px solid grey;
     border-bottom: none;
     box-sizing: border-box;
     padding: 6px;
     background-color: $color-secondary;
+    position: relative;
+    flex: none;
+
     &--right {
-        grid-area: right-panel;
+        right: 0;
     }
     &--left {
-        grid-area: left-panel;
+        left: 0;
+    }
+
+    &__resize-handle {
+        height: 100%;
+        width: 4px;
+        position: absolute;
+        top: 0;
+        cursor: col-resize;
+
+        &:hover {
+            background-color: grey;
+        }
+        &--right {
+            left: -2px;
+        }
+        &--left {
+            right: -2px;
+        }
+    }
+
+    &__content {
+        flex: 1;
+        height: 100%;
     }
 }
