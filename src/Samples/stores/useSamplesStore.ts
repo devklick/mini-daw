@@ -78,6 +78,7 @@ const useSampleStore = create<SamplesStoreState>()(
 export function useAddSamples() {
   const addSamples = useSampleStore((s) => s.addSamples);
   const setSampleLength = useSetSampleLength();
+  const loadSampleBuffer = useLoadSampleBuffer();
 
   return function (sampleFiles: FileList) {
     addSamples(
@@ -90,6 +91,8 @@ export function useAddSamples() {
           audio.addEventListener("loadedmetadata", () =>
             setSampleLength(url, Number(audio.duration.toFixed(2)))
           );
+
+          loadSampleBuffer(url);
 
           return {
             url,

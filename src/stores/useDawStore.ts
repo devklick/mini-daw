@@ -8,7 +8,7 @@ interface DawStoreState {
 
 const useDawStore = create<DawStoreState>()((set) => ({
   audioContext: new window.AudioContext(),
-  bpm: 130,
+  bpm: 127,
   setBpm(bpm) {
     set({ bpm });
   },
