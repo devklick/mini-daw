@@ -1,0 +1,14 @@
+.number {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    label {
+        font-size: 9px;
+    }
+    input[type="number"] {
+        border: none;
+        border-radius: 4px;
+        font-size: 9px;
+        width: 30px;
+    }
+}

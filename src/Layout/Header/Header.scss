@@ -1,4 +1,14 @@
+@use "/src/global" as *;
+
 .header {
     height: 40px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &__bpm {
+        background-color: $color-secondary;
+    }
 }
