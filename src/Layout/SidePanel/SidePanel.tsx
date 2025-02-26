@@ -5,26 +5,22 @@ import useLayoutStore from "../stores/useLayoutStore";
 import useMouseDownOnElement from "../../hooks/mouseHooks/useMouseDownOnElement";
 
 import "./SidePanel.scss";
-
-type CapitalizeWord<S extends string> = S extends `${infer First}${infer Rest}`
-  ? `${Uppercase<First>}${Rest}`
-  : S;
-
-function capitalize<T extends string>(str: T): CapitalizeWord<T> {
-  return (str.charAt(0).toUpperCase() + str.slice(1)) as CapitalizeWord<T>;
-}
+import { capitalize } from "../../utils/stringUtils";
 
 interface SidePanelProps {
   side: "left" | "right";
+  title: string;
   children?: React.ReactNode;
 }
 
-function SidePanel({ side, children }: SidePanelProps) {
+function SidePanel({ title, side, children }: SidePanelProps) {
   const width = useLayoutStore((s) => s[`${side}PanelWidth`]);
   const minWidth = useLayoutStore((s) => s[`${side}PanelMinWidth`]);
+  const defaultWidth = useLayoutStore((s) => s[`${side}PanelDefaultWidth`]);
   const setWidth = useLayoutStore((s) => s[`set${capitalize(side)}PanelWidth`]);
   const handleRef = useRef<HTMLDivElement | null>(null);
   const [mouseDown] = useMouseDownOnElement({ element: handleRef });
+  const open = width > 0;
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
@@ -32,6 +28,8 @@ function SidePanel({ side, children }: SidePanelProps) {
       const newWidth = side === "left" ? x : window.innerWidth - x;
       if (newWidth >= minWidth) {
         setWidth(newWidth);
+      } else {
+        setWidth(0);
       }
     },
     [minWidth, setWidth, side]
@@ -46,19 +44,42 @@ function SidePanel({ side, children }: SidePanelProps) {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [handleMouseMove, mouseDown]);
 
+  function handleClick() {
+    if (!open) {
+      setWidth(defaultWidth);
+    }
+  }
+  function doubleClickHandle() {
+    setWidth(open ? 0 : defaultWidth);
+  }
+
   return (
     <aside
-      className={clsx("side-panel", `side-panel--${side}`)}
+      className={clsx("side-panel", `side-panel--${side}`, {
+        ["side-panel--closed"]: !open,
+      })}
       style={{ width }}
+      onClick={handleClick}
     >
+      <span
+        className={clsx("side-panel__title", `side-panel__title--${side}`, {
+          ["side-panel__title--vertical"]: !open,
+        })}
+      >
+        {title}
+      </span>
       <div
         ref={handleRef}
+        onDoubleClick={doubleClickHandle}
         className={clsx(
           "side-panel__resize-handle",
-          `side-panel__resize-handle--${side}`
+          `side-panel__resize-handle--${side}`,
+          {
+            "side-panel__resize-handle--disabled": !open,
+          }
         )}
       />
-      <div className="side-panel__content">{children}</div>
+      {open && <div className="side-panel__content">{children}</div>}
     </aside>
   );
 }

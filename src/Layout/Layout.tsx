@@ -15,11 +15,11 @@ function Layout({ children }: LayoutProps) {
     <div className="layout">
       <Header />
       <div className="layout__row">
-        <SidePanel side="left">
+        <SidePanel side="left" title="Properties">
           <TrackPropertiesPanel />
         </SidePanel>
         <Content>{children}</Content>
-        <SidePanel side="right">
+        <SidePanel side="right" title="Browser">
           <SampleBrowserPanel />
         </SidePanel>
       </div>

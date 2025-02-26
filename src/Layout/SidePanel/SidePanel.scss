@@ -1,4 +1,5 @@
 @use "/src/global" as *;
+
 .side-panel {
     height: 100%;
     border: 1px solid grey;
@@ -8,6 +9,12 @@
     background-color: $color-secondary;
     position: relative;
     flex: none;
+    display: flex;
+    flex-direction: column;
+
+    &--closed:hover {
+        background-color: $color-tertiary;
+    }
 
     &--right {
         right: 0;
@@ -16,14 +23,26 @@
         left: 0;
     }
 
+    &__title {
+        &--vertical {
+            left: 0;
+            line-height: 10px;
+            font-size: 10px;
+            position: absolute;
+            writing-mode: vertical-lr;
+            transform: rotate(180deg);
+            text-orientation: mixed;
+        }
+    }
+
     &__resize-handle {
         height: 100%;
         width: 4px;
         position: absolute;
         top: 0;
-        cursor: col-resize;
 
-        &:hover {
+        &:not([class$="--disabled"]):hover {
+            cursor: col-resize;
             background-color: grey;
         }
         &--right {
