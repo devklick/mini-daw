@@ -14,7 +14,7 @@ function Draggable({ itemId, itemType, children }: DraggableProps) {
 
   return (
     <div
-      className="draggable-item"
+      className="draggable"
       draggable
       onDragStart={() => setDragging(itemId, itemType)}
       onDragEnd={() => clearDragging()}

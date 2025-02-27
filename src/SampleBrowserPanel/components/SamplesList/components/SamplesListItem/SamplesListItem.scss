@@ -1,16 +1,34 @@
 @use "/src/global" as *;
 
 .samples-list-item {
-    all: unset;
-    border-bottom: 1px solid $color-tertiary;
-    display: flex;
     padding: 6px 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+
+    &__container {
+        all: unset;
+        border-bottom: 1px solid $color-tertiary;
+        display: flex;
+
+        &--selected {
+            height: 80px;
+        }
+    }
 
     &:last-of-type {
         border-bottom: none;
     }
 
-    &--selected {
-        height: 80px;
+    &__name {
+        align-self: flex-start;
+    }
+
+    &__details {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
     }
 }

@@ -1,6 +1,7 @@
 import SampleBrowserSearch from "./components/SampleBrowserSearch";
 
 import SamplesList from "./components/SamplesList";
+import SamplePreview from "./components/SamplePreview";
 import DropZone from "../components/DragAndDrop/DropZone/DropZone";
 import { useAddSamples } from "../Samples/stores/useSamplesStore";
 
@@ -18,6 +19,7 @@ function SampleBrowserPanel() {
       <DropZone onDropFiles={handleDropFiles}>
         <SamplesList />
       </DropZone>
+      <SamplePreview />
     </div>
   );
 }

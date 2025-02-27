@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
-import useSampleStore from "../../Samples/stores/useSamplesStore";
+import useSampleStore, {
+  usePlaySample,
+} from "../../Samples/stores/useSamplesStore";
 import useComputeWaveformPoints from "./hooks/useComputeWaveformPoints";
 
 import "./WaveFormVisualizer.scss";
@@ -7,10 +9,16 @@ interface WaveformVisualizerProps {
   url: string;
   width?: number | string;
   height?: number | string;
+  playOnClick?: boolean;
 }
-function WaveformVisualizer({ url, width = "100%" }: WaveformVisualizerProps) {
+function WaveformVisualizer({
+  url,
+  width = "100%",
+  playOnClick,
+}: WaveformVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioBuffer = useSampleStore((s) => s.sampleBuffers[url]);
+  const playSample = usePlaySample();
   const computePoints = useComputeWaveformPoints({
     sampleUrl: url,
   });
@@ -60,7 +68,16 @@ function WaveformVisualizer({ url, width = "100%" }: WaveformVisualizerProps) {
     return () => observer.disconnect();
   }, [draw]);
 
-  return <canvas ref={canvasRef} style={{ width, aspectRatio: "16 / 9" }} />;
+  function handleClick() {
+    if (playOnClick) playSample(url);
+  }
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{ width, aspectRatio: "16 / 9" }}
+      onClick={handleClick}
+    />
+  );
 }
 
 export default WaveformVisualizer;

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { create } from "zustand";
 import useSampleStore, {
   SampleInfo,
+  useCreateSampleBufferSource,
   useLoadDefaultSamples,
 } from "../../Samples/stores/useSamplesStore";
 import { getFirst, getLast } from "../../utils/arrayUtils";
@@ -258,16 +259,12 @@ export function useLoadSequencer() {
 
 export function useWireTrackBufferNodes() {
   const audioContext = useAudioContext();
-  const audioBuffers = useSampleStore((s) => s.sampleBuffers);
+  const createBufferSource = useCreateSampleBufferSource();
 
   return function (track: SequencerTrack) {
-    const audioBuffer = audioBuffers[track.sample.url];
-    if (!audioBuffer) throw new Error("Sample buffer not found");
+    const bufferSource = createBufferSource(track.sample.url);
 
     const { pan, pitch, volume } = track;
-
-    const bufferSource = audioContext.createBufferSource();
-    bufferSource.buffer = audioBuffer;
 
     bufferSource.detune.value = pitch * 100;
 

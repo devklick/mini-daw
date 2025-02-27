@@ -9,8 +9,12 @@ function SamplesList() {
   function getSamples() {
     let candidates = Object.values(samples);
     if (searchValue) {
-      candidates = candidates.filter((s) =>
-        s.name.toLowerCase().includes(searchValue.toLowerCase())
+      candidates = candidates.filter(
+        (s) =>
+          // filthy temp comparison
+          s.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+          s.instrument.toLowerCase().includes(searchValue.toLowerCase()) ||
+          s.pattern.toLowerCase().includes(searchValue.toLowerCase())
       );
     }
     return candidates.sort((a, b) => a.name.localeCompare(b.name));

@@ -95,9 +95,9 @@ export function useAddSamples() {
           return {
             url,
             name: file.name,
-            instrument: "unknown",
+            instrument: calcSampleInstrument(file.name),
             length: 0,
-            pattern: "unknown",
+            pattern: calcSamplePattern(file.name),
           } satisfies SampleInfo;
         })
     );
@@ -156,17 +156,32 @@ export function useLoadSampleBuffer() {
   const addSampleBuffer = useSampleStore((s) => s.addSampleBuffer);
 
   return async function (url: string) {
-    console.log("Staring load buffer", url);
-    try {
-      const response = await fetch(url);
-      const arrayBuffer = await response.arrayBuffer();
-      const decodedBuffer = await audioContext.decodeAudioData(arrayBuffer);
-      console.log("Adding sample buffer");
-      addSampleBuffer(url, decodedBuffer);
-    } catch (e) {
-      console.log(e);
-      console.error(e);
-    }
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    const decodedBuffer = await audioContext.decodeAudioData(arrayBuffer);
+    addSampleBuffer(url, decodedBuffer);
+  };
+}
+
+export function usePlaySample() {
+  const audioContext = useAudioContext();
+  const createBufferSource = useCreateSampleBufferSource();
+  return function (sampleUrl: string) {
+    const bufferSource = createBufferSource(sampleUrl);
+    bufferSource.connect(audioContext.destination);
+    bufferSource.start();
+  };
+}
+
+export function useCreateSampleBufferSource() {
+  const audioContext = useAudioContext();
+  const sampleBuffers = useSampleStore((s) => s.sampleBuffers);
+  return function (sampleUrl: string) {
+    const audioBuffer = sampleBuffers[sampleUrl];
+    if (!audioBuffer) throw new Error("Sample buffer not found");
+    const bufferSource = audioContext.createBufferSource();
+    bufferSource.buffer = audioBuffer;
+    return bufferSource;
   };
 }
 
@@ -201,15 +216,9 @@ export function useLoadDefaultSamples() {
         const audio = new Audio(url);
 
         const sample: SampleInfo = {
-          instrument: fileName.includes("Kick")
-            ? "kick"
-            : fileName.includes("Hat")
-            ? "hat"
-            : fileName.includes("Snare")
-            ? "snare"
-            : "unknown",
+          instrument: calcSampleInstrument(fileName),
           length: 0,
-          pattern: "oneshot",
+          pattern: calcSamplePattern(fileName),
           name: fileName,
           url,
         };
@@ -228,6 +237,18 @@ export function useLoadDefaultSamples() {
     };
     load();
   }, [addSample, initState, loadSampleBuffer, setInitState, setSampleLength]);
+}
+
+function calcSampleInstrument(name: string): Instrument {
+  const lower = name.toLowerCase().replace(" ", "");
+  if (lower.includes("hat")) return "hat";
+  if (lower.includes("kick") || lower.includes("bassdrum")) return "kick";
+  if (lower.includes("snare") || lower.includes("clap")) return "snare";
+  return "unknown";
+}
+
+function calcSamplePattern(_name: string): Pattern {
+  return "oneshot";
 }
 
 export default useSampleStore;
