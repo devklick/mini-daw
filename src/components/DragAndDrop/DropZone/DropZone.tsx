@@ -5,12 +5,18 @@ import useDndStore, { DndItem } from "../stores/useDndStore";
 import "./DropZone.scss";
 
 interface DropZoneProps {
-  onDrop(item: DndItem): void;
+  onDropItem?(item: DndItem): void;
+  onDropFiles?(files: FileList): void;
   children: React.ReactNode;
   dragOverClassName?: string;
 }
 
-function DropZone({ onDrop, children, dragOverClassName }: DropZoneProps) {
+function DropZone({
+  onDropItem,
+  onDropFiles,
+  children,
+  dragOverClassName,
+}: DropZoneProps) {
   const item = useDndStore((s) => s.item);
   const isDragging = !!item;
   const clearDragging = useDndStore((s) => s.clearDragging);
@@ -46,9 +52,11 @@ function DropZone({ onDrop, children, dragOverClassName }: DropZoneProps) {
           setDragOver(false);
         }
       }}
-      onDrop={() => {
+      onDrop={(e) => {
+        e.preventDefault();
+        if (item) onDropItem?.(item);
+        if (e.dataTransfer.files) onDropFiles?.(e.dataTransfer.files);
         clearDragging();
-        if (item) onDrop(item);
       }}
     >
       {children}

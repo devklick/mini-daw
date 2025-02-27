@@ -86,13 +86,11 @@ export function useAddSamples() {
         .filter((file) => file.type.startsWith("audio/"))
         .map((file) => {
           const url = URL.createObjectURL(file);
-          const audio = new Audio(url);
-
-          audio.addEventListener("loadedmetadata", () =>
-            setSampleLength(url, Number(audio.duration.toFixed(2)))
-          );
-
           loadSampleBuffer(url);
+          const audio = new Audio(url);
+          audio.addEventListener("loadedmetadata", () => {
+            setSampleLength(url, Number(audio.duration.toFixed(2)));
+          });
 
           return {
             url,
@@ -158,10 +156,17 @@ export function useLoadSampleBuffer() {
   const addSampleBuffer = useSampleStore((s) => s.addSampleBuffer);
 
   return async function (url: string) {
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
-    const decodedBuffer = await audioContext.decodeAudioData(arrayBuffer);
-    addSampleBuffer(url, decodedBuffer);
+    console.log("Staring load buffer", url);
+    try {
+      const response = await fetch(url);
+      const arrayBuffer = await response.arrayBuffer();
+      const decodedBuffer = await audioContext.decodeAudioData(arrayBuffer);
+      console.log("Adding sample buffer");
+      addSampleBuffer(url, decodedBuffer);
+    } catch (e) {
+      console.log(e);
+      console.error(e);
+    }
   };
 }
 
