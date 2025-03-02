@@ -8,9 +8,10 @@ import Content from "./Content";
 import "./Layout.scss";
 
 interface LayoutProps {
-  children?: React.ReactNode;
+  // children?: React.ReactNode;
 }
-function Layout({ children }: LayoutProps) {
+function Layout({}: // children
+LayoutProps) {
   return (
     <div className="layout">
       <Header />
@@ -18,7 +19,7 @@ function Layout({ children }: LayoutProps) {
         <SidePanel side="left" title="Properties">
           <TrackPropertiesPanel />
         </SidePanel>
-        <Content>{children}</Content>
+        <Content />
         <SidePanel side="right" title="Browser">
           <SampleBrowserPanel />
         </SidePanel>

@@ -7,6 +7,17 @@ export interface Dimensions {
   height: number;
 }
 
+type MinDimensionValue = number | "init";
+export interface MinDimensions {
+  width: MinDimensionValue;
+  height: MinDimensionValue;
+}
+
+export interface CSSDimensions {
+  width: number | string;
+  height: number | string;
+}
+
 export interface Rect extends Dimensions {
   top: number;
   left: number;
@@ -24,9 +35,9 @@ type MouseMovementHandler = (
 ) => number;
 
 interface UseDragToResizeProps {
-  elementRef: React.RefObject<HTMLElement>;
+  elementRef: React.RefObject<HTMLElement | null>;
   elementRect: RefObject<Partial<Rect>>;
-  minDimensions: Dimensions;
+  minDimensions: MinDimensions;
 }
 
 function useDragToResize({
@@ -42,6 +53,30 @@ function useDragToResize({
   const resizeHandleSW = useRef<HTMLDivElement>(null);
   const resizeHandleW = useRef<HTMLDivElement>(null);
   const resizeHandleNW = useRef<HTMLDivElement>(null);
+  const minDimensionsNumbers = useRef<Dimensions>({ height: 0, width: 0 });
+
+  useEffect(() => {
+    if (!elementRef.current) return;
+    const newMinDimensions: Dimensions = { height: 0, width: 0 };
+    if (typeof minDimensions.height === "number") {
+      newMinDimensions.height = minDimensions.height;
+    } else {
+      newMinDimensions.height = elementRef.current.clientHeight ?? 0;
+      console.log("min width from element", newMinDimensions.width);
+    }
+    if (typeof minDimensions.width === "number") {
+      newMinDimensions.width = minDimensions.width;
+    } else {
+      newMinDimensions.width = elementRef.current.clientWidth ?? 0;
+    }
+    minDimensionsNumbers.current = newMinDimensions;
+  }, [elementRef]);
+
+  useEffect(() => {
+    if (!elementRef.current) return;
+    const { width, height } = elementRef.current.getBoundingClientRect();
+    console.log({ width, height });
+  }, [elementRef]);
 
   useEffect(() => {
     /**
@@ -86,7 +121,7 @@ function useDragToResize({
         const newLeft =
           leftFn?.(initialRect, startPos, mouseMoveEvent) ?? initialRect.left;
 
-        if (newWidth >= minDimensions.width) {
+        if (newWidth >= minDimensionsNumbers.current.width) {
           elementRect.current.width = newWidth;
           elementRef.current.style.width = `${elementRect.current.width}px`;
           elementRect.current.left = newLeft;
@@ -101,7 +136,7 @@ function useDragToResize({
         const newTop =
           topFn?.(initialRect, startPos, mouseMoveEvent) ?? initialRect.top;
 
-        if (newHeight >= minDimensions.height) {
+        if (newHeight >= minDimensionsNumbers.current.height) {
           elementRect.current.height = newHeight;
           elementRef.current.style.height = `${elementRect.current.height}px`;
           elementRect.current.top = newTop;

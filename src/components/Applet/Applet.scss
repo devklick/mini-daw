@@ -1,0 +1,117 @@
+.applet {
+    min-height: 0;
+    grid-template-rows: 32px auto;
+    grid-template-areas:
+        "title-bar"
+        "content";
+    border-radius: 10px;
+    box-shadow: 0px -2px 10px 1px rgb(0, 0, 0, 0.5);
+    position: absolute;
+    background-color: blue;
+
+    &__edge {
+        position: absolute;
+        z-index: 1;
+        &:hover {
+            background-color: white;
+        }
+
+        &--n {
+            width: 100%;
+            height: 5px;
+            top: 0;
+        }
+        &--e {
+            width: 5px;
+            height: 100%;
+            right: 0;
+        }
+        &--s {
+            width: 100%;
+            height: 5px;
+            bottom: 0;
+        }
+        &--w {
+            width: 5px;
+            height: 100%;
+            left: 0;
+        }
+    }
+
+    &__corner {
+        &:hover {
+            background-color: white;
+        }
+
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        z-index: 2;
+        &--ne {
+            top: 0;
+            right: 0;
+        }
+        &--se {
+            bottom: 0;
+            right: 0;
+        }
+        &--sw {
+            bottom: 0;
+            left: 0;
+        }
+        &--nw {
+            top: 0;
+            left: 0;
+        }
+    }
+
+    &__title-wrapper {
+        grid-area: window-title;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__window-buttons-wrapper {
+        grid-area: window-buttons;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-end;
+    }
+
+    &__window-buttons {
+        display: flex;
+        gap: 5px;
+    }
+
+    &__window-button {
+        border-radius: 20px;
+        width: 14px;
+        height: 14px;
+        background-color: black;
+        transform: scale(1);
+        transition: all 0.2s ease;
+        background-color: purple;
+        border: none;
+        &:hover {
+            transform: scale(1.2);
+            transition: all 0.2s ease;
+        }
+        &:active {
+            box-shadow: 2px 2px 4px rgb(0, 0, 0, 0.5) inset;
+        }
+    }
+
+    &__content {
+        grid-area: content;
+        padding: 5px;
+        padding-top: 0;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        min-width: 0;
+    }
+}
