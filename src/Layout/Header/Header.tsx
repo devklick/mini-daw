@@ -1,9 +1,13 @@
 import Num from "../../components/Input/Num";
+import { useSequencer } from "../../Sequencer/stores/useSequencerStore";
 import { useBpm } from "../../stores/useDawStore";
 import "./Header.scss";
 
 function Header() {
   const [bpm, setBpm] = useBpm();
+  // Eventually we'll need play controls for the arranger as well as the sequencer,
+  // and there will be some kind of toggle to chose which one to play
+  const { play, stop } = useSequencer();
   return (
     <header className="header">
       <Num
@@ -14,6 +18,8 @@ function Header() {
         onChange={(value) => setBpm(Number(value))}
         className="header__bpm"
       />
+      <button onClick={play}>Play</button>
+      <button onClick={stop}>Stop</button>
     </header>
   );
 }

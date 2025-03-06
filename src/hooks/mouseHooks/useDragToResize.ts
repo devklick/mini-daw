@@ -75,7 +75,12 @@ function useDragToResize({
   useEffect(() => {
     if (!elementRef.current) return;
     const { width, height } = elementRef.current.getBoundingClientRect();
-    console.log({ width, height });
+
+    const childHeight = Array.from(elementRef.current.childNodes)
+      .filter((node) => node.nodeType === 1) // Only include Element nodes
+      .reduce((acc, child) => acc + (child as HTMLElement).offsetHeight, 0);
+
+    console.log({ width, childHeight });
   }, [elementRef]);
 
   useEffect(() => {

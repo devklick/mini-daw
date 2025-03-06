@@ -53,7 +53,7 @@ const useAppletManagerStore = create<AppletManagerStoreState>()((set, get) => ({
     set({ appletMap, highestZIndex });
   },
   closeApplet(appletId) {
-    const appletMap = get().appletMap;
+    const appletMap = new Map(get().appletMap);
     appletMap.delete(appletId);
     let highestZIndex = get().highestZIndex;
     if (appletMap.size) highestZIndex = 1;
