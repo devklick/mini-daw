@@ -1,4 +1,4 @@
-<svg class="knob" width="20" height="20" stroke="#2e3440" stroke-width="6" fill="#5e81ac"  viewBox="-53 -53 106 106" xmlns="http://www.w3.org/2000/svg">
+<svg class="knob" width="20" height="20" stroke="#2e3440" stroke-width="10" fill="#5e81ac"  viewBox="-53 -53 106 106" xmlns="http://www.w3.org/2000/svg">
     <!-- Outer Circle -->
     <circle class="knob-outer"  cx="0" cy="0" r="49" />
 
