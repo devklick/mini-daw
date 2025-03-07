@@ -1,9 +1,9 @@
-<svg class="knob" width="20" height="20" stroke="black" stroke-width="6" fill="#2a2b31"  viewBox="-53 -53 106 106" xmlns="http://www.w3.org/2000/svg">
+<svg class="knob" width="20" height="20" stroke="#d8dee9" stroke-width="6" fill="#5e81ac"  viewBox="-53 -53 106 106" xmlns="http://www.w3.org/2000/svg">
     <!-- Outer Circle -->
     <circle class="knob-outer"  cx="0" cy="0" r="49" />
 
     <!-- Inner Circle -->
-    <circle class="knob-inner" fill="#2a2b31" cx="0" cy="0" r="25" />
+    <circle class="knob-inner" fill="#d8dee9" cx="0" cy="0" r="25" />
 
     <!-- Knurling Lines -->
     <g class="knob-knurling">
@@ -21,7 +21,7 @@
 
     <!-- Define a single knurl line for reuse -->
     <defs>
-        <line id="knurl-line" stroke="black" x1="0" y1="25" x2="0" y2="50" />
+        <line id="knurl-line" stroke="#5e81ac" x1="0" y1="25" x2="0" y2="50" />
     </defs>
 
 </svg>

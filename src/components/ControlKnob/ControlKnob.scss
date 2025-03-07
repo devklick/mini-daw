@@ -1,8 +1,9 @@
 @use "/src/global" as *;
+@use "sass:color";
 
 .control-knob {
     border-radius: 50%;
-    box-shadow: 1px 1px 3px black;
+    box-shadow: 1px 1px 3px color.adjust($color-base-1, $lightness: -10%);
 
     &--disabled {
         outline: none;
@@ -26,12 +27,13 @@
     }
 
     &__pointer {
-        width: 2px;
-        height: 50%;
-        border-radius: 50%;
-        background: $color-primary-3;
+        width: 3px;
+        height: 55%;
+        border-radius: 30%;
+        background: $color-accent-red;
+        box-shadow: 0 0px 2px color.adjust($color-accent-red, $lightness: -50%);
         position: absolute;
-        top: 0;
+        top: -5%;
 
         &--disabled {
             background-color: $color-primary-3;
