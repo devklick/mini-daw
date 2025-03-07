@@ -3,14 +3,14 @@ import { KeyCode, isKeyCode } from "./keyCode";
 
 interface UseBindKeyToActionProps {
   keys: Array<KeyCode>;
-  action: () => void;
+  actions: Array<() => void>;
 }
 
-function useBindKeyToAction({ keys, action }: UseBindKeyToActionProps) {
+function useBindKeyToAction({ keys, actions }: UseBindKeyToActionProps) {
   useEffect(() => {
     function handler(event: KeyboardEvent) {
       if (isKeyCode(event.code) && keys.includes(event.code)) {
-        action();
+        actions.forEach((action) => action());
       }
     }
 
@@ -19,7 +19,7 @@ function useBindKeyToAction({ keys, action }: UseBindKeyToActionProps) {
     return () => {
       window?.removeEventListener("keydown", handler);
     };
-  }, [action, keys]);
+  }, [actions, keys]);
 }
 
 export default useBindKeyToAction;

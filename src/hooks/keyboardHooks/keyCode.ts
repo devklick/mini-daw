@@ -2,6 +2,7 @@ export const KeyCodes = {
   Escape: "Escape",
   Enter: "Enter",
   NumpadEnter: "NumpadEnter",
+  Space: "Space",
 } as const;
 
 export const allKeyCodes = Object.values(KeyCodes);

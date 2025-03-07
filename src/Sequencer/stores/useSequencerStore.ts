@@ -347,6 +347,7 @@ export function useSequencer() {
 
   const play = () => setIsPlaying(true);
   const stop = () => setIsPlaying(false);
+  const togglePlayStop = () => setIsPlaying(!isPlaying);
 
-  return { play, stop };
+  return { play, stop, togglePlayStop, isPlaying };
 }
