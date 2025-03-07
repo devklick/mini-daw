@@ -27,7 +27,7 @@ interface ComponentDefinition<Props extends BaseProps = BaseProps> {
 
 interface AppletManagerStoreState {
   contentRef: React.RefObject<HTMLDivElement | null>;
-  appletMap: Map<string, ComponentDefinition>;
+  applets: Record<string, ComponentDefinition>;
   highestZIndex: number;
   getAppletDefinitions(): Array<ComponentDefinition>;
   addApplet<Props extends BaseProps = BaseProps>(
@@ -37,52 +37,63 @@ interface AppletManagerStoreState {
   closeApplet(appletId: string): void;
   focusApplet(appletId: string): void;
   hideApplet(appletId: string): void;
+  toggleHide(appletId: string): void;
 }
 
 const useAppletManagerStore = create<AppletManagerStoreState>()((set, get) => ({
   contentRef: React.createRef<HTMLDivElement>(),
-  appletMap: new Map(),
+  applets: {},
   highestZIndex: 0,
   addApplet(appletId, definition) {
-    const appletMap = new Map(get().appletMap);
+    const applets = { ...get().applets };
     const highestZIndex = get().highestZIndex + 1;
     definition.props.zIndex = highestZIndex;
 
-    appletMap.set(appletId, definition as unknown as ComponentDefinition);
+    applets[appletId] = definition as unknown as ComponentDefinition;
 
-    set({ appletMap, highestZIndex });
+    set({ applets, highestZIndex });
   },
   closeApplet(appletId) {
-    const appletMap = new Map(get().appletMap);
-    appletMap.delete(appletId);
+    const applets = { ...get().applets };
+    delete applets[appletId];
     let highestZIndex = get().highestZIndex;
-    if (appletMap.size) highestZIndex = 1;
+    if (applets.size) highestZIndex = 1;
 
-    set({ appletMap, highestZIndex });
+    set({ applets, highestZIndex });
   },
   focusApplet(appletId) {
     let highestZIndex = get().highestZIndex;
-    const appletMap = get().appletMap;
-    const applet = appletMap.get(appletId);
+    const applets = { ...get().applets };
+    const applet = applets[appletId];
     if (!applet) return;
 
-    if (applet.props.zIndex === highestZIndex) return;
+    if (applet.props.zIndex !== highestZIndex) {
+      highestZIndex++;
+      applet.props.zIndex = highestZIndex;
+    }
 
-    highestZIndex++;
-    applet.props.zIndex = highestZIndex;
     applet.props.hidden = false;
 
-    set({ appletMap, highestZIndex });
+    set({ applets, highestZIndex });
   },
   getAppletDefinitions() {
-    return Array.from(get().appletMap.values());
+    return Array.from(Object.values(get().applets));
   },
   hideApplet(appletId) {
-    const appletMap = get().appletMap;
-    const applet = appletMap.get(appletId);
+    const applets = { ...get().applets };
+    const applet = applets[appletId];
     if (!applet) return;
     applet.props.hidden = true;
-    set({ appletMap });
+    set({ applets });
+  },
+  toggleHide(appletId) {
+    const applet = get().applets[appletId];
+    if (!applet) return;
+    if (applet.props.hidden) {
+      get().focusApplet(appletId);
+    } else {
+      get().hideApplet(appletId);
+    }
   },
 }));
 

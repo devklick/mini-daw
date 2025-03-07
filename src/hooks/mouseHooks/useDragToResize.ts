@@ -55,6 +55,7 @@ function useDragToResize({
   const resizeHandleNW = useRef<HTMLDivElement>(null);
   const minDimensionsNumbers = useRef<Dimensions>({ height: 0, width: 0 });
 
+  // TODO: Need to some more work here around controlling the min dimensions.
   useEffect(() => {
     if (!elementRef.current) return;
     const newMinDimensions: Dimensions = { height: 0, width: 0 };
@@ -62,7 +63,6 @@ function useDragToResize({
       newMinDimensions.height = minDimensions.height;
     } else {
       newMinDimensions.height = elementRef.current.clientHeight ?? 0;
-      console.log("min width from element", newMinDimensions.width);
     }
     if (typeof minDimensions.width === "number") {
       newMinDimensions.width = minDimensions.width;
@@ -70,17 +70,6 @@ function useDragToResize({
       newMinDimensions.width = elementRef.current.clientWidth ?? 0;
     }
     minDimensionsNumbers.current = newMinDimensions;
-  }, [elementRef]);
-
-  useEffect(() => {
-    if (!elementRef.current) return;
-    const { width, height } = elementRef.current.getBoundingClientRect();
-
-    const childHeight = Array.from(elementRef.current.childNodes)
-      .filter((node) => node.nodeType === 1) // Only include Element nodes
-      .reduce((acc, child) => acc + (child as HTMLElement).offsetHeight, 0);
-
-    console.log({ width, childHeight });
   }, [elementRef]);
 
   useEffect(() => {

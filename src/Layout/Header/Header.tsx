@@ -1,6 +1,7 @@
 import Num from "../../components/Input/Num";
 import { useSequencer } from "../../Sequencer/stores/useSequencerStore";
 import { useBpm } from "../../stores/useDawStore";
+import SequencerLauncher from "./Buttons/SequencerLauncher";
 import "./Header.scss";
 
 function Header() {
@@ -20,6 +21,7 @@ function Header() {
       />
       <button onClick={play}>Play</button>
       <button onClick={stop}>Stop</button>
+      <SequencerLauncher />
     </header>
   );
 }
