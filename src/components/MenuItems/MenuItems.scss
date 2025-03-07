@@ -6,6 +6,7 @@
     box-shadow: 0 0 2px rgb(0, 0, 0, 0.5);
     background-color: $color-base-1;
     color: $color-light-1;
+    border-radius: 8px;
 
     &--relative {
         position: relative;
@@ -24,8 +25,16 @@
     height: 20px;
 
     border: 1px solid $color-base-4;
+    &:first-of-type {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
     &:not(:first-of-type) {
         border-top: none;
+    }
+    &:last-of-type {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
     }
 
     &:hover {
