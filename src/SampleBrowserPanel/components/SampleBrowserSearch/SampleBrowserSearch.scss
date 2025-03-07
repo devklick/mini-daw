@@ -1,7 +1,7 @@
 @use "/src/global" as *;
 .sample-browser-search {
     width: 100%;
-    border: 1px solid $color-tertiary;
+    border: 1px solid $color-base-4;
     border-radius: 4px;
     display: flex;
     flex-direction: row;
@@ -11,7 +11,7 @@
     gap: 4px;
 
     &:focus-within {
-        border: 1px solid grey;
+        border: 1px solid $color-primary-3;
     }
 
     &__input {
@@ -22,13 +22,14 @@
 
     &__clear {
         all: unset;
-        border: 1px solid grey;
+        background-color: $color-accent-red;
         border-radius: 3px;
         padding: 0 4px;
         position: relative;
         width: 20px;
         height: 20px;
         box-sizing: border-box;
+        line-height: 20px;
 
         span {
             position: absolute;
@@ -44,8 +45,8 @@
         }
 
         &:disabled {
-            border: 1px solid $color-tertiary;
-            color: $color-tertiary;
+            background-color: $color-base-4;
+            border: 1px solid $color-base-4;
         }
     }
 }

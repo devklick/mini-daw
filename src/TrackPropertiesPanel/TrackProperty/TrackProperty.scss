@@ -4,14 +4,13 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    border: 1px solid grey;
-    background-color: $color-tertiary;
+    border: 1px solid $color-base-4;
     border-radius: 4px;
     box-sizing: border-box;
 
     &__top {
         width: 100%;
-        background-color: $color-secondary;
+        background-color: $color-base-4;
         padding: 6px;
         box-sizing: border-box;
         border-radius: 4px;

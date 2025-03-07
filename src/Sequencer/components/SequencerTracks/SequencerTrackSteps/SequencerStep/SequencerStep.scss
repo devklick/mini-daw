@@ -1,9 +1,9 @@
 @use "/src/global" as *;
+@use "sass:color";
 
 .track-step {
     width: 100%;
     height: 100%;
-    // padding: min(4%, 4px);
     box-sizing: border-box;
 
     &-toggle {
@@ -14,14 +14,14 @@
         border-radius: 4px;
 
         &--active {
-            background-color: $color-primary;
+            background-color: $color-accent-yellow;
             box-shadow:
-                1px 1px 3px 0 rgba(0, 0, 0, 0.5),
-                1px 1px 3px 1px $color-primary-highlight inset;
+                1px 1px 3px 0 color.adjust($color-base-1, $lightness: -5%),
+                1px 1px 3px 1px color.adjust($color-accent-yellow, $lightness: 10%) inset;
         }
         &--inactive {
-            background-color: $color-secondary;
-            box-shadow: 1px 1px 3px 1px inset rgba(0, 0, 0, 0.7);
+            background-color: $color-base-1;
+            box-shadow: 1px 1px 3px 1px inset color.adjust($color-base-1, $lightness: -5%);
         }
     }
 }

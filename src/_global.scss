@@ -1,4 +1,49 @@
-$color-primary: #821691;
-$color-primary-highlight: #9e42c2;
-$color-secondary: #171618;
-$color-tertiary: #2a2b31;
+// Polar Night
+$color-base-1: #2e3440;
+$color-base-2: #3b4252;
+$color-base-3: #434c5e;
+$color-base-4: #4c566a;
+
+// Snow Storm
+$color-light-1: #d8dee9;
+$color-light-2: #e5e9f0;
+$color-light-3: #eceff4;
+
+// Frost
+$color-primary-1: #8fbcbb;
+$color-primary-2: #88c0d0;
+$color-primary-3: #81a1c1;
+$color-primary-4: #5e81ac;
+
+// Aurora
+$color-accent-red: #bf616a;
+$color-accent-orange: #d08770;
+$color-accent-yellow: #ebcb8b;
+$color-accent-green: #a3be8c;
+$color-accent-purple: #b48ead;
+
+:root {
+    // Polar Night
+    --color-base-1: #{$color-base-1};
+    --color-base-2: #{$color-base-2};
+    --color-base-3: #{$color-base-3};
+    --color-base-4: #{$color-base-4};
+
+    // Snow Storm
+    --color-light-1: #{$color-light-1};
+    --color-light-2: #{$color-light-2};
+    --color-light-3: #{$color-light-3};
+
+    // Frost
+    --color-primary-1: #{$color-primary-1};
+    --color-primary-2: #{$color-primary-2};
+    --color-primary-3: #{$color-primary-3};
+    --color-primary-4: #{$color-primary-4};
+
+    // Aurora
+    --color-accent-red: #{$color-accent-red};
+    --color-accent-orange: #{$color-accent-orange};
+    --color-accent-yellow: #{$color-accent-yellow};
+    --color-accent-green: #{$color-accent-green};
+    --color-accent-purple: #{$color-accent-purple};
+}

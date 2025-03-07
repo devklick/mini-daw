@@ -7,10 +7,10 @@
         "title-bar"
         "content";
     border-radius: 10px;
-    border: 1px solid $color-primary;
+    border: 2px solid $color-base-4;
     box-shadow: 0 0 5px 5px rgba(27, 27, 27, 0.5);
+    background-color: $color-base-2;
     position: absolute;
-    background-color: $color-secondary;
     min-height: fit-content;
 
     &__edge {
@@ -80,7 +80,6 @@
     }
 
     &__title-wrapper {
-        grid-area: window-title;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -89,7 +88,6 @@
     }
 
     &__window-buttons-wrapper {
-        grid-area: window-buttons;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -105,10 +103,8 @@
         border-radius: 20px;
         width: 18px;
         height: 18px;
-        background-color: black;
         transform: scale(1);
         transition: all 0.2s ease;
-        background-color: purple;
         border: none;
         &:hover {
             transform: scale(1.1);
@@ -117,10 +113,14 @@
         &:active {
             box-shadow: 2px 2px 4px rgb(0, 0, 0, 0.5) inset;
         }
+
+        &--close {
+            background-color: $color-accent-red;
+            color: $color-accent-yellow;
+        }
     }
 
     &__content {
-        grid-area: content;
         padding: 5px;
         padding-top: 0;
         box-sizing: border-box;

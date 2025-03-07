@@ -6,7 +6,7 @@
 
     &--disabled {
         outline: none;
-        background: $color-tertiary;
+        background: $color-primary-3;
     }
 
     &--small {
@@ -29,12 +29,12 @@
         width: 2px;
         height: 50%;
         border-radius: 50%;
-        background: $color-primary;
+        background: $color-primary-3;
         position: absolute;
         top: 0;
 
         &--disabled {
-            background-color: $color-secondary;
+            background-color: $color-primary-3;
         }
     }
 }

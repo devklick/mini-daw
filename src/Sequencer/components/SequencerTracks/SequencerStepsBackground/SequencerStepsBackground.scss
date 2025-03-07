@@ -13,10 +13,10 @@
     &__part {
         width: 100%;
         height: 100%;
-        background-color: #3a3a3a;
+        background-color: $color-base-4;
 
         &:nth-of-type(even) {
-            background-color: #4d4d4d;
+            background-color: $color-base-3;
         }
 
         &:first-of-type {

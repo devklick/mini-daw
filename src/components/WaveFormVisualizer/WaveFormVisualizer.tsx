@@ -4,6 +4,8 @@ import useSampleStore, {
 } from "../../Samples/stores/useSamplesStore";
 import useComputeWaveformPoints from "./hooks/useComputeWaveformPoints";
 
+import theme from "../../theme";
+
 import "./WaveFormVisualizer.scss";
 interface WaveformVisualizerProps {
   url: string;
@@ -29,7 +31,7 @@ function WaveformVisualizer({
 
       ctx.clearRect(0, 0, width, height);
 
-      ctx.strokeStyle = "#9e42c2";
+      ctx.strokeStyle = theme.colorPrimary4;
       ctx.lineWidth = 1;
       ctx.beginPath();
 
@@ -74,7 +76,8 @@ function WaveformVisualizer({
   return (
     <canvas
       ref={canvasRef}
-      style={{ width, aspectRatio: "16 / 9" }}
+      className="waveform-visualizer"
+      style={{ width }}
       onClick={handleClick}
     />
   );

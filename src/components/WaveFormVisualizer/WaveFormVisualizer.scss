@@ -1,0 +1,9 @@
+@use "/src/global" as *;
+
+.waveform-visualizer {
+    aspect-ratio: 16/9;
+    border: 1px solid $color-base-4;
+    background-color: $color-base-1;
+    border-radius: 12px;
+    box-sizing: border-box;
+}

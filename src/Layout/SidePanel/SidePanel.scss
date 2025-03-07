@@ -2,11 +2,11 @@
 
 .side-panel {
     height: 100%;
-    border: 1px solid grey;
+    border: 1px solid $color-base-4;
     border-bottom: none;
     box-sizing: border-box;
     padding: 6px;
-    background-color: $color-secondary;
+    background-color: $color-base-2;
     position: relative;
     flex: none;
     display: flex;
@@ -14,7 +14,7 @@
     z-index: 9999;
 
     &--closed:hover {
-        background-color: $color-tertiary;
+        background-color: $color-primary-3;
     }
 
     &--right {
@@ -44,11 +44,13 @@
 
         &:not([class$="--disabled"]):hover {
             cursor: col-resize;
-            background-color: grey;
+            background-color: $color-primary-3;
         }
+
         &--right {
             left: -2px;
         }
+
         &--left {
             right: -2px;
         }
