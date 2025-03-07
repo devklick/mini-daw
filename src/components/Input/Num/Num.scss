@@ -1,3 +1,5 @@
+@use "/src/global" as *;
+
 .number {
     display: flex;
     flex-direction: row;
@@ -6,9 +8,24 @@
         font-size: 9px;
     }
     input[type="number"] {
+        color: $color-light-1;
+        background-color: $color-base-4;
+        text-align: center;
         border: none;
         border-radius: 4px;
         font-size: 9px;
         width: 30px;
+
+        -moz-appearance: textfield;
+        appearance: textfield;
+
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+
+        &:focus {
+            outline: 1px solid $color-primary-3;
+        }
     }
 }
