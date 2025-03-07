@@ -68,7 +68,7 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   barsPerSequence: 1,
   currentStep: 1,
   currentBeat: 1,
-  selectedTrack: 0,
+  selectedTrack: null,
   playing: false,
   addTrack(track) {
     const { beatsPerBar, stepsPerBeat, barsPerSequence } = get();
