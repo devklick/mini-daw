@@ -36,6 +36,7 @@ export interface SequencerTrack {
 }
 
 interface SequencerStoreState {
+  patternNumber: number;
   selectedTrack: number | null;
   stepsPerBeat: number;
   beatsPerBar: number;
@@ -70,6 +71,7 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   currentBeat: 1,
   selectedTrack: null,
   playing: false,
+  patternNumber: 0,
   addTrack(track) {
     const { beatsPerBar, stepsPerBeat, barsPerSequence } = get();
     const steps = Array.from(

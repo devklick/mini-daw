@@ -62,19 +62,38 @@ const useAppletManagerStore = create<AppletManagerStoreState>()((set, get) => ({
     set({ applets, highestZIndex });
   },
   focusApplet(appletId) {
-    let highestZIndex = get().highestZIndex;
-    const applets = { ...get().applets };
-    const applet = applets[appletId];
-    if (!applet) return;
+    set((state) => {
+      // console.log("Focusing applet");
+      let { highestZIndex } = state;
+      const { applets } = state;
+      if (!applets[appletId]) return {};
 
-    if (applet.props.zIndex !== highestZIndex) {
-      highestZIndex++;
-      applet.props.zIndex = highestZIndex;
-    }
+      if (
+        !applets[appletId].props.hidden &&
+        applets[appletId].props.zIndex === highestZIndex
+      ) {
+        return {};
+      }
 
-    applet.props.hidden = false;
+      const updatedApplet = { ...applets[appletId] };
 
-    set({ applets, highestZIndex });
+      if (updatedApplet.props.zIndex !== highestZIndex) {
+        highestZIndex++;
+        updatedApplet.props.zIndex = highestZIndex;
+      }
+
+      updatedApplet.props.hidden = false;
+
+      console.log({ applets, highestZIndex });
+
+      const updatedApplets = { ...applets };
+      updatedApplets[appletId] = updatedApplet;
+
+      return {
+        applets: updatedApplets,
+        highestZIndex,
+      };
+    });
   },
   getAppletDefinitions() {
     return Array.from(Object.values(get().applets));
