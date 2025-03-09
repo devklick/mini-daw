@@ -45,6 +45,7 @@ interface SequencerStoreState {
   currentStep: number;
   currentBeat: number;
   playing: boolean;
+  trackIds: ReadonlyArray<string>;
   addTrack(track: Readonly<SequencerTrack>): void;
   addSampleAsTrack(sample: SampleInfo): void;
   assignNewSampleToTrack(trackId: string, sample: SampleInfo): void;
@@ -72,6 +73,7 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   selectedTrack: null,
   playing: false,
   patternNumber: 0,
+  trackIds: [],
   addTrack(track) {
     const { beatsPerBar, stepsPerBeat, barsPerSequence } = get();
     const steps = Array.from(
@@ -82,7 +84,10 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
     const updatedTrack: SequencerTrack = { ...track, steps };
 
     set((state) => {
-      return { tracks: [...state.tracks, updatedTrack] };
+      return {
+        tracks: [...state.tracks, updatedTrack],
+        trackIds: [...state.trackIds, updatedTrack.id],
+      };
     });
   },
   toggleTrackStep(trackNo, stepNo) {
@@ -116,22 +121,26 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
     set({ stepsPerBeat });
   },
   addSampleAsTrack(sample) {
-    set((state) => ({
-      tracks: [
-        ...state.tracks,
-        {
-          id: crypto.randomUUID(),
-          name: getFirst(sample.name.split(".")),
-          sample,
-          steps: [],
-          mute: false,
-          pan: 0,
-          pitch: 0,
-          volume: 80,
-        },
-      ],
-      selectedTrack: state.tracks.length,
-    }));
+    set((state) => {
+      const id = crypto.randomUUID();
+      return {
+        tracks: [
+          ...state.tracks,
+          {
+            id: id,
+            name: getFirst(sample.name.split(".")),
+            sample,
+            steps: [],
+            mute: false,
+            pan: 0,
+            pitch: 0,
+            volume: 80,
+          },
+        ],
+        trackIds: [...state.trackIds, id],
+        selectedTrack: state.tracks.length,
+      };
+    });
   },
   assignNewSampleToTrack(trackId, sample) {
     set((state) => {
@@ -157,7 +166,11 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
         updatedTracks.length && state.selectedTrack
           ? Math.min(state.selectedTrack, updatedTracks.length - 1)
           : null;
-      return { tracks: updatedTracks, selectedTrack };
+      return {
+        tracks: updatedTracks,
+        selectedTrack,
+        trackIds: state.trackIds.filter((id) => id !== trackId),
+      };
     });
   },
   setTrackVolume(trackId, volume) {
