@@ -1,0 +1,21 @@
+.select-list {
+    display: flex;
+    flex-direction: row;
+
+    &__items {
+        position: relative;
+        all: unset;
+        display: flex;
+        flex-direction: column;
+        height: fit-content;
+        z-index: 50;
+        width: 100px;
+    }
+
+    &__item {
+        position: absolute;
+        width: 100px;
+        height: 40px;
+        background-color: purple;
+    }
+}

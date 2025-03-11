@@ -1,5 +1,6 @@
 import Num from "../../../components/Input/Num";
 import useSequencerStore from "../../stores/useSequencerStore";
+import PatternSelector from "./PatternSelector";
 import "./SequencerHeader.scss";
 
 function SequencerHeader() {
@@ -11,6 +12,7 @@ function SequencerHeader() {
   const setBarsPerSequence = useSequencerStore((s) => s.setBarsPerSequence);
   return (
     <div className="sequencer-header">
+      <PatternSelector />
       <div className="sequencer-header__timing">
         <Num
           label="Steps/Beat"
