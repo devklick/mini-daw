@@ -2,27 +2,26 @@ import useSequencerStore from "../../stores/useSequencerStore";
 import SequencerTrackSteps from "./SequencerTrackSteps";
 import SequencerStepsBackground from "./SequencerStepsBackground";
 import SequencerTrackHeader from "./SequencerTrackHeader";
-
-import "./SequencerTracks.scss";
 import SequencerProgress from "../SequencerFooter/SequencerProgress";
 
+import "./SequencerTracks.scss";
+
 function SequencerTracks() {
-  const trackCount = useSequencerStore((s) => s.tracks.length);
-  const template = Array.from({ length: trackCount });
+  const trackIds = useSequencerStore((s) => s.trackIds);
   return (
     <div className="sequencer-tracks">
       <div className="sequencer-tracks__headers">
-        {template.map((_, i) => (
-          <SequencerTrackHeader trackNo={i} key={i} />
+        {trackIds.map((id) => (
+          <SequencerTrackHeader trackId={id} key={id} />
         ))}
-        <SequencerTrackHeader.DropNewTrack />
+        <SequencerTrackHeader.DropNewTrack key={"new-track"} />
       </div>
       <div className="sequencer-tracks__steps">
-        <SequencerStepsBackground />
-        {template.map((_, i) => (
-          <SequencerTrackSteps trackNo={i} key={i} />
+        <SequencerStepsBackground key={"steps-background"} />
+        {trackIds.map((id) => (
+          <SequencerTrackSteps trackId={id} key={id} />
         ))}
-        <SequencerProgress />
+        <SequencerProgress key={"steps-progress"} />
       </div>
     </div>
   );

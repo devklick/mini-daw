@@ -8,34 +8,33 @@ import DropZone from "../../../../components/DragAndDrop/DropZone/DropZone.tsx";
 import "./SequencerTrackHeader.scss";
 
 interface SequencerTrackHeaderProps {
-  trackNo: number;
+  trackId: string;
 }
 
-function SequencerTrackHeader({ trackNo }: SequencerTrackHeaderProps) {
+function SequencerTrackHeader({ trackId }: SequencerTrackHeaderProps) {
   const deleteTrack = useSequencerStore((s) => s.deleteTrack);
+  const getSample = useSampleStore((s) => s.getSample);
+  const setSelectedTrack = useSequencerStore((s) => s.setSelectedTrack);
   const assignNewSampleToTrack = useSequencerStore(
     (s) => s.assignNewSampleToTrack
   );
-  const getSample = useSampleStore((s) => s.getSample);
-  const trackName = useSequencerStore((s) => s.tracks[trackNo].name);
-  const trackId = useSequencerStore((s) => s.tracks[trackNo].id);
-  const setSelectedTrack = useSequencerStore((s) => s.setSelectedTrack);
-  const selectedTrack = useSequencerStore((s) => s.selectedTrack);
-  const isSelected = trackNo == selectedTrack;
+
+  const trackName = useSequencerStore((s) => s.tracks[trackId]?.name);
+  const isSelected = useSequencerStore((s) => s.selectedTrack === trackId);
 
   return (
     <div
       className={clsx("sequencer-track-header", {
         ["sequencer-track-header--selected"]: isSelected,
       })}
-      onClick={() => setSelectedTrack(trackNo)}
+      onClick={() => setSelectedTrack(trackId)}
     >
       <ContextMenuTarget
         items={[
           { title: "Rename Track", action: () => null },
           { title: "Delete Track", action: () => deleteTrack(trackId) },
         ]}
-        onOpen={() => setSelectedTrack(trackNo)}
+        onOpen={() => setSelectedTrack(trackId)}
       >
         <DropZone
           dragOverClassName="sequencer-track-header--drag-over"

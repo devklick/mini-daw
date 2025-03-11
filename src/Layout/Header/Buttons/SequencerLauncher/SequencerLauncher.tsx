@@ -2,6 +2,7 @@ import { useRef } from "react";
 import Applet from "../../../../components/Applet";
 import Sequencer from "../../../../Sequencer";
 import useAppletManagerStore from "../../../../stores/useAppletManagerStore";
+import useSequencerStore from "../../../../Sequencer/stores/useSequencerStore";
 import "./SequencerLauncher.scss";
 
 function SequencerLauncher() {
@@ -11,6 +12,7 @@ function SequencerLauncher() {
   );
   const addApplet = useAppletManagerStore((s) => s.addApplet);
   const toggleHide = useAppletManagerStore((s) => s.toggleHide);
+  const setSelectedTrack = useSequencerStore((s) => s.setSelectedTrack);
   function handleClick() {
     // If the applet has already been created,
     // the launcher button is used to either hide or show the applet.
@@ -27,6 +29,7 @@ function SequencerLauncher() {
         initialDimensions: { height: "auto", width: 600 },
         initialPosition: { x: 0, y: 0 },
         title: "Sequencer",
+        onClose: () => setSelectedTrack(null),
       },
       children: <Sequencer />,
       key: sequencerIdRef.current,

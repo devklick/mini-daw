@@ -22,8 +22,8 @@ export interface SequencerTrack {
   volume: number;
 
   /**
-   * - Min: -12
-   * - Max: 12
+   * - Min: -12 (Down one octave)
+   * - Max: 12 (Up one octave)
    * @default 0
    */
   pitch: number;
@@ -37,19 +37,23 @@ export interface SequencerTrack {
 
 interface SequencerStoreState {
   patternNumber: number;
-  selectedTrack: number | null;
+  selectedTrack: string | null;
   stepsPerBeat: number;
   beatsPerBar: number;
   barsPerSequence: number;
-  tracks: ReadonlyArray<Readonly<SequencerTrack>>;
   currentStep: number;
   currentBeat: number;
   playing: boolean;
   trackIds: ReadonlyArray<string>;
+
+  /**
+   * Each track on the sequencer, keyed by the trackId.
+   */
+  tracks: Readonly<Record<string, SequencerTrack>>;
   addTrack(track: Readonly<SequencerTrack>): void;
   addSampleAsTrack(sample: SampleInfo): void;
   assignNewSampleToTrack(trackId: string, sample: SampleInfo): void;
-  toggleTrackStep(trackNo: number, stepNo: number): void;
+  toggleTrackStep(trackId: string, stepNo: number): void;
   setStepsPerBeat(stepsPerBeat: number): void;
   setBeatsPerBar(beatsPerBar: number): void;
   setBarsPerSequence(barsPerSequence: number): void;
@@ -59,12 +63,13 @@ interface SequencerStoreState {
   setTrackPan(trackId: string, pan: number): void;
   setCurrentStep(currentStep: number): void;
   setPlaying(playing: boolean): void;
-  setSelectedTrack(trackNo: number | null): void;
-  setTrackName(trackNo: number, trackName: string): void;
+  setSelectedTrack(trackId: string | null): void;
+  setTrackName(trackId: string, trackName: string): void;
+  generateTrackSteps(): Array<boolean>;
 }
 
 const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
-  tracks: [],
+  tracks: {},
   stepsPerBeat: 4,
   beatsPerBar: 4,
   barsPerSequence: 1,
@@ -74,41 +79,40 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   playing: false,
   patternNumber: 0,
   trackIds: [],
-  addTrack(track) {
+  generateTrackSteps() {
     const { beatsPerBar, stepsPerBeat, barsPerSequence } = get();
-    const steps = Array.from(
+    return Array.from(
       { length: beatsPerBar * stepsPerBeat * barsPerSequence },
       () => false
     );
+  },
+  addTrack(track) {
+    const steps = get().generateTrackSteps();
 
     const updatedTrack: SequencerTrack = { ...track, steps };
 
     set((state) => {
+      const tracks = { ...state.tracks };
+      tracks[track.id] = track;
       return {
-        tracks: [...state.tracks, updatedTrack],
+        tracks,
         trackIds: [...state.trackIds, updatedTrack.id],
       };
     });
   },
-  toggleTrackStep(trackNo, stepNo) {
+  toggleTrackStep(trackId, stepNo) {
     set((state) => {
-      return {
-        tracks: state.tracks.map((track, index) => {
-          if (index !== trackNo) return track;
+      const tracks = { ...state.tracks };
+      const steps = get()
+        .generateTrackSteps()
+        .map((_, i) =>
+          i === stepNo
+            ? !tracks[trackId].steps[i]
+            : tracks[trackId].steps[i] ?? false
+        );
 
-          const { beatsPerBar, stepsPerBeat, barsPerSequence } = state;
-
-          const newSteps = Array.from(
-            { length: beatsPerBar * stepsPerBeat * barsPerSequence },
-            (_, i) => (i === stepNo ? !track.steps[i] : track.steps[i] ?? false)
-          );
-
-          return {
-            ...track,
-            steps: newSteps,
-          };
-        }),
-      };
+      tracks[trackId] = { ...tracks[trackId], steps };
+      return { tracks };
     });
   },
   setBarsPerSequence(barsPerSequence) {
@@ -123,79 +127,77 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   addSampleAsTrack(sample) {
     set((state) => {
       const id = crypto.randomUUID();
+      const tracks = { ...state.tracks };
+      tracks[id] = {
+        id: id,
+        name: getFirst(sample.name.split(".")),
+        sample,
+        steps: [],
+        mute: false,
+        pan: 0,
+        pitch: 0,
+        volume: 80,
+      };
       return {
-        tracks: [
-          ...state.tracks,
-          {
-            id: id,
-            name: getFirst(sample.name.split(".")),
-            sample,
-            steps: [],
-            mute: false,
-            pan: 0,
-            pitch: 0,
-            volume: 80,
-          },
-        ],
+        tracks,
         trackIds: [...state.trackIds, id],
-        selectedTrack: state.tracks.length,
+        selectedTrack: id,
       };
     });
   },
   assignNewSampleToTrack(trackId, sample) {
     set((state) => {
-      const trackIndex = state.tracks.findIndex((t) => t.id === trackId);
-      if (trackIndex < 0) return {};
-      const track = {
-        ...state.tracks[trackIndex],
-        sample,
-      };
+      if (!state.tracks[trackId]) return {};
+      const tracks = { ...state.tracks };
+      const track = { ...tracks[trackId] };
+      track.sample = sample;
 
-      const updatedTracks = [...state.tracks];
-      updatedTracks[trackIndex] = track;
-
-      const selectedTrack = trackIndex;
-
-      return { tracks: updatedTracks, selectedTrack };
+      return { tracks, selectedTrack: trackId };
     });
   },
   deleteTrack(trackId) {
     set((state) => {
-      const updatedTracks = state.tracks.filter((t) => t.id !== trackId);
-      const selectedTrack =
-        updatedTracks.length && state.selectedTrack
-          ? Math.min(state.selectedTrack, updatedTracks.length - 1)
-          : null;
+      if (!state.tracks[trackId]) return {};
+      const tracks = { ...state.tracks };
+
+      delete tracks[trackId];
+
+      const trackIds = state.trackIds.filter((id) => id !== trackId);
+
+      const selectedTrack = (state.selectedTrack = trackId
+        ? null
+        : state.selectedTrack);
+
       return {
-        tracks: updatedTracks,
+        tracks,
         selectedTrack,
-        trackIds: state.trackIds.filter((id) => id !== trackId),
+        trackIds,
       };
     });
   },
   setTrackVolume(trackId, volume) {
-    set((state) => ({
-      tracks: state.tracks.map((track) => {
-        if (track.id !== trackId) return track;
-        return { ...track, volume };
-      }),
-    }));
+    set((state) => {
+      const tracks = { ...state.tracks };
+      tracks[trackId] = { ...tracks[trackId] };
+      tracks[trackId].volume = volume;
+      return { tracks };
+    });
   },
   setTrackPan(trackId, pan) {
-    set((state) => ({
-      tracks: state.tracks.map((track) => {
-        if (track.id !== trackId) return track;
-        return { ...track, pan };
-      }),
-    }));
+    set((state) => {
+      const tracks = { ...state.tracks };
+      tracks[trackId] = { ...tracks[trackId] };
+      tracks[trackId].pan = pan;
+      return { tracks };
+    });
   },
   setTrackPitch(trackId, pitch) {
-    set((state) => ({
-      tracks: state.tracks.map((track) => {
-        if (track.id !== trackId) return track;
-        return { ...track, pitch };
-      }),
-    }));
+    set((state) => {
+      const tracks = { ...state.tracks };
+      tracks[trackId] = { ...tracks[trackId] };
+      tracks[trackId].pitch = pitch;
+      return { tracks };
+    });
   },
   setCurrentStep(currentStep) {
     const { stepsPerBeat } = get();
@@ -205,18 +207,16 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   setPlaying(playing) {
     set({ playing });
   },
-  setSelectedTrack(trackNo) {
-    set({ selectedTrack: trackNo });
+  setSelectedTrack(trackId) {
+    set({ selectedTrack: trackId });
   },
-  setTrackName(trackNo, trackName) {
-    set((state) => ({
-      tracks: state.tracks.map((track, i) => {
-        if (trackNo === i) {
-          return { ...track, name: trackName };
-        }
-        return track;
-      }),
-    }));
+  setTrackName(trackId, trackName) {
+    set((state) => {
+      const tracks = { ...state.tracks };
+      tracks[trackId] = { ...tracks[trackId] };
+      tracks[trackId].name = trackName;
+      return { tracks };
+    });
   },
 }));
 
@@ -328,7 +328,7 @@ export function useSequencer() {
       const { tracks } = useSequencerStore.getState();
       while (nextStepTime < currentTime + 0.01) {
         setCurrentStep(currentStep.current);
-        for (const track of tracks) {
+        for (const track of Object.values(tracks)) {
           if (!track.mute && track.steps[currentStep.current]) {
             playSample(track);
           }

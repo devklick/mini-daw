@@ -31,6 +31,7 @@ function Applet({
   children,
   hidden,
   zIndex,
+  onClose,
 }: AppletProps) {
   const closeApplet = useAppletManagerStore((s) => s.closeApplet);
   const focusApplet = useAppletManagerStore((s) => s.focusApplet);
@@ -56,6 +57,7 @@ function Applet({
 
   function handleClose() {
     closeApplet(id);
+    onClose?.();
   }
   function handleFocus() {
     focusApplet(id);

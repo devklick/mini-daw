@@ -1,11 +1,7 @@
 import "./SequencerFooter.scss";
 
 function SequencerFooter() {
-  return (
-    <div className="sequencer-footer">
-      {/* <SequencerTrackHeader.DropNewTrack /> */}
-    </div>
-  );
+  return <div className="sequencer-footer"></div>;
 }
 
 export default SequencerFooter;

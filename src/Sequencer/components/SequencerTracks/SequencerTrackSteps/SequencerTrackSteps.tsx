@@ -5,16 +5,16 @@ import SequencerStep from "./SequencerStep";
 import "./SequencerTrackSteps.scss";
 
 interface SequencerTrackStepsProps {
-  trackNo: number;
+  trackId: string;
 }
 
-function SequencerTrackSteps({ trackNo }: SequencerTrackStepsProps) {
+function SequencerTrackSteps({ trackId }: SequencerTrackStepsProps) {
   const { totalSteps } = useSequencerSteps();
   const setSelected = useSequencerStore((s) => s.setSelectedTrack);
   return (
-    <div className="sequencer-track-steps" onClick={() => setSelected(trackNo)}>
+    <div className="sequencer-track-steps" onClick={() => setSelected(trackId)}>
       {Array.from({ length: totalSteps }, (_, i) => (
-        <SequencerStep trackNo={trackNo} stepNo={i} key={i} />
+        <SequencerStep trackId={trackId} stepNo={i} key={i} />
       ))}
     </div>
   );

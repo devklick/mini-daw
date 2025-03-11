@@ -16,6 +16,7 @@ export interface BaseProps {
   zIndex?: number;
   hidden?: boolean;
   children?: React.ReactNode;
+  onClose?(): void;
 }
 
 interface ComponentDefinition<Props extends BaseProps = BaseProps> {
@@ -63,7 +64,6 @@ const useAppletManagerStore = create<AppletManagerStoreState>()((set, get) => ({
   },
   focusApplet(appletId) {
     set((state) => {
-      // console.log("Focusing applet");
       let { highestZIndex } = state;
       const { applets } = state;
       if (!applets[appletId]) return {};
@@ -83,8 +83,6 @@ const useAppletManagerStore = create<AppletManagerStoreState>()((set, get) => ({
       }
 
       updatedApplet.props.hidden = false;
-
-      console.log({ applets, highestZIndex });
 
       const updatedApplets = { ...applets };
       updatedApplets[appletId] = updatedApplet;
