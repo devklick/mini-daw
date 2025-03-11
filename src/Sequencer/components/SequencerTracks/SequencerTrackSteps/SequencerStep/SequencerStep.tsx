@@ -8,7 +8,10 @@ interface SequencerStepProps {
 }
 
 function SequencerStep({ stepNo, trackId }: SequencerStepProps) {
-  const step = useSequencerStore((s) => s.tracks[trackId]?.steps?.[stepNo]);
+  const selectedPattern = useSequencerStore((s) => s.selectedPattern);
+  const step = useSequencerStore(
+    (s) => s.tracks[trackId]?.steps?.[selectedPattern]?.[stepNo]
+  );
   const toggleTrackStep = useSequencerStore((s) => s.toggleTrackStep);
 
   return (
