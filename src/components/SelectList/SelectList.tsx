@@ -1,37 +1,70 @@
+import { useState } from "react";
 import clsx from "clsx";
-import useToggle from "../../hooks/stateHooks/useToggle";
+
 import "./SelectList.scss";
 
-interface SelectableItem {
-  title: string;
+interface SelectListItem<ItemId extends string> {
+  text: string;
+  id: ItemId;
+  selected?: boolean;
 }
 
-interface SelectListProps<Item extends SelectableItem> {
-  items: Array<Item>;
-  label?: string;
+interface SelectListProps<ItemId extends string> {
+  items: Array<SelectListItem<ItemId>>;
+  onChanged: (id: string) => void;
   className?: string;
 }
 
-function SelectList<Item extends SelectableItem>({
+function SelectList<itemId extends string>({
   items,
-  label,
+  onChanged,
   className,
-}: SelectListProps<Item>) {
-  const [open, { toggle }] = useToggle(false);
+}: SelectListProps<itemId>) {
+  const [open, setOpen] = useState<boolean>(false);
+
+  function onClickerClicked() {
+    setOpen(!open);
+  }
+
+  function onItemClicked(itemId: string) {
+    setOpen(false);
+    onChanged(itemId);
+  }
 
   return (
-    <div className={clsx("select-list", className)}>
-      <label className="select-list__label">{label}</label>
-
-      <ol className="select-list__items">
-        <span onClick={toggle}>{"selected"}</span>
-        {open &&
-          items.map((item) => (
-            <div className="select-list__item">{item.title}</div>
-          ))}
-        <div className="select-list__item">{"Add"}</div>
-      </ol>
-    </div>
+    <>
+      <div
+        className={clsx("select-list", className, {
+          "select-list--open": open,
+        })}
+      >
+        <div
+          className={clsx("select-list__clicker", {
+            "select-list__clicker--open": open,
+          })}
+          onClick={onClickerClicked}
+        >
+          <span className="select-list__current">
+            {items.find((o) => o.selected)?.text}
+          </span>
+        </div>
+        {open && (
+          <div className="select-list__items">
+            {items.map((item) => (
+              <div
+                key={item.id}
+                onClick={() => onItemClicked(item.id)}
+                className={clsx("select-list__item", {
+                  "select-list__item--selected": item.selected,
+                })}
+              >
+                <span className="select-list__item-text">{item.text}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 

@@ -77,6 +77,7 @@
         justify-content: space-between;
         padding: 0 10px;
         box-sizing: border-box;
+        cursor: move;
     }
 
     &__title-wrapper {
@@ -84,7 +85,6 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        cursor: move;
     }
 
     &__window-buttons-wrapper {

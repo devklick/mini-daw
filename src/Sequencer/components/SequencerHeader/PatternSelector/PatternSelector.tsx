@@ -4,15 +4,16 @@ import "./PatternSelector.scss";
 
 function PatternSelector() {
   const selectedPattern = useSequencerStore((s) => s.selectedPattern);
+  const patternIds = useSequencerStore((s) => s.patternIds);
+  const setSelectedPattern = useSequencerStore((s) => s.setSelectedPattern);
   return (
     <SelectList
-      items={[
-        { title: "first" },
-        { title: "second" },
-        { title: "third" },
-        { title: "fourth" },
-      ]}
-      label="Pattern"
+      items={patternIds.map((p) => ({
+        id: p,
+        text: p,
+        selected: p === selectedPattern,
+      }))}
+      onChanged={setSelectedPattern}
     />
   );
 }
