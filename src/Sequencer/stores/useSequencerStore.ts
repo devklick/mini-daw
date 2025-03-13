@@ -8,6 +8,22 @@ import useSampleStore, {
 import { getFirst, getLast } from "../../utils/arrayUtils";
 import { useAudioContext, useBpm } from "../../stores/useDawStore";
 
+/*
+  TODO: Refactor so that the store has a patterns property, which is an array of pattern objects
+  Each pattern object will represent what's displayed on the sequencer for a given pattern, e.g.
+    - Name/ID
+    - stepsPerBeat
+    - beatsPerBar
+    - barsPerSequence
+    - trackSteps
+
+  trackSteps will be a record, where the key is the trackId and the value is an array of step objects. 
+
+  Each step object should have configurable:
+    - panning
+    - volume
+    - pitch
+*/
 export interface SequencerTrack {
   id: string;
   name: string;
