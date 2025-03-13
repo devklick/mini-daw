@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import MenuItems, { MenuItemProps } from "../MenuItems";
-import useDetectMouseDownOutside from "../../hooks/mouseHooks/useDetectMouseDownOutside";
+import { useDetectMouseDownOutside } from "../../hooks/mouseHooks";
 import useBindKeyToAction from "../../hooks/keyboardHooks/useBindKeyToAction";
 
 import "./ContextMenu.scss";

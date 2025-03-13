@@ -1,6 +1,10 @@
 import clsx from "clsx";
+
+import { useRef } from "react";
+
+import { useScrollToChange } from "../../../hooks/mouseHooks";
+
 import "./Num.scss";
-import React from "react";
 
 interface NumProps {
   value: number;
@@ -21,34 +25,26 @@ function Num({
   className,
   disableScroll,
 }: NumProps) {
-  function handleWheel(e: React.WheelEvent<HTMLInputElement>) {
-    if (disableScroll) return;
-    e.preventDefault();
-    let newValue = value;
-    if (e.deltaY < 0) {
-      newValue += 1;
-    } else {
-      newValue -= 1;
-    }
-    if (min !== undefined && newValue < min) {
-      newValue = min;
-    }
-    if (max !== undefined && newValue > max) {
-      newValue = max;
-    }
-    onChange(newValue);
-  }
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useScrollToChange(inputRef, {
+    value,
+    min,
+    max,
+    onChange,
+    disabled: disableScroll,
+  });
+
   return (
     <div className={clsx("number")}>
       {label && <label className="number__label">{label}</label>}
       <input
+        ref={inputRef}
         className={clsx("number__input", className)}
         type="number"
         min={min}
         max={max}
         value={value}
-        onChange={(e) => onChange(Number(e.currentTarget.value))}
-        onWheel={handleWheel}
       />
     </div>
   );

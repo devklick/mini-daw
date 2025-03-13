@@ -74,6 +74,7 @@ interface SequencerStoreState {
   setTrackName(trackId: string, trackName: string): void;
   generateTrackSteps(): Array<boolean>;
   setSelectedPattern(patternId: string): void;
+  setSelectedPatternIndex(index: number): void;
 }
 
 const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
@@ -240,6 +241,12 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   },
   setSelectedPattern(patternId) {
     set({ selectedPattern: patternId });
+  },
+  setSelectedPatternIndex(index) {
+    set((state) => {
+      const selectedPattern = state.patternIds[index] ?? state.selectedPattern;
+      return { selectedPattern };
+    });
   },
 }));
 

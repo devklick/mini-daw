@@ -37,6 +37,14 @@ $border-radius: 4px;
         }
     }
 
+    &__current {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
+        overflow: hidden;
+        padding: 0 4px;
+    }
+
     &__items {
         width: 100%;
         position: relative;

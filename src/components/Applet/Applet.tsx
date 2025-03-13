@@ -9,7 +9,7 @@ import useAppletManagerStore, {
   BaseProps,
 } from "../../stores/useAppletManagerStore";
 import "./Applet.scss";
-import usePositionableElement from "../../hooks/mouseHooks/usePositionableElement";
+import { usePositionableElement } from "../../hooks/mouseHooks";
 import clsx from "clsx";
 
 interface AppletProps extends BaseProps {

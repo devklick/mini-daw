@@ -4,7 +4,7 @@ import clsx from "clsx";
 // AKA DickPick
 import KnobImage from "./assets/knob.svg?react";
 
-import useMouseDownOnElement from "../../hooks/mouseHooks/useMouseDownOnElement";
+import { useMouseDownOnElement } from "../../hooks/mouseHooks";
 
 import "./ControlKnob.scss";
 

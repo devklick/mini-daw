@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef } from "react";
 import clsx from "clsx";
 
 import useLayoutStore from "../stores/useLayoutStore";
-import useMouseDownOnElement from "../../hooks/mouseHooks/useMouseDownOnElement";
+import { useMouseDownOnElement } from "../../hooks/mouseHooks";
 
 import "./SidePanel.scss";
 import { capitalize } from "../../utils/stringUtils";
