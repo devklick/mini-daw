@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import useDragToResize, {
-  Dimensions,
   MinDimensions,
   Position,
   Rect,

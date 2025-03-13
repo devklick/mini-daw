@@ -7,14 +7,14 @@ import WaveformVisualizer from "../components/WaveFormVisualizer";
 import "./TrackPropertiesPanel.scss";
 
 function TrackPropertiesPanel() {
-  const trackNo = useSequencerStore((s) => s.selectedTrack);
-  const sample = useSequencerStore((s) => s.tracks[trackNo ?? -1]?.sample);
+  const trackId = useSequencerStore((s) => s.selectedTrack);
+  const sample = useSequencerStore((s) => s.tracks[trackId ?? -1]?.sample);
 
   return (
     <div className={clsx("track-properties-panel")}>
-      {trackNo !== null && sample && (
+      {trackId !== null && sample && (
         <>
-          <TrackPropertiesList trackNo={trackNo} />
+          <TrackPropertiesList trackId={trackId} />
           <WaveformVisualizer url={sample.url} />
         </>
       )}

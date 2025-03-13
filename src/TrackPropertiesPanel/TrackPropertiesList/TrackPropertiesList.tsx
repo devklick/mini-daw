@@ -4,11 +4,10 @@ import TrackProperty from "../TrackProperty";
 import "./TrackPropertiesList.scss";
 
 interface TrackPropertiesListProps {
-  trackNo: number;
+  trackId: string;
 }
 
-function TrackPropertiesList({ trackNo }: TrackPropertiesListProps) {
-  const trackId = useSequencerStore((s) => s.tracks[trackNo]?.id);
+function TrackPropertiesList({ trackId }: TrackPropertiesListProps) {
   const setTrackName = useSequencerStore((s) => s.setTrackName);
   const setTrackVolume = useSequencerStore((s) => s.setTrackVolume);
   const setTrackPan = useSequencerStore((s) => s.setTrackPan);
@@ -19,28 +18,21 @@ function TrackPropertiesList({ trackNo }: TrackPropertiesListProps) {
   // relying on indexes which could change.
 
   function setName(name: string) {
-    if (trackNo !== null) {
-      setTrackName(trackNo, name);
-    }
+    setTrackName(trackId, name);
   }
 
   function setVolume(volume: number) {
-    if (trackId) {
-      setTrackVolume(trackId, volume);
-    }
+    setTrackVolume(trackId, volume);
   }
 
   function setPan(pan: number) {
-    if (trackId) {
-      setTrackPan(trackId, pan);
-    }
+    setTrackPan(trackId, pan);
   }
 
   function setPitch(pitch: number) {
-    if (trackId) {
-      setTrackPitch(trackId, pitch);
-    }
+    setTrackPitch(trackId, pitch);
   }
+
   return (
     <ol className="track-properties-list">
       <ContextMenuTarget items={[]}>
@@ -49,7 +41,7 @@ function TrackPropertiesList({ trackNo }: TrackPropertiesListProps) {
           description="The name of the track in the sequencer"
           label="Name"
           onChange={setName}
-          trackNo={trackNo}
+          trackId={trackId}
           type="text"
         />
       </ContextMenuTarget>
@@ -68,7 +60,7 @@ function TrackPropertiesList({ trackNo }: TrackPropertiesListProps) {
           description="The input volume of the track"
           label="Volume"
           onChange={setVolume}
-          trackNo={trackNo}
+          trackId={trackId}
           type="knob"
           min={0}
           max={100}
@@ -88,7 +80,7 @@ function TrackPropertiesList({ trackNo }: TrackPropertiesListProps) {
           description="The input panning of the track"
           label="Panning"
           onChange={setPan}
-          trackNo={trackNo}
+          trackId={trackId}
           type="knob"
           min={-100}
           max={100}
@@ -108,7 +100,7 @@ function TrackPropertiesList({ trackNo }: TrackPropertiesListProps) {
           description="The input pitch of the track"
           label="Pitch"
           onChange={setPitch}
-          trackNo={trackNo}
+          trackId={trackId}
           type="knob"
           min={-12}
           max={12}

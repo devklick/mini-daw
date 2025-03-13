@@ -12,7 +12,7 @@ type PropertyKeys = keyof Pick<
 >;
 
 interface TrackPropertyProps<Name extends PropertyKeys> {
-  trackNo: number;
+  trackId: string;
   name: Name;
   label: string;
   description: string;
@@ -24,7 +24,7 @@ interface TrackPropertyProps<Name extends PropertyKeys> {
 }
 
 function TrackProperty<Name extends PropertyKeys>({
-  trackNo,
+  trackId,
   name,
   description,
   label,
@@ -34,7 +34,7 @@ function TrackProperty<Name extends PropertyKeys>({
   min,
   max,
 }: TrackPropertyProps<Name>) {
-  const value = useSequencerStore((s) => s.tracks[trackNo]?.[name]);
+  const value = useSequencerStore((s) => s.tracks[trackId]?.[name]);
   const [expanded, { toggle }] = useToggle();
 
   function handleChange(newValue: unknown) {
