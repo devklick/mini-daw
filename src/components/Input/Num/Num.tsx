@@ -45,6 +45,7 @@ function Num({
         min={min}
         max={max}
         value={value}
+        onChange={(e) => onChange(Number(e.currentTarget.value))}
       />
     </div>
   );
