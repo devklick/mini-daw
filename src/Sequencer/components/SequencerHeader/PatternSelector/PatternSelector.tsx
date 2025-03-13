@@ -8,7 +8,7 @@ import "./PatternSelector.scss";
 function PatternSelector() {
   const selectedPattern = useSequencerStore((s) => s.selectedPattern);
   const selectedPatternIndex = useSequencerStore((s) =>
-    s.patternIds.indexOf(selectedPattern)
+    s.patternIds?.indexOf(selectedPattern)
   );
   const minIndex = 0;
   const maxIndex = useSequencerStore((s) => s.patternIds.length - 1);
@@ -18,6 +18,7 @@ function PatternSelector() {
   const setSelectedPatternIndex = useSequencerStore(
     (s) => s.setSelectedPatternIndex
   );
+  const addPattern = useSequencerStore((s) => s.addPattern);
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
 
@@ -31,17 +32,26 @@ function PatternSelector() {
   });
 
   return (
-    <SelectList
-      items={patternIds.map((p) => ({
-        id: p,
-        text: p,
-        selected: p === selectedPattern,
-      }))}
-      onChanged={setSelectedPattern}
-      ref={ref}
-      onOpen={() => setOpen(true)}
-      onClose={() => setOpen(false)}
-    />
+    <div className="pattern-selector">
+      <SelectList
+        items={patternIds.map((p) => ({
+          id: p,
+          text: p,
+          selected: p === selectedPattern,
+        }))}
+        onChanged={setSelectedPattern}
+        ref={ref}
+        onOpen={() => setOpen(true)}
+        onClose={() => setOpen(false)}
+        className="pattern-selector__select-list"
+      />
+      <button
+        className="pattern-selector__add-pattern-button"
+        onClick={() => addPattern()}
+      >
+        +
+      </button>
+    </div>
   );
 }
 

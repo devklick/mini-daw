@@ -52,6 +52,7 @@ interface SequencerStoreState {
   trackIds: ReadonlyArray<string>;
   patternIds: Array<string>;
   selectedPattern: string;
+  patternCounter: number;
 
   /**
    * Each track on the sequencer, keyed by the trackId.
@@ -75,6 +76,7 @@ interface SequencerStoreState {
   generateTrackSteps(): Array<boolean>;
   setSelectedPattern(patternId: string): void;
   setSelectedPatternIndex(index: number): void;
+  addPattern(patternId?: string): void;
 }
 
 const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
@@ -90,6 +92,7 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   trackIds: [],
   patternIds: ["Default"],
   selectedPattern: "Default",
+  patternCounter: 0,
   generateTrackSteps() {
     const { beatsPerBar, stepsPerBeat, barsPerSequence } = get();
     return Array.from(
@@ -129,7 +132,10 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
 
       tracks[trackId] = {
         ...tracks[trackId],
-        steps: { [selectedPattern]: steps },
+        steps: {
+          ...tracks[trackId].steps,
+          [selectedPattern]: steps,
+        },
       };
       return { tracks };
     });
@@ -246,6 +252,16 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
     set((state) => {
       const selectedPattern = state.patternIds[index] ?? state.selectedPattern;
       return { selectedPattern };
+    });
+  },
+
+  addPattern(patternId) {
+    set((state) => {
+      const patternCounter = state.patternCounter + 1;
+      patternId = patternId ?? `Pattern ${patternCounter}`;
+      const selectedPattern = patternId;
+      const patternIds = [...state.patternIds, patternId];
+      return { patternCounter, selectedPattern, patternIds };
     });
   },
 }));

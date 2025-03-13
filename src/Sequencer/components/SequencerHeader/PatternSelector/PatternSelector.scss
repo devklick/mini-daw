@@ -1,0 +1,28 @@
+@use "sass:color";
+@use "/src/global" as *;
+
+.pattern-selector {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    &__select-list {
+        width: 120px;
+    }
+
+    &__add-pattern-button {
+        all: unset;
+        aspect-ratio: 1/1;
+        background-color: $color-base-4;
+        border-radius: 4px;
+        transition: all 0.1s ease;
+        transform: scale(1);
+        text-align: center;
+
+        &:hover {
+            background-color: color.adjust($color-base-4, $lightness: 10%);
+        }
+        &:active {
+            box-shadow: 1px 1px 4px color.adjust($color-base-4, $lightness: -20%) inset;
+        }
+    }
+}
