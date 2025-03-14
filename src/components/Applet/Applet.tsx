@@ -11,6 +11,7 @@ import useAppletManagerStore, {
 import "./Applet.scss";
 import { usePositionableElement } from "../../hooks/mouseHooks";
 import clsx from "clsx";
+import Button from "../Button";
 
 interface AppletProps extends BaseProps {
   title: string;
@@ -104,15 +105,15 @@ function Applet({
 
         <div className={clsx("applet__window-buttons-wrapper", "drag-to-move")}>
           <div className="applet__window-buttons">
-            <button
-              className={clsx(
-                "applet__window-button",
-                "applet__window-button--close"
-              )}
+            <Button
+              backgroundColor="accentRed"
+              color="accentYellow"
               onClick={handleClose}
+              size={{ height: "100%" }}
+              className="applet__window-button--close"
             >
               X
-            </button>
+            </Button>
           </div>
         </div>
       </div>
