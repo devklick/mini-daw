@@ -19,10 +19,12 @@
         text-align: center;
 
         &:hover {
-            background-color: color.adjust($color-base-4, $lightness: 10%);
+            box-shadow:
+                1px 1px 2px inset color.adjust($color-base-4, $lightness: 10%),
+                1px 1px 2px color.adjust($color-base-2, $lightness: -5%);
         }
         &:active {
-            box-shadow: 1px 1px 4px color.adjust($color-base-4, $lightness: -20%) inset;
+            box-shadow: 1px 1px 2px color.adjust($color-base-2, $lightness: -5%) inset;
         }
     }
 }
