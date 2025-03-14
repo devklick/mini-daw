@@ -1,6 +1,7 @@
 @use "/src/global" as *;
 
 .side-panel {
+    margin-top: -1px;
     height: 100%;
     border: 1px solid $color-base-4;
     border-bottom: none;
