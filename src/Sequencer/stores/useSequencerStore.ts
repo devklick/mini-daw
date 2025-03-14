@@ -13,6 +13,7 @@ interface Step {
 }
 
 interface Pattern {
+  id: string;
   stepsPerBeat: number;
   beatsPerBar: number;
   barsPerSequence: number;
@@ -59,9 +60,9 @@ export interface SequencerTrack {
 interface SequencerStoreState {
   patternNumber: number;
   selectedTrack: string | null;
-  stepsPerBeat: number;
-  beatsPerBar: number;
-  barsPerSequence: number;
+  // stepsPerBeat: number;
+  // beatsPerBar: number;
+  // barsPerSequence: number;
   currentStep: number;
   currentBeat: number;
   playing: boolean;
@@ -75,31 +76,34 @@ interface SequencerStoreState {
    * Each track on the sequencer, keyed by the trackId.
    */
   tracks: Readonly<Record<string, SequencerTrack>>;
-  addTrack(track: Readonly<SequencerTrack>): void;
-  addSampleAsTrack(sample: SampleInfo): void;
-  assignNewSampleToTrack(trackId: string, sample: SampleInfo): void;
-  toggleTrackStep(trackId: string, stepNo: number): void;
-  setStepsPerBeat(stepsPerBeat: number): void;
-  setBeatsPerBar(beatsPerBar: number): void;
-  setBarsPerSequence(barsPerSequence: number): void;
-  deleteTrack(trackId: string): void;
-  setTrackVolume(trackId: string, volume: number): void;
-  setTrackPitch(trackId: string, pitch: number): void;
-  setTrackPan(trackId: string, pan: number): void;
-  setCurrentStep(currentStep: number): void;
-  setPlaying(playing: boolean): void;
-  setSelectedTrack(trackId: string | null): void;
-  setTrackName(trackId: string, trackName: string): void;
+
   initSteps(): Array<Step>;
-  setSelectedPattern(patternId: string): void;
-  setSelectedPatternIndex(index: number): void;
-  addPattern(patternId?: string): void;
   initTrackSteps(): Record<string, Step[]>;
   initPattern(): Pattern;
   initTrack(name: string, sample: SampleInfo): SequencerTrack;
+
+  setStepsPerBeat(stepsPerBeat: number): void;
+  setBeatsPerBar(beatsPerBar: number): void;
+  setBarsPerSequence(barsPerSequence: number): void;
+  setCurrentStep(currentStep: number): void;
+  setPlaying(playing: boolean): void;
+  setTrackName(trackId: string, trackName: string): void;
+  setTrackVolume(trackId: string, volume: number): void;
+  setTrackPitch(trackId: string, pitch: number): void;
+  setTrackPan(trackId: string, pan: number): void;
+  setSelectedTrack(trackId: string | null): void;
+  setSelectedPattern(patternId: string): void;
+  setSelectedPatternIndex(index: number): void;
+
+  addTrack(track: Readonly<SequencerTrack>): void;
+  addPattern(): void;
+  addSampleAsTrack(sample: SampleInfo): void;
+  assignNewSampleToTrack(trackId: string, sample: SampleInfo): void;
+  toggleTrackStep(trackId: string, stepNo: number): void;
+  deleteTrack(trackId: string): void;
 }
 
-const defaultPatternKey = "Default";
+const defaultPatternKey = "Pattern 1";
 const defaultStepsPerBeat = 4;
 const defaultBeatsPerBar = 4;
 const defaultBarsPerSequence = 1;
@@ -121,9 +125,10 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   trackIds: [],
   patternIds: [defaultPatternKey],
   selectedPattern: defaultPatternKey,
-  patternCounter: 0,
+  patternCounter: 1,
   patterns: {
     [defaultPatternKey]: {
+      id: defaultPatternKey,
       barsPerSequence: defaultBarsPerSequence,
       beatsPerBar: defaultBeatsPerBar,
       stepsPerBeat: defaultStepsPerBeat,
@@ -131,7 +136,9 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
     },
   },
   initSteps() {
-    const { beatsPerBar, stepsPerBeat, barsPerSequence } = get();
+    const { selectedPattern, patterns } = get();
+    const { beatsPerBar, stepsPerBeat, barsPerSequence } =
+      patterns[selectedPattern];
     return Array.from(
       { length: beatsPerBar * stepsPerBeat * barsPerSequence },
       () => ({ active: false })
@@ -146,11 +153,15 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
     }, {} as Record<string, Array<Step>>);
   },
   initPattern() {
+    const patternCounter = get().patternCounter + 1;
+    set({ patternCounter });
+
     return {
       barsPerSequence: defaultBarsPerSequence,
       beatsPerBar: defaultBeatsPerBar,
       stepsPerBeat: defaultStepsPerBeat,
       trackSteps: get().initTrackSteps(),
+      id: `Pattern ${patternCounter}`,
     };
   },
   initTrack(name, sample) {
@@ -199,13 +210,31 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
     });
   },
   setBarsPerSequence(barsPerSequence) {
-    set({ barsPerSequence });
+    set((state) => {
+      const patterns = { ...state.patterns };
+      const selectedPattern = { ...patterns[state.selectedPattern] };
+      selectedPattern.barsPerSequence = barsPerSequence;
+      patterns[state.selectedPattern] = selectedPattern;
+      return { patterns };
+    });
   },
   setBeatsPerBar(beatsPerBar) {
-    set({ beatsPerBar });
+    set((state) => {
+      const patterns = { ...state.patterns };
+      const selectedPattern = { ...patterns[state.selectedPattern] };
+      selectedPattern.beatsPerBar = beatsPerBar;
+      patterns[state.selectedPattern] = selectedPattern;
+      return { patterns };
+    });
   },
   setStepsPerBeat(stepsPerBeat) {
-    set({ stepsPerBeat });
+    set((state) => {
+      const patterns = { ...state.patterns };
+      const selectedPattern = { ...patterns[state.selectedPattern] };
+      selectedPattern.stepsPerBeat = stepsPerBeat;
+      patterns[state.selectedPattern] = selectedPattern;
+      return { patterns };
+    });
   },
   addSampleAsTrack(sample) {
     set((state) => {
@@ -296,7 +325,9 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
   setCurrentStep(currentStep) {
     set((state) => ({
       currentStep,
-      currentBeat: Math.floor(currentStep / state.stepsPerBeat),
+      currentBeat: Math.floor(
+        currentStep / state.patterns[state.selectedPattern].stepsPerBeat
+      ),
     }));
   },
   setPlaying(playing) {
@@ -323,19 +354,19 @@ const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
     });
   },
 
-  addPattern(patternId) {
+  addPattern() {
     set((state) => {
-      const patternCounter = state.patternCounter + 1;
-      patternId = patternId ?? `Pattern ${patternCounter}`;
-      const selectedPattern = patternId;
-
-      const patternIds = [...state.patternIds, patternId];
+      const newPattern = state.initPattern();
 
       const patterns = {
         ...state.patterns,
-        [selectedPattern]: state.initPattern(),
+        [newPattern.id]: newPattern,
       };
-      return { patternCounter, selectedPattern, patternIds, patterns };
+
+      const patternIds = [...state.patternIds, newPattern.id];
+      const selectedPattern = newPattern.id;
+
+      return { selectedPattern, patternIds, patterns };
     });
   },
 }));
@@ -349,10 +380,25 @@ export function useIsPlaying() {
   return [isPlaying, setIsPlaying] as const;
 }
 
-export function useSequencerSteps() {
-  const stepsPerBeat = useSequencerStore((s) => s.stepsPerBeat);
-  const beatsPerBar = useSequencerStore((s) => s.beatsPerBar);
-  const barsPerSequence = useSequencerStore((s) => s.barsPerSequence);
+export function usePatternSteps() {
+  const patternId = useSequencerStore((s) => s.selectedPattern);
+  console.log("usePatternSteps - selectedPattern", patternId);
+
+  const stepsPerBeat = useSequencerStore(
+    (s) => s.patterns[patternId].stepsPerBeat
+  );
+  const beatsPerBar = useSequencerStore(
+    (s) => s.patterns[patternId].beatsPerBar
+  );
+  const barsPerSequence = useSequencerStore(
+    (s) => s.patterns[patternId].barsPerSequence
+  );
+
+  console.log("usePatternSteps", {
+    stepsPerBeat,
+    beatsPerBar,
+    barsPerSequence,
+  });
 
   return {
     stepsPerBeat,
@@ -417,7 +463,7 @@ export function useWireTrackBufferNodes() {
 }
 
 export function useSequencer() {
-  const { stepsPerBeat, totalSteps } = useSequencerSteps();
+  const { stepsPerBeat, totalSteps } = usePatternSteps();
   const audioContext = useAudioContext();
   const currentStep = useRef(0);
   const setCurrentStep = useSequencerStore((s) => s.setCurrentStep);
@@ -452,7 +498,7 @@ export function useSequencer() {
         for (const track of Object.values(tracks)) {
           if (
             !track.mute &&
-            pattern.trackSteps[track.id]?.[currentStep.current].active
+            pattern.trackSteps[track.id]?.[currentStep.current]?.active
           ) {
             playSample(track);
           }

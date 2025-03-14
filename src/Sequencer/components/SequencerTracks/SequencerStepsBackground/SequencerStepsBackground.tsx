@@ -1,4 +1,4 @@
-import useSequencerStore from "../../../stores/useSequencerStore";
+import { usePatternSteps } from "../../../stores/useSequencerStore";
 
 import "./SequencerStepsBackground.scss";
 
@@ -7,8 +7,7 @@ import "./SequencerStepsBackground.scss";
  * and who's width spans the number of steps in the sequencer.
  */
 function SequencerStepsBackground() {
-  const beatsPerBar = useSequencerStore((s) => s.beatsPerBar);
-  const barsPerSequence = useSequencerStore((s) => s.barsPerSequence);
+  const { beatsPerBar, barsPerSequence } = usePatternSteps();
   const beatsInSequence = beatsPerBar * barsPerSequence;
 
   return (

@@ -1,11 +1,11 @@
 import useSequencerStore, {
-  useSequencerSteps,
+  usePatternSteps,
 } from "../../../stores/useSequencerStore";
 import "./SequencerProgress.scss";
 
 function SequencerProgress() {
   const currentStep = useSequencerStore((s) => s.currentStep);
-  const { totalSteps } = useSequencerSteps();
+  const { totalSteps } = usePatternSteps();
   const isPlaying = useSequencerStore((s) => s.playing);
   const position = (100 / totalSteps) * currentStep;
   return (

@@ -1,12 +1,12 @@
 import Num from "../../../components/Input/Num";
-import useSequencerStore from "../../stores/useSequencerStore";
+import useSequencerStore, {
+  usePatternSteps,
+} from "../../stores/useSequencerStore";
 import PatternSelector from "./PatternSelector";
 import "./SequencerHeader.scss";
 
 function SequencerHeader() {
-  const beatsPerBar = useSequencerStore((s) => s.beatsPerBar);
-  const barsPerSequence = useSequencerStore((s) => s.barsPerSequence);
-  const stepsBerBeat = useSequencerStore((s) => s.stepsPerBeat);
+  const { beatsPerBar, barsPerSequence, stepsPerBeat } = usePatternSteps();
   const setStepsPerBeat = useSequencerStore((s) => s.setStepsPerBeat);
   const setBeatsPerBar = useSequencerStore((s) => s.setBeatsPerBar);
   const setBarsPerSequence = useSequencerStore((s) => s.setBarsPerSequence);
@@ -18,8 +18,11 @@ function SequencerHeader() {
           label="Steps/Beat"
           min={1}
           max={16}
-          value={stepsBerBeat}
-          onChange={(value) => setStepsPerBeat(Number(value))}
+          value={stepsPerBeat}
+          onChange={(value) => {
+            console.log("changed to", value);
+            setStepsPerBeat(Number(value));
+          }}
         />
 
         <Num

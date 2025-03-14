@@ -1,5 +1,5 @@
 import useSequencerStore, {
-  useSequencerSteps,
+  usePatternSteps,
 } from "../../../stores/useSequencerStore";
 import SequencerStep from "./SequencerStep";
 import "./SequencerTrackSteps.scss";
@@ -9,7 +9,7 @@ interface SequencerTrackStepsProps {
 }
 
 function SequencerTrackSteps({ trackId }: SequencerTrackStepsProps) {
-  const { totalSteps } = useSequencerSteps();
+  const { totalSteps } = usePatternSteps();
   const setSelected = useSequencerStore((s) => s.setSelectedTrack);
   return (
     <div className="sequencer-track-steps" onClick={() => setSelected(trackId)}>
