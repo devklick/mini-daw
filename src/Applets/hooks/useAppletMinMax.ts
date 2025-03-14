@@ -21,7 +21,6 @@ function useAppletMinMax({
   const hideApplet = useAppletManagerStore((s) => s.hideApplet);
 
   function maximize() {
-    console.log("Trying to maximize");
     const boundary = contentRef.current?.getBoundingClientRect();
     const window = appletRef.current;
     if (!contentRef.current || !boundary || !window) {
