@@ -1,7 +1,9 @@
+import Button from "../../components/Button";
 import Num from "../../components/Input/Num";
 import usePlayControls from "../../hooks/keyboardHooks/usePlayControls";
 import { useBpm } from "../../stores/useDawStore";
 import SequencerLauncher from "./Buttons/SequencerLauncher";
+
 import "./Header.scss";
 
 function Header() {

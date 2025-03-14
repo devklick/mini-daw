@@ -30,7 +30,6 @@ interface AppletManagerStoreState {
   contentRef: React.RefObject<HTMLDivElement | null>;
   applets: Record<string, ComponentDefinition>;
   highestZIndex: number;
-  getAppletDefinitions(): Array<ComponentDefinition>;
   addApplet<Props extends BaseProps = BaseProps>(
     appletId: string,
     definition: ComponentDefinition<Props>
@@ -92,9 +91,6 @@ const useAppletManagerStore = create<AppletManagerStoreState>()((set, get) => ({
         highestZIndex,
       };
     });
-  },
-  getAppletDefinitions() {
-    return Array.from(Object.values(get().applets));
   },
   hideApplet(appletId) {
     const applets = { ...get().applets };

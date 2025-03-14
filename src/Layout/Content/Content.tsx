@@ -6,11 +6,13 @@ function Content() {
   const applets = useAppletManagerStore((s) => s.applets);
   return (
     <main className="content">
-      {Object.values(applets).map((definition) => (
-        <definition.component {...definition.props} key={definition.key}>
-          {definition.children}
-        </definition.component>
-      ))}
+      {Object.values(applets).map(
+        ({ component: Component, props, children, key }) => (
+          <Component {...props} key={key}>
+            {children}
+          </Component>
+        )
+      )}
     </main>
   );
 }

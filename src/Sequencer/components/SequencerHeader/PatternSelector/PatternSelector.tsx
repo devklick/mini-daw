@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import SelectList from "../../../../components/SelectList/SelectList";
 import useSequencerStore from "../../../stores/useSequencerStore";
 import { useScrollToChange } from "../../../../hooks/mouseHooks";
+import Button from "../../../../components/Button";
 
 import "./PatternSelector.scss";
 
@@ -45,12 +46,13 @@ function PatternSelector() {
         onClose={() => setOpen(false)}
         className="pattern-selector__select-list"
       />
-      <button
-        className="pattern-selector__add-pattern-button"
+      <Button
         onClick={() => addPattern()}
+        backgroundColor="base4"
+        size={{ height: "100%" }}
       >
         +
-      </button>
+      </Button>
     </div>
   );
 }
