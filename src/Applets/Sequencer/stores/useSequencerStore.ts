@@ -4,9 +4,9 @@ import useSampleStore, {
   SampleInfo,
   useCreateSampleBufferSource,
   useLoadDefaultSamples,
-} from "../../Samples/stores/useSamplesStore";
-import { getFirst, getLast } from "../../utils/arrayUtils";
-import { useAudioContext, useBpm } from "../../stores/useDawStore";
+} from "../../../Samples/stores/useSamplesStore";
+import { getFirst, getLast } from "../../../utils/arrayUtils";
+import { useAudioContext, useBpm } from "../../../stores/useDawStore";
 
 interface Step {
   active: boolean;

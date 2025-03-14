@@ -1,8 +1,8 @@
 import Applet from "../../../../components/Applet";
-import Sequencer from "../../../../Sequencer";
+import Sequencer from "../..";
 import Button from "../../../../components/Button";
 import useAppletManagerStore from "../../../../stores/useAppletManagerStore";
-import useSequencerStore from "../../../../Sequencer/stores/useSequencerStore";
+import useSequencerStore from "../../stores/useSequencerStore";
 
 import SequencerIcon from "./assets/sequencer-icon.svg?react";
 
@@ -35,6 +35,7 @@ function SequencerLauncher() {
         initialPosition: { x: 0, y: 0 },
         title: "Sequencer",
         onClose: () => setSelectedTrack(null),
+        titleBarButtons: { close: true },
       },
       children: <Sequencer />,
       key: sequencerId,

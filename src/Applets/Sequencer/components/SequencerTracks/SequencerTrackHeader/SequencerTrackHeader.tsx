@@ -1,9 +1,9 @@
 import clsx from "clsx";
 
 import useSequencerStore from "../../../stores/useSequencerStore.ts";
-import { ContextMenuTarget } from "../../../../components/ContextMenu/index.ts";
-import useSampleStore from "../../../../Samples/stores/useSamplesStore.ts";
-import DropZone from "../../../../components/DragAndDrop/DropZone/DropZone.tsx";
+import { ContextMenuTarget } from "../../../../../components/ContextMenu/index.ts";
+import useSampleStore from "../../../../../Samples/stores/useSamplesStore.ts";
+import DropZone from "../../../../../components/DragAndDrop/DropZone/DropZone.tsx";
 
 import "./SequencerTrackHeader.scss";
 

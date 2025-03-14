@@ -3,7 +3,7 @@ import ControlKnob from "../../components/ControlKnob";
 import useToggle from "../../hooks/stateHooks/useToggle";
 import useSequencerStore, {
   SequencerTrack,
-} from "../../Sequencer/stores/useSequencerStore";
+} from "../../Applets/Sequencer/stores/useSequencerStore";
 import "./TrackProperty.scss";
 
 type PropertyKeys = keyof Pick<

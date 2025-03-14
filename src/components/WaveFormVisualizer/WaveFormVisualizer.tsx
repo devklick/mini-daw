@@ -31,7 +31,7 @@ function WaveformVisualizer({
 
       ctx.clearRect(0, 0, width, height);
 
-      ctx.strokeStyle = theme.colorPrimary4;
+      ctx.strokeStyle = theme.color.primary4;
       ctx.lineWidth = 1;
       ctx.beginPath();
 

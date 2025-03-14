@@ -1,5 +1,5 @@
 import { ContextMenuTarget } from "../../components/ContextMenu";
-import useSequencerStore from "../../Sequencer/stores/useSequencerStore";
+import useSequencerStore from "../../Applets/Sequencer/stores/useSequencerStore";
 import TrackProperty from "../TrackProperty";
 import "./TrackPropertiesList.scss";
 
@@ -12,10 +12,6 @@ function TrackPropertiesList({ trackId }: TrackPropertiesListProps) {
   const setTrackVolume = useSequencerStore((s) => s.setTrackVolume);
   const setTrackPan = useSequencerStore((s) => s.setTrackPan);
   const setTrackPitch = useSequencerStore((s) => s.setTrackPitch);
-
-  // TODO: Need to sort the inconsistency around using either
-  // the trackNo or trackId. Probs should use the ID to avoid
-  // relying on indexes which could change.
 
   function setName(name: string) {
     setTrackName(trackId, name);

@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-import useSequencerStore from "../Sequencer/stores/useSequencerStore";
+import useSequencerStore from "../Applets/Sequencer/stores/useSequencerStore";
 import TrackPropertiesList from "./TrackPropertiesList";
 import WaveformVisualizer from "../components/WaveFormVisualizer";
 

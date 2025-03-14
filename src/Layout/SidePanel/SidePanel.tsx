@@ -3,9 +3,9 @@ import clsx from "clsx";
 
 import useLayoutStore from "../stores/useLayoutStore";
 import { useMouseDownOnElement } from "../../hooks/mouseHooks";
+import { capitalize } from "../../utils/stringUtils";
 
 import "./SidePanel.scss";
-import { capitalize } from "../../utils/stringUtils";
 
 interface SidePanelProps {
   side: "left" | "right";

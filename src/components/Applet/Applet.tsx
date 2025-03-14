@@ -15,6 +15,8 @@ import Button from "../Button";
 
 import "./Applet.scss";
 
+type TitleBarButton = "close" | "min" | "max";
+
 interface AppletProps extends BaseProps {
   title: string;
   id: string;
@@ -22,6 +24,7 @@ interface AppletProps extends BaseProps {
   initialPosition: Position;
   maxDimensions?: Dimensions;
   minDimensions?: MinDimensions;
+  titleBarButtons?: Partial<Record<TitleBarButton, true>>;
 }
 
 function Applet({
@@ -35,6 +38,7 @@ function Applet({
   hidden,
   zIndex,
   onClose,
+  titleBarButtons,
 }: AppletProps) {
   const closeApplet = useAppletManagerStore((s) => s.closeApplet);
   const focusApplet = useAppletManagerStore((s) => s.focusApplet);
@@ -44,6 +48,8 @@ function Applet({
 
   const {
     moveHandle,
+    maximize,
+    // minimize,
     resizeHandleE,
     resizeHandleN,
     resizeHandleNE,
@@ -56,6 +62,7 @@ function Applet({
     elementRef: appRef,
     initialPosition,
     minDimensions,
+    appletId: id,
   });
 
   function handleClose() {
@@ -107,15 +114,28 @@ function Applet({
 
         <div className={clsx("applet__window-buttons-wrapper", "drag-to-move")}>
           <div className="applet__window-buttons">
-            <Button
-              backgroundColor="accentRed"
-              color="accentYellow"
-              onClick={handleClose}
-              size={{ height: "100%" }}
-              className="applet__window-button--close"
-            >
-              X
-            </Button>
+            {titleBarButtons?.max && (
+              <Button
+                backgroundColor="accentGreen"
+                color="light3"
+                onClick={maximize}
+                size={{ height: "100%" }}
+                className="applet__window-button--max"
+              >
+                +
+              </Button>
+            )}
+            {titleBarButtons?.close && (
+              <Button
+                backgroundColor="accentRed"
+                color="accentYellow"
+                onClick={handleClose}
+                size={{ height: "100%" }}
+                className="applet__window-button--close"
+              >
+                X
+              </Button>
+            )}
           </div>
         </div>
       </div>

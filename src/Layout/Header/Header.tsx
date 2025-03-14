@@ -1,8 +1,8 @@
-import Button from "../../components/Button";
 import Num from "../../components/Input/Num";
 import usePlayControls from "../../hooks/keyboardHooks/usePlayControls";
 import { useBpm } from "../../stores/useDawStore";
-import SequencerLauncher from "./Buttons/SequencerLauncher";
+import SequencerLauncher from "../../Applets/Sequencer/components/SequencerLauncher";
+import ArrangerLauncher from "../../Applets/Arranger/components/ArrangerLauncher";
 
 import "./Header.scss";
 
@@ -23,6 +23,7 @@ function Header() {
       />
       <button onClick={togglePlayStop}>Play</button>
       <SequencerLauncher />
+      <ArrangerLauncher />
     </header>
   );
 }

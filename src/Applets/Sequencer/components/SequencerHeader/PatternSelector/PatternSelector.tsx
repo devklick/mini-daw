@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
-import SelectList from "../../../../components/SelectList/SelectList";
+import SelectList from "../../../../../components/SelectList/SelectList";
 import useSequencerStore from "../../../stores/useSequencerStore";
-import { useScrollToChange } from "../../../../hooks/mouseHooks";
-import Button from "../../../../components/Button";
+import { useScrollToChange } from "../../../../../hooks/mouseHooks";
+import Button from "../../../../../components/Button";
 
 import "./PatternSelector.scss";
 

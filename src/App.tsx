@@ -1,4 +1,4 @@
-import { useLoadSequencer } from "./Sequencer/stores/useSequencerStore";
+import { useLoadSequencer } from "./Applets/Sequencer/stores/useSequencerStore";
 import Layout from "./Layout";
 
 import "./App.css";

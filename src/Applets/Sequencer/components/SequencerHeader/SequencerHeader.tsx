@@ -1,4 +1,4 @@
-import Num from "../../../components/Input/Num";
+import Num from "../../../../components/Input/Num";
 import useSequencerStore, {
   usePatternSteps,
 } from "../../stores/useSequencerStore";

@@ -1,4 +1,4 @@
-import { useSequencer } from "../../Sequencer/stores/useSequencerStore";
+import { useSequencer } from "../../Applets/Sequencer/stores/useSequencerStore";
 import useBindKeyToAction from "./useBindKeyToAction";
 
 function usePlayControls() {

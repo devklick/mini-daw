@@ -5,13 +5,14 @@ import useDragToResize, {
   Rect,
 } from "./useDragToResize";
 import useDragToMove from "./useDragToMove";
+import useAppletMinMax from "../../Applets/hooks/useAppletMinMax";
 // import useWindowMinMax from "./useWindowMinMax";
 
 interface UsePositionableElementProps {
   elementRef: React.RefObject<HTMLElement | null>;
   minDimensions: MinDimensions;
   // windowType: string;
-  // windowId: string;
+  appletId: string;
   initialPosition: Position;
 }
 
@@ -25,7 +26,7 @@ function usePositionableElement({
   elementRef,
   minDimensions,
   // windowType,
-  // windowId,
+  appletId,
   initialPosition,
 }: UsePositionableElementProps) {
   // Hold a single ref for the elements rect,
@@ -70,19 +71,18 @@ function usePositionableElement({
     elementRect,
   });
 
-  // // Allows the the element to be minimized or maximized.
-  // // Again, it needs to know the elementRect for the same reason mentioned above.
-  // const { maximize, minimize } = useWindowMinMax({
-  //   windowRef: elementRef,
-  //   windowRect: elementRect,
-  //   windowType,
-  //   windowId,
-  // });
+  // Allows the the element to be minimized or maximized.
+  // Again, it needs to know the elementRect for the same reason mentioned above.
+  const { maximize, minimize } = useAppletMinMax({
+    appletRef: elementRef,
+    appletRect: elementRect,
+    appletId,
+  });
 
   return {
     moveHandle,
-    // minimize,
-    // maximize,
+    minimize,
+    maximize,
     ...resizeHandles,
   };
 }

@@ -12,6 +12,7 @@
     background-color: $color-base-2;
     position: absolute;
     min-height: fit-content;
+    box-sizing: border-box;
 
     &__edge {
         position: absolute;
