@@ -3,13 +3,15 @@ import Applet from "../../../../components/Applet";
 import Sequencer from "../../../../Sequencer";
 import useAppletManagerStore from "../../../../stores/useAppletManagerStore";
 import useSequencerStore from "../../../../Sequencer/stores/useSequencerStore";
+
+import SequencerIcon from "./assets/sequencer-icon.svg?react";
 import "./SequencerLauncher.scss";
+import Button from "../../../../components/Button";
 
 function SequencerLauncher() {
-  const sequencerIdRef = useRef(crypto.randomUUID());
-  const sequencer = useAppletManagerStore(
-    (s) => s.applets[sequencerIdRef.current]
-  );
+  // Since the sequencer is a singleton, we can have a constant ID for it.
+  const sequencerId = "sequencer";
+  const sequencer = useAppletManagerStore((s) => s.applets[sequencerId]);
   const addApplet = useAppletManagerStore((s) => s.addApplet);
   const toggleHide = useAppletManagerStore((s) => s.toggleHide);
   const setSelectedTrack = useSequencerStore((s) => s.setSelectedTrack);
@@ -17,26 +19,32 @@ function SequencerLauncher() {
     // If the applet has already been created,
     // the launcher button is used to either hide or show the applet.
     if (sequencer) {
-      toggleHide(sequencerIdRef.current);
+      toggleHide(sequencerId);
       return;
     }
 
     // If it hasn't been created, we need to create it.
-    addApplet(sequencerIdRef.current, {
+    addApplet(sequencerId, {
       component: Applet,
       props: {
-        id: sequencerIdRef.current,
+        id: sequencerId,
         initialDimensions: { height: "auto", width: 600 },
         initialPosition: { x: 0, y: 0 },
         title: "Sequencer",
         onClose: () => setSelectedTrack(null),
       },
       children: <Sequencer />,
-      key: sequencerIdRef.current,
+      key: sequencerId,
     });
   }
   return (
-    <button className={"sequencer-launcher"} onClick={handleClick}></button>
+    <Button
+      onClick={handleClick}
+      backgroundColor="base4"
+      size={{ height: "100%" }}
+    >
+      <SequencerIcon width={"100%"} height={"100%"} />
+    </Button>
   );
 }
 

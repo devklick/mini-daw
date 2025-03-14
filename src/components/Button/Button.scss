@@ -1,14 +1,17 @@
+@use "/src/global" as *;
+
 .button {
     all: unset;
-    transition: all 0.1s ease;
 
     &:hover {
         box-shadow:
-            1px 1px 2px inset rgb(255, 255, 255, 0.2),
-            1px 1px 2px rgb(0, 0, 0, 0.2);
+            0.2em 0.2em 0.4em inset rgb(255, 255, 255, 0.2),
+            0.2em 0.2em 0.4em rgb(0, 0, 0, 0.2);
+
+        outline: 1px solid $color-primary-3;
     }
 
     &:active {
-        box-shadow: 1px 1px 2px rgb(0, 0, 0, 0.2) inset;
+        box-shadow: 0.2em 0.2em 0.4em rgb(0, 0, 0, 0.2) inset;
     }
 }
