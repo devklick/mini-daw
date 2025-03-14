@@ -19,10 +19,7 @@ function SequencerHeader() {
           min={1}
           max={16}
           value={stepsPerBeat}
-          onChange={(value) => {
-            console.log("changed to", value);
-            setStepsPerBeat(Number(value));
-          }}
+          onChange={(value) => setStepsPerBeat(Number(value))}
         />
 
         <Num

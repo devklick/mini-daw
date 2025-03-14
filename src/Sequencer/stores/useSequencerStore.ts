@@ -38,8 +38,8 @@ export interface SequencerTrack {
   mute: boolean;
   /**
    * - Min: 0
-   * - Max: 100
-   * @default 80
+   * - Max: 200
+   * @default 100
    */
   volume: number;
 
@@ -109,7 +109,7 @@ const defaultBeatsPerBar = 4;
 const defaultBarsPerSequence = 1;
 
 const defaultPan = 0;
-const defaultVolume = 80;
+const defaultVolume = 100;
 const defaultPitch = 0;
 
 const useSequencerStore = create<SequencerStoreState>()((set, get) => ({
@@ -382,7 +382,6 @@ export function useIsPlaying() {
 
 export function usePatternSteps() {
   const patternId = useSequencerStore((s) => s.selectedPattern);
-  console.log("usePatternSteps - selectedPattern", patternId);
 
   const stepsPerBeat = useSequencerStore(
     (s) => s.patterns[patternId].stepsPerBeat
@@ -393,12 +392,6 @@ export function usePatternSteps() {
   const barsPerSequence = useSequencerStore(
     (s) => s.patterns[patternId].barsPerSequence
   );
-
-  console.log("usePatternSteps", {
-    stepsPerBeat,
-    beatsPerBar,
-    barsPerSequence,
-  });
 
   return {
     stepsPerBeat,
@@ -416,21 +409,15 @@ export function useLoadSequencer() {
   const loadSamplesStatus = useSampleStore((s) => s.initState);
   const samples = useSampleStore((s) => s.samples);
   const addTrack = useSequencerStore((s) => s.addTrack);
+  const initTrack = useSequencerStore((s) => s.initTrack);
 
   useEffect(() => {
     if (loadSamplesStatus !== "loaded") {
       return;
     }
     Object.values(samples).map((sample) => {
-      addTrack({
-        name: getFirst(sample.name.split(".")),
-        sample: sample,
-        id: crypto.randomUUID(),
-        mute: false,
-        pan: 0,
-        pitch: 0,
-        volume: 80,
-      });
+      const track = initTrack(getFirst(sample.name.split(".")), sample);
+      addTrack(track);
     });
     // dont want this to run every time samples chang
     // eslint-disable-next-line react-hooks/exhaustive-deps

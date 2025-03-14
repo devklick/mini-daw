@@ -63,7 +63,7 @@ function TrackPropertiesList({ trackId }: TrackPropertiesListProps) {
           trackId={trackId}
           type="knob"
           min={0}
-          max={100}
+          max={200}
         />
       </ContextMenuTarget>
       <ContextMenuTarget
