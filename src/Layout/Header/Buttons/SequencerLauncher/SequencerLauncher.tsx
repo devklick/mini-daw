@@ -13,13 +13,13 @@ function SequencerLauncher() {
   const sequencerId = "sequencer";
   const sequencer = useAppletManagerStore((s) => s.applets[sequencerId]);
   const addApplet = useAppletManagerStore((s) => s.addApplet);
-  const toggleHide = useAppletManagerStore((s) => s.toggleHide);
+  const closeApplet = useAppletManagerStore((s) => s.closeApplet);
   const setSelectedTrack = useSequencerStore((s) => s.setSelectedTrack);
   function handleClick() {
     // If the applet has already been created,
     // the launcher button is used to either hide or show the applet.
     if (sequencer) {
-      toggleHide(sequencerId);
+      closeApplet(sequencerId);
       return;
     }
 
