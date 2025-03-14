@@ -1,5 +1,11 @@
+@use "/src/global" as *;
+
 .sequencer-launcher {
-    height: 100%;
-    width: auto;
-    aspect-ratio: 1/1;
+    &__icon {
+        &:hover {
+            g {
+                fill: $color-primary-3;
+            }
+        }
+    }
 }

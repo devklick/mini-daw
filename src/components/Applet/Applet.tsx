@@ -1,4 +1,6 @@
 import { useRef } from "react";
+import clsx from "clsx";
+
 import {
   CSSDimensions,
   Dimensions,
@@ -8,10 +10,10 @@ import {
 import useAppletManagerStore, {
   BaseProps,
 } from "../../stores/useAppletManagerStore";
-import "./Applet.scss";
 import { usePositionableElement } from "../../hooks/mouseHooks";
-import clsx from "clsx";
 import Button from "../Button";
+
+import "./Applet.scss";
 
 interface AppletProps extends BaseProps {
   title: string;

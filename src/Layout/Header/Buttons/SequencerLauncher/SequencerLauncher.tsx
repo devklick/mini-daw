@@ -46,7 +46,11 @@ function SequencerLauncher() {
       backgroundColor="base4"
       size={{ height: "100%" }}
     >
-      <SequencerIcon width={"100%"} height={"100%"} />
+      <SequencerIcon
+        width={"100%"}
+        height={"100%"}
+        className="sequencer-launcher__icon"
+      />
     </Button>
   );
 }
