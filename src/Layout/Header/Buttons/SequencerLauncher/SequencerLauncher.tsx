@@ -1,23 +1,26 @@
-import { useRef } from "react";
 import Applet from "../../../../components/Applet";
 import Sequencer from "../../../../Sequencer";
+import Button from "../../../../components/Button";
 import useAppletManagerStore from "../../../../stores/useAppletManagerStore";
 import useSequencerStore from "../../../../Sequencer/stores/useSequencerStore";
 
 import SequencerIcon from "./assets/sequencer-icon.svg?react";
+
 import "./SequencerLauncher.scss";
-import Button from "../../../../components/Button";
 
 function SequencerLauncher() {
-  // Since the sequencer is a singleton, we can have a constant ID for it.
+  // Since the sequencer can be considered as a  singleton, we can have a constant ID for it.
   const sequencerId = "sequencer";
   const sequencer = useAppletManagerStore((s) => s.applets[sequencerId]);
   const addApplet = useAppletManagerStore((s) => s.addApplet);
   const closeApplet = useAppletManagerStore((s) => s.closeApplet);
   const setSelectedTrack = useSequencerStore((s) => s.setSelectedTrack);
+
   function handleClick() {
-    // If the applet has already been created,
-    // the launcher button is used to either hide or show the applet.
+    // Rather than showing and hiding the sequencer,  we close and open it.
+    // This avoids the situation where the sequencer drag-bar & close button
+    // are hidden behind another element and cant be accessed - the launcher
+    // can be used to close and re-open, which re-initializes the position
     if (sequencer) {
       closeApplet(sequencerId);
       return;
