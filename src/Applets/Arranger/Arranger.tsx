@@ -1,7 +1,6 @@
-import { BaseProps } from "../../stores/useAppletManagerStore";
 import "./Arranger.scss";
 
-function Arranger({}: BaseProps) {
+function Arranger() {
   return null;
 }
 

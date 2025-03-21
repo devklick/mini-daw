@@ -1,7 +1,7 @@
 import Applet from "../../../../components/Applet";
 import Sequencer from "../..";
 import Button from "../../../../components/Button";
-import useAppletManagerStore from "../../../../stores/useAppletManagerStore";
+import useAppletManagerStore from "../../../stores/useAppletManagerStore";
 import useSequencerStore from "../../stores/useSequencerStore";
 
 import SequencerIcon from "./assets/sequencer-icon.svg?react";

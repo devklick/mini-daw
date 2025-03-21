@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Rect } from "../../hooks/mouseHooks/useDragToResize";
-import useAppletManagerStore from "../../stores/useAppletManagerStore";
+import useAppletManagerStore from "../stores/useAppletManagerStore";
 
 function toPx(value: number): `${number}px` {
   return `${value}px`;

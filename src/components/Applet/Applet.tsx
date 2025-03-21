@@ -9,7 +9,7 @@ import {
 } from "../../hooks/mouseHooks/useDragToResize";
 import useAppletManagerStore, {
   BaseProps,
-} from "../../stores/useAppletManagerStore";
+} from "../../Applets/stores/useAppletManagerStore";
 import { usePositionableElement } from "../../hooks/mouseHooks";
 import Button from "../Button";
 

@@ -1,4 +1,4 @@
-import useAppletManagerStore from "../../stores/useAppletManagerStore";
+import useAppletManagerStore from "../../Applets/stores/useAppletManagerStore";
 
 import "./Content.scss";
 
