@@ -66,15 +66,6 @@ function useScrollbar({ axis, containerRef, enabled }: UseScrollbarParams) {
       const offset =
         (scrollOffset / (scrollSize - clientSize)) * maxOffset || 0;
 
-      console.log({
-        axis,
-        offset,
-        size,
-        clientSize,
-        scrollOffset,
-        scrollSize,
-        maxOffset,
-      });
       setValues({ offset, size });
     };
 
