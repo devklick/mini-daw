@@ -15,6 +15,8 @@ interface UseDetectMouseDownOutsideProps<Element extends HTMLElement> {
   onMouseDown: () => void;
 
   enabled?: boolean;
+
+  mouseButtons?: Array<"left" | "right">;
 }
 
 /**
@@ -28,6 +30,7 @@ interface UseDetectMouseDownOutsideProps<Element extends HTMLElement> {
 function useDetectMouseDownOutside<Element extends HTMLElement>({
   elementRef,
   onMouseDown,
+  mouseButtons = ["left"],
   enabled = true,
 }: UseDetectMouseDownOutsideProps<Element>) {
   useEffect(() => {
@@ -62,10 +65,22 @@ function useDetectMouseDownOutside<Element extends HTMLElement>({
       }
     }
 
-    window.addEventListener("mousedown", handler);
+    if (mouseButtons.includes("left")) {
+      window.addEventListener("mousedown", handler);
+    }
+    if (mouseButtons.includes("right")) {
+      window.addEventListener("contextmenu", handler);
+    }
 
-    return () => window.removeEventListener("mousedown", handler);
-  }, [elementRef, enabled, onMouseDown]);
+    return () => {
+      if (mouseButtons.includes("left")) {
+        window.removeEventListener("mousedown", handler);
+      }
+      if (mouseButtons.includes("right")) {
+        window.removeEventListener("contextmenu", handler);
+      }
+    };
+  }, [elementRef, enabled, mouseButtons, onMouseDown]);
 }
 
 export default useDetectMouseDownOutside;

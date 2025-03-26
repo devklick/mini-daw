@@ -61,7 +61,9 @@ function ControlKnob({
     [max, min, mouseDown, onChange, value]
   );
   const handleDown = (event: React.MouseEvent) => {
-    event.stopPropagation();
+    // Only handle left clicks
+    if (event.button !== 0) return;
+
     event.preventDefault();
     lastYRef.current = event.clientY;
   };

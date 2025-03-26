@@ -1,0 +1,42 @@
+@use "/src/global" as *;
+
+$scroll-background-color: $color-base-1;
+$scroll-foreground-color: $color-base-4;
+$slider-size: 6px;
+$scroll-padding: 2px;
+
+.scrollbar {
+    padding: $scroll-padding;
+    background-color: $scroll-background-color;
+    position: relative;
+    box-sizing: border-box;
+    border-radius: 5px;
+
+    &--x {
+        grid-area: scroll-x;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+    }
+    &--y {
+        grid-area: scroll-y;
+        height: 100%;
+        top: 0;
+        right: 0;
+    }
+
+    &-slider {
+        position: sticky;
+        background-color: $scroll-foreground-color;
+        border-radius: 5px;
+
+        &--x {
+            height: $slider-size;
+            transition: left 0.1s ease-out;
+        }
+        &--y {
+            width: $slider-size;
+            transition: top 0.1s ease-out;
+        }
+    }
+}

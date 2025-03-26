@@ -14,7 +14,11 @@ interface ContextMenuProps {
 function ContextMenu({ items, position, close }: ContextMenuProps) {
   const elementRef = useRef<HTMLDivElement>(null);
 
-  useDetectMouseDownOutside({ elementRef, onMouseDown: close });
+  useDetectMouseDownOutside({
+    elementRef,
+    onMouseDown: close,
+    mouseButtons: ["left", "right"],
+  });
   useBindKeyToAction({ keys: ["Escape"], actions: [close] });
 
   return (

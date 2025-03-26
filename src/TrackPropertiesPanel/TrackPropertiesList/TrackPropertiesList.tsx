@@ -46,7 +46,7 @@ function TrackPropertiesList({ trackId }: TrackPropertiesListProps) {
         items={[
           {
             title: "Reset",
-            action: () => setVolume(80),
+            action: () => setVolume(100),
             closeOnClick: true,
           },
         ]}
