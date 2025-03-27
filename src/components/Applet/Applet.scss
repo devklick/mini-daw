@@ -1,5 +1,6 @@
 @use "/src/global" as *;
 
+$border-width: 2px;
 .applet {
     min-height: 0;
     grid-template-rows: 32px auto;
@@ -7,7 +8,7 @@
         "title-bar"
         "content";
     border-radius: 10px;
-    border: 2px solid $color-base-4;
+    border: $border-width solid $color-base-4;
     box-shadow: 0 0 5px 5px rgba(27, 27, 27, 0.5);
     background-color: $color-base-2;
     position: absolute;
@@ -22,24 +23,28 @@
             width: 100%;
             left: 0;
             height: 5px;
+            margin-top: -$border-width;
             cursor: n-resize;
         }
         &--e {
             width: 5px;
             height: 100%;
             right: 0;
+            margin-right: -$border-width;
             cursor: e-resize;
         }
         &--s {
             width: 100%;
             height: 5px;
             bottom: 0;
+            margin-bottom: -$border-width;
             cursor: s-resize;
         }
         &--w {
             width: 5px;
             height: 100%;
             left: 0;
+            margin-left: -$border-width;
             cursor: w-resize;
         }
     }
@@ -52,21 +57,29 @@
         &--ne {
             top: 0;
             right: 0;
+            margin-top: -$border-width;
+            margin-right: -$border-width;
             cursor: ne-resize;
         }
         &--se {
             bottom: 0;
             right: 0;
+            margin-bottom: -$border-width;
+            margin-right: -$border-width;
             cursor: se-resize;
         }
         &--sw {
             bottom: 0;
             left: 0;
+            margin-bottom: -$border-width;
+            margin-left: -$border-width;
             cursor: sw-resize;
         }
         &--nw {
             top: 0;
             left: 0;
+            margin-top: -$border-width;
+            margin-left: -$border-width;
             cursor: nw-resize;
         }
     }
@@ -79,6 +92,11 @@
         padding: 0 8px;
         box-sizing: border-box;
         cursor: move;
+        background-color: $color-base-4;
+        border-radius: 8px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom: 2px solid $color-base-4;
     }
 
     &__title-wrapper {

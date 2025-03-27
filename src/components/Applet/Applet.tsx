@@ -14,8 +14,12 @@ import { usePositionableElement } from "../../hooks/mouseHooks";
 import Button from "../Button";
 
 import "./Applet.scss";
+import { uppercase } from "../../utils/stringUtils";
 
 type TitleBarButton = "close" | "min" | "max";
+
+const cardinals = ["n", "e", "s", "w"] as const;
+const ordinals = ["ne", "se", "sw", "nw"] as const;
 
 interface AppletProps extends BaseProps {
   title: string;
@@ -49,15 +53,8 @@ function Applet({
   const {
     moveHandle,
     maximize,
-    // minimize,
-    resizeHandleE,
-    resizeHandleN,
-    resizeHandleNE,
-    resizeHandleNW,
-    resizeHandleS,
-    resizeHandleSE,
-    resizeHandleSW,
-    resizeHandleW,
+    minimize: _minimize,
+    ...resizeHandles
   } = usePositionableElement({
     elementRef: appRef,
     initialPosition,
@@ -87,22 +84,17 @@ function Applet({
         display: hidden ? "none" : "grid",
       }}
     >
-      <div
-        className={clsx("applet__corner", "applet__corner--nw")}
-        ref={resizeHandleNW}
-      />
-      <div
-        className={clsx("applet__edge", "applet__edge--n")}
-        ref={resizeHandleN}
-      />
-      <div
-        className={clsx("applet__corner", "applet__corner--ne")}
-        ref={resizeHandleNE}
-      />
-      <div
-        className={clsx("applet__edge", "applet__edge--e")}
-        ref={resizeHandleE}
-      />
+      {/* Add the elements that will be used to resize the applet */}
+      {[...cardinals, ...ordinals].map((pos) => {
+        const type = pos.length === 1 ? "edge" : "corner";
+        const handle = resizeHandles[`resizeHandle${uppercase(pos)}`];
+        return (
+          <div
+            className={clsx(`applet__${type}`, `applet__${type}--${pos}`)}
+            ref={handle}
+          />
+        );
+      })}
 
       <div
         className={clsx("applet__title-bar", "drag-to-move")}
@@ -141,23 +133,6 @@ function Applet({
       </div>
 
       <div className="applet__content">{children}</div>
-
-      <div
-        className={clsx("applet__corner", "applet__corner--sw")}
-        ref={resizeHandleSW}
-      />
-      <div
-        className={clsx("applet__edge", "applet__edge--s")}
-        ref={resizeHandleS}
-      />
-      <div
-        className={clsx("applet__corner", "applet__corner--se")}
-        ref={resizeHandleSE}
-      />
-      <div
-        className={clsx("applet__edge", "applet__edge--w")}
-        ref={resizeHandleW}
-      />
     </div>
   );
 }
