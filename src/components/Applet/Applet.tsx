@@ -92,6 +92,7 @@ function Applet({
           <div
             className={clsx(`applet__${type}`, `applet__${type}--${pos}`)}
             ref={handle}
+            key={`handle-${pos}`}
           />
         );
       })}
