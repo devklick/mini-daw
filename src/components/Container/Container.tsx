@@ -8,21 +8,28 @@ interface ContainerProps {
   scrollY?: boolean;
   className?: string;
   children?: React.ReactNode;
+  ref?: React.RefObject<HTMLDivElement | null>;
 }
 
-function Container({ scrollX, scrollY, className, children }: ContainerProps) {
-  const contentContainerRef = useRef<HTMLDivElement>(null);
-
+function Container({
+  scrollX,
+  scrollY,
+  className,
+  children,
+  ref: _ref,
+}: ContainerProps) {
+  const defaultContainerRef = useRef<HTMLDivElement>(null);
+  const containerRef = _ref ?? defaultContainerRef;
   return (
     <div className={clsx("container", className)}>
-      <div className="container__content" ref={contentContainerRef}>
+      <div className="container__content" ref={containerRef}>
         {children}
       </div>
 
       <Scrollbars
         scrollX={scrollX}
         scrollY={scrollY}
-        containerRef={contentContainerRef}
+        containerRef={containerRef}
       />
     </div>
   );

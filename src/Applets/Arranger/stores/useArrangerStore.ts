@@ -89,9 +89,12 @@ interface ArrangerStoreState {
     sequencerPatternId: string,
     position: Position
   ): void;
+
   addPatternToNewTrack(sequencerPatternId: string, position: Position): void;
 
   deletePatternFromTrack(trackId: string, arrangerPatternId: string): void;
+
+  deleteTrack(trackId: string): void;
 }
 
 const useArrangerStore = create<ArrangerStoreState>()((set) => ({
@@ -147,6 +150,15 @@ const useArrangerStore = create<ArrangerStoreState>()((set) => ({
       delete patterns[trackId][arrangerPatternId];
 
       return { patternIds, patterns };
+    });
+  },
+
+  deleteTrack(trackId) {
+    set((state) => {
+      const trackIds = [...state.trackIds].filter((id) => id !== trackId);
+      const tracks = { ...state.tracks };
+      delete tracks[trackId];
+      return { trackIds, tracks };
     });
   },
 }));
