@@ -1,24 +1,69 @@
 import clsx from "clsx";
 import React, { CSSProperties, useRef } from "react";
-import useScrollbars from "./hooks/useScrollbars";
+import useScrollbars, { useScrollbarReset } from "./hooks/useScrollbars";
 
 import "./Scrollbars.scss";
 
 interface ScrollbarsProps {
+  /**
+   * Whether or not scrolling is enabled along the X axis.
+   *
+   * If not enabled, the scrollbar will not be rendered. If enabled, the scrollbar
+   * will be rendered and persisted, regardless of whether the content overflows
+   * the containers boundary.
+   */
   scrollX?: boolean;
+
+  /**
+   * Whether or not scrolling is enabled along the Y axis.
+   *
+   * If not enabled, the scrollbar will not be rendered. If enabled, the scrollbar
+   * will be rendered and persisted, regardless of whether the content overflows
+   * the containers boundary.
+   */
   scrollY?: boolean;
+  /**
+   * Whether or not the user can continue scrolling past the current width of
+   * the container to increase the containers width.
+   */
+  scrollXGrow?: boolean;
+  /**
+   * Whether or not the user can continue scrolling past the current height of
+   * the container to increase the containers height.
+   */
+  scrollYGrow?: boolean;
+  /**
+   * A reference to the scrollable area within the container.
+   */
   containerRef: React.RefObject<HTMLDivElement | null>;
+  /**
+   * A reference to the content that's rendered within the scrollable container.
+   *
+   * Since we may need to resize the content within the container,
+   * we need a reference to it to apply the resize.
+   */
+  contentRef: React.RefObject<HTMLDivElement | null>;
 }
 
-function Scrollbars({ scrollX, scrollY, containerRef }: ScrollbarsProps) {
+function Scrollbars({
+  scrollX,
+  scrollY,
+  scrollXGrow,
+  scrollYGrow,
+  containerRef,
+  contentRef,
+}: ScrollbarsProps) {
   const sliderXRef = useRef<HTMLDivElement>(null);
   const sliderYRef = useRef<HTMLDivElement>(null);
   const [x, y] = useScrollbars({
     scrollX,
     scrollY,
-    sliderXRef: sliderXRef,
-    sliderYRef: sliderYRef,
+    scrollXGrow,
+    scrollYGrow,
+    sliderXRef,
+    sliderYRef,
     containerRef,
+    contentRef,
   });
   return (
     <>
