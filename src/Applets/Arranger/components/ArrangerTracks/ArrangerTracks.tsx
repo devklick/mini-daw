@@ -9,7 +9,7 @@ function ArrangerTracks({ ref }: ArrangerTracksProps) {
   return (
     <div
       className="arranger-tracks"
-      style={{ width: 3000, height: 3000 }}
+      style={{ width: "100%", height: "100%" }}
       ref={ref}
     ></div>
   );

@@ -277,6 +277,8 @@ function useScrollbar({
    * Handle resizing the content when scrolling.
    *
    * The idea here is to create a kind of infinitely growing scroll.
+   * 
+   * // TODO: need to apply same logic when dragging the scrollbar
    */
   useEffect(() => {
     const container = containerRef.current;
@@ -293,11 +295,19 @@ function useScrollbar({
       ) {
         const wh = axis === "x" ? "width" : "height";
 
-        // TODO: Need to update this so as to only grow the scrollable area
-        // when the scroller is current at the end of the area.
+        // We'll detect the scrollbar being at the end of the scrollable section
+        // if it's within 20px of the end
+        const endThreshold = 20;
+        // The scrollbar end position relates to the end of the movable section within the scrollbar.
+        // For a vertical scrollbar, this is the very bottom of the moving area,
+        // whereas for a horizontal scrollbar, this is the rightmost part of the moving area
+        const scrollbarEndPosition =
+          container[`client${capitalize(wh)}`] -
+          Math.ceil(values.size + values.offset);
 
         // If scrolling down/right, we want to grow the area
-        if (event.deltaY > 0) {
+        // We only do this if the scrollbar has reached the end
+        if (event.deltaY > 0 && scrollbarEndPosition <= endThreshold) {
           contentDimensions.current[wh] += 10;
         }
         // If scrolling up/left, we want to shrink the area.
@@ -315,7 +325,7 @@ function useScrollbar({
     return () => {
       container.removeEventListener("wheel", handleWheel);
     };
-  }, [contentRef, containerRef, enabled, scrollGrow, axis]);
+  }, [contentRef, containerRef, enabled, scrollGrow, axis, values]);
 
   return { enabled, ...values } as const;
 }
