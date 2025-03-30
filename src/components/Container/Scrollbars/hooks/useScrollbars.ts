@@ -95,21 +95,29 @@ function useScrollbar({
    */
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
-      if (!isDragging.current || !containerRef.current) return;
+      if (!isDragging.current || !containerRef.current || !contentRef.current)
+        return;
 
       const container = containerRef.current;
+      const content = contentRef.current;
       const { scrollHeight, clientHeight, scrollWidth, clientWidth } =
         container;
 
       let clientSize;
       let scrollSize;
+      let scrollOffset;
+      let contentSizeProp: "width" | "height";
 
       if (axis === "x") {
         clientSize = clientWidth;
         scrollSize = scrollWidth;
+        scrollOffset = container.scrollLeft;
+        contentSizeProp = "width";
       } else {
         clientSize = clientHeight;
         scrollSize = scrollHeight;
+        scrollOffset = container.scrollTop;
+        contentSizeProp = "height";
       }
 
       // Calculate movement distance
@@ -120,14 +128,29 @@ function useScrollbar({
 
       // Calculate the new slider offset.
       const newSliderOffset = Math.min(
-        // Where the user is trying to drag to, or 0 (greatest)
         Math.max(values.offset + delta, 0),
         maxSliderOffset
       );
 
-      // Convert the sliders movement into an offset
+      // Convert the slider movement into a scroll offset
       const newScrollOffset =
         (newSliderOffset / maxSliderOffset) * (scrollSize - clientSize);
+
+      // Implementing scroll-grow behavior when dragging past the end
+      const endThreshold = 20;
+      const scrollbarEndPosition =
+        clientSize - Math.ceil(values.size + values.offset);
+
+      if (
+        scrollGrow &&
+        scrollbarEndPosition <= endThreshold &&
+        newScrollOffset >= scrollSize - clientSize
+      ) {
+        contentDimensions.current[contentSizeProp] += 10;
+        content.style[
+          contentSizeProp
+        ] = `${contentDimensions.current[contentSizeProp]}px`;
+      }
 
       if (axis === "x") {
         container.scrollLeft = newScrollOffset;
@@ -135,7 +158,7 @@ function useScrollbar({
         container.scrollTop = newScrollOffset;
       }
     },
-    [axis, containerRef, values.offset, values.size]
+    [axis, containerRef, values.offset, values.size, scrollGrow, contentRef]
   );
 
   /**
@@ -277,7 +300,7 @@ function useScrollbar({
    * Handle resizing the content when scrolling.
    *
    * The idea here is to create a kind of infinitely growing scroll.
-   * 
+   *
    * // TODO: need to apply same logic when dragging the scrollbar
    */
   useEffect(() => {
@@ -290,14 +313,18 @@ function useScrollbar({
 
     const handleWheel = (event: WheelEvent) => {
       if (
-        (isShiftDown.current && axis === "x") ||
-        (!isShiftDown.current && axis === "y")
+        (isShiftDown.current && axis === "x") || // scroll horizontally
+        (!isShiftDown.current && axis === "y") // scroll vertically
       ) {
         const wh = axis === "x" ? "width" : "height";
+
+        // If scrolling the mouse wheel down, it means we're scrolling down or right.
+        const pushWheel = event.deltaY > 0;
 
         // We'll detect the scrollbar being at the end of the scrollable section
         // if it's within 20px of the end
         const endThreshold = 20;
+
         // The scrollbar end position relates to the end of the movable section within the scrollbar.
         // For a vertical scrollbar, this is the very bottom of the moving area,
         // whereas for a horizontal scrollbar, this is the rightmost part of the moving area
@@ -306,19 +333,14 @@ function useScrollbar({
           Math.ceil(values.size + values.offset);
 
         // If scrolling down/right, we want to grow the area
-        // We only do this if the scrollbar has reached the end
-        if (event.deltaY > 0 && scrollbarEndPosition <= endThreshold) {
+        // We only do this if the scrollbar has reached the end.
+        // TODO: There's a bug in Chrome where, even though the width/height of the element is updated in the DOM,
+        // the browser doesn't recognize this change and refuses to render it.
+        // Might mate to add the width/height to state to force re-render
+        if (pushWheel && scrollbarEndPosition <= endThreshold) {
           contentDimensions.current[wh] += 10;
+          content.style[wh] = `${contentDimensions.current[wh]}px`;
         }
-        // If scrolling up/left, we want to shrink the area.
-        // However this doesnt work, and I CBA to debug it, so comment out for now
-        // else if (event.deltaY < 0) {
-        //   containerDimensions.current[wh] = Math.max(
-        //     containerDimensions.current[wh] - 10,
-        //     container[`scroll${capitalize(wh)}`]
-        //   );
-        // }
-        content.style[wh] = `${contentDimensions.current[wh]}px`;
       }
     };
     container.addEventListener("wheel", handleWheel);
