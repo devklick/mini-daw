@@ -58,6 +58,10 @@ interface UseScrollbarParams {
   scrollGrow: boolean;
 }
 
+/**
+ * @todo REFACTOR - this hook has grown arms and legs and needs to be split up
+ * into smaller chunks
+ */
 function useScrollbar({
   axis,
   containerRef,
@@ -105,18 +109,15 @@ function useScrollbar({
 
       let clientSize;
       let scrollSize;
-      let scrollOffset;
       let contentSizeProp: "width" | "height";
 
       if (axis === "x") {
         clientSize = clientWidth;
         scrollSize = scrollWidth;
-        scrollOffset = container.scrollLeft;
         contentSizeProp = "width";
       } else {
         clientSize = clientHeight;
         scrollSize = scrollHeight;
-        scrollOffset = container.scrollTop;
         contentSizeProp = "height";
       }
 
@@ -205,7 +206,6 @@ function useScrollbar({
     // Calculate the offset off the scrollbar (left if x, top if y);
     const maxOffset = clientSize - size;
     const offset = (scrollOffset / (scrollSize - clientSize)) * maxOffset || 0;
-
     setValues({ offset, size });
   }, [axis, containerRef]);
 
@@ -287,12 +287,11 @@ function useScrollbar({
         isShiftDown.current = false;
       }
     };
-
-    document.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
 
@@ -318,12 +317,13 @@ function useScrollbar({
       ) {
         const wh = axis === "x" ? "width" : "height";
 
-        // If scrolling the mouse wheel down, it means we're scrolling down or right.
-        const pushWheel = event.deltaY > 0;
+        // If scrolling the mouse wheel down (pulling towards you),
+        // it means we're scrolling down (if Y) or right (if X).
+        const pullWheel = event.deltaY > 0;
 
         // We'll detect the scrollbar being at the end of the scrollable section
-        // if it's within 20px of the end
-        const endThreshold = 20;
+        // if it's within n pixels from the end
+        const endThreshold = 5;
 
         // The scrollbar end position relates to the end of the movable section within the scrollbar.
         // For a vertical scrollbar, this is the very bottom of the moving area,
@@ -332,13 +332,18 @@ function useScrollbar({
           container[`client${capitalize(wh)}`] -
           Math.ceil(values.size + values.offset);
 
-        // If scrolling down/right, we want to grow the area
-        // We only do this if the scrollbar has reached the end.
         // TODO: There's a bug in Chrome where, even though the width/height of the element is updated in the DOM,
         // the browser doesn't recognize this change and refuses to render it.
         // Might mate to add the width/height to state to force re-render
-        if (pushWheel && scrollbarEndPosition <= endThreshold) {
-          contentDimensions.current[wh] += 10;
+
+        // If scrolling down/right, we want to grow the area
+        // We only do this if the scrollbar has reached the end (or is near it).
+        if (pullWheel && scrollbarEndPosition <= endThreshold) {
+          // TODO: Try and dynamically determine how many pixels to increase by.
+          // Ideally this should be the same number of pixels that are scrolled by,
+          // which I think is determined mostly by external factors (OS, browser).
+          // We can probably determine how much is scrolled by, capture that, and use it here.
+          contentDimensions.current[wh] += 100;
           content.style[wh] = `${contentDimensions.current[wh]}px`;
         }
       }
@@ -347,7 +352,15 @@ function useScrollbar({
     return () => {
       container.removeEventListener("wheel", handleWheel);
     };
-  }, [contentRef, containerRef, enabled, scrollGrow, axis, values]);
+  }, [
+    contentRef,
+    containerRef,
+    enabled,
+    scrollGrow,
+    axis,
+    values,
+    calcScrollValues,
+  ]);
 
   return { enabled, ...values } as const;
 }

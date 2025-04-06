@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
-import "./ArrangerTracks.scss";
+
 import ArrangerTrack from "../ArrangerTrack";
+import ArrangerGrid from "../ArrangerGrid";
+
+import "./ArrangerTracks.scss";
 
 interface ArrangerTracksProps {
   ref: React.RefObject<HTMLDivElement | null>;
@@ -8,18 +11,26 @@ interface ArrangerTracksProps {
 
 function ArrangerTracks({ ref }: ArrangerTracksProps) {
   const [trackWidth, setTrackWidth] = useState(0);
+
   useEffect(() => {
-    setTrackWidth(ref.current?.scrollWidth ?? 0);
-  }, [ref, ref.current?.scrollWidth]);
+    if (!ref.current) return;
+    const resize = () => {
+      if (!ref.current) return;
+      setTrackWidth(ref.current.clientWidth);
+    };
+    const observer = new ResizeObserver(resize);
+    observer.observe(ref.current);
+    return () => {
+      observer.disconnect();
+    };
+  }, [ref]);
+
   return (
-    <div
-      className="arranger-tracks"
-      style={{ width: "100%", height: "100%" }}
-      ref={ref}
-    >
-      <ArrangerTrack width={trackWidth} />
-      <ArrangerTrack width={trackWidth} />
-      <ArrangerTrack width={trackWidth} />
+    <div className="arranger-tracks" ref={ref}>
+      <ArrangerGrid />
+      <ArrangerTrack width={trackWidth} key={1} />
+      <ArrangerTrack width={trackWidth} key={2} />
+      <ArrangerTrack width={trackWidth} key={3} />
     </div>
   );
 }

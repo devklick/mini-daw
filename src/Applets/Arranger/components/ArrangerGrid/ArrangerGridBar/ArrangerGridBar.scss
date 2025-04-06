@@ -1,0 +1,13 @@
+@use "sass:color";
+@use "/src/global" as *;
+
+.arranger-grid-bar {
+    height: 100%;
+    border-inline-start: 1px solid $color-base-4;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+
+    &:nth-of-type(odd) {
+        background-color: rgba($color-primary-3, 0.05);
+    }
+}

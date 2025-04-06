@@ -22,6 +22,7 @@
                 1px 1px 2px inset color.adjust($color-base-4, $lightness: 10%),
                 1px 1px 2px color.adjust($color-base-2, $lightness: -5%);
         }
+
         &:active {
             box-shadow: 1px 1px 2px color.adjust($color-base-2, $lightness: -5%) inset;
         }

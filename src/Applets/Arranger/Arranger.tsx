@@ -11,7 +11,7 @@ function Arranger() {
   /**
    * Ref to the content (arranger tracks) that will be rendered inside the scrollable container
    */
-  const contentRef = useRef<HTMLDivElement>(null);
+  const scrollableContent = useRef<HTMLDivElement>(null);
 
   return (
     <Container
@@ -20,9 +20,10 @@ function Arranger() {
       scrollXGrow
       scrollYGrow
       ref={containerRef}
-      contentRef={contentRef}
+      contentRef={scrollableContent}
+      className="arranger"
     >
-      <ArrangerTracks ref={contentRef} />
+      <ArrangerTracks ref={scrollableContent} />
     </Container>
   );
 }

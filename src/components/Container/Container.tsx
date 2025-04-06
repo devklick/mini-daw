@@ -47,6 +47,8 @@ interface ContainerProps {
    */
   contentRef: React.RefObject<HTMLDivElement | null>;
   className?: string;
+
+  // TODO: Add option to move viewport by dragging middle mouse button
 }
 
 function Container({
@@ -66,7 +68,7 @@ function Container({
   const containerRef = _ref ?? defaultContainerRef;
 
   return (
-    <div className={clsx("container", className)}>
+    <div className={clsx(className, "container")}>
       {/* 
         The container_content is the element that can be scrolled.
 
