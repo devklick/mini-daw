@@ -84,7 +84,7 @@ function useScrollbar({
    * Keep track of the scrollable containers dimensions, as we may need these
    * if we are to grow/shrink the content element (i.e. if scrollGrow enabled).
    */
-  const contentDimensions = useRef<{ width: number; height: number }>({
+  const contentDimensions = useRef({
     height: 0,
     width: 0,
   });

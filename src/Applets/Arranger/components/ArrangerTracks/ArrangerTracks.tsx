@@ -27,10 +27,10 @@ function ArrangerTracks({ ref }: ArrangerTracksProps) {
 
   return (
     <div className="arranger-tracks" ref={ref}>
-      <ArrangerGrid />
       <ArrangerTrack width={trackWidth} key={1} />
       <ArrangerTrack width={trackWidth} key={2} />
       <ArrangerTrack width={trackWidth} key={3} />
+      <ArrangerGrid />
     </div>
   );
 }

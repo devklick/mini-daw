@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import clsx from "clsx";
 import "./Container.scss";
 import Scrollbars from "./Scrollbars/Scrollbars";
+import { useMiddleMousePan } from "../../hooks/mouseHooks/useMiddleMousePan";
 
 interface ContainerProps {
   /**
@@ -66,6 +67,8 @@ function Container({
   const defaultContainerRef = useRef<HTMLDivElement>(null);
   // Decide which ref to use
   const containerRef = _ref ?? defaultContainerRef;
+  // Allow panning the viewport using MMB
+  useMiddleMousePan({ containerRef, contentRef, scrollXGrow, scrollYGrow });
 
   return (
     <div className={clsx(className, "container")}>

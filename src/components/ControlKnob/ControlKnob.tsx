@@ -7,6 +7,7 @@ import KnobImage from "./assets/knob.svg?react";
 import { useMouseDownOnElement } from "../../hooks/mouseHooks";
 
 import "./ControlKnob.scss";
+import { MouseEventButton } from "../../utils/mouseUtils";
 
 interface ControlKnobProps {
   min: number;
@@ -61,8 +62,7 @@ function ControlKnob({
     [max, min, mouseDown, onChange, value]
   );
   const handleDown = (event: React.MouseEvent) => {
-    // Only handle left clicks
-    if (event.button !== 0) return;
+    if (event.button !== MouseEventButton.Left) return;
 
     event.preventDefault();
     lastYRef.current = event.clientY;
