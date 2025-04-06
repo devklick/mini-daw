@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import ArrangerGridBar from "./ArrangerGridBar";
 
 import "./ArrangerGrid.scss";
+import { useSyncSize } from "../../../../hooks/stateHooks/useSyncSize";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface ArrangerGridProps {}
@@ -14,19 +15,8 @@ interface ArrangerGridProps {}
  */
 // eslint-disable-next-line no-empty-pattern
 function ArrangerGrid({}: ArrangerGridProps) {
-  const [trackWidth, setTrackWidth] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    const resize = () => {
-      if (!ref.current) return;
-      setTrackWidth(ref.current.clientWidth);
-    };
-    const observer = new ResizeObserver(resize);
-    observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [ref]);
+  const [trackWidth] = useSyncSize({ elementRef: ref, dimensions: ["width"] });
 
   return (
     <div className="arranger-grid" ref={ref}>

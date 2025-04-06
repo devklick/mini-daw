@@ -4,26 +4,14 @@ import ArrangerTrack from "../ArrangerTrack";
 import ArrangerGrid from "../ArrangerGrid";
 
 import "./ArrangerTracks.scss";
+import { useSyncSize } from "../../../../hooks/stateHooks/useSyncSize";
 
 interface ArrangerTracksProps {
   ref: React.RefObject<HTMLDivElement | null>;
 }
 
 function ArrangerTracks({ ref }: ArrangerTracksProps) {
-  const [trackWidth, setTrackWidth] = useState(0);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    const resize = () => {
-      if (!ref.current) return;
-      setTrackWidth(ref.current.clientWidth);
-    };
-    const observer = new ResizeObserver(resize);
-    observer.observe(ref.current);
-    return () => {
-      observer.disconnect();
-    };
-  }, [ref]);
+  const [trackWidth] = useSyncSize({ elementRef: ref, dimensions: ["width"] });
 
   return (
     <div className="arranger-tracks" ref={ref}>
