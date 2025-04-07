@@ -1,4 +1,5 @@
 import { RefObject, useEffect, useRef } from "react";
+import { MouseEventButton } from "../../utils/mouseUtils";
 
 // reference: https://stackoverflow.com/questions/62436814/react-drag-corner-of-element-to-resize-contents
 
@@ -95,6 +96,7 @@ function useDragToResize({
       /** Function to manipulate the elements left position */
       leftFn?: MouseMovementHandler;
     }) {
+      if (mouseDownEvent.button !== MouseEventButton.Left) return;
       const initialRect = { ...elementRect.current };
       const startPos = { x: mouseDownEvent.pageX, y: mouseDownEvent.pageY };
 

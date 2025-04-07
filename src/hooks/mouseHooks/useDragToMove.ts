@@ -6,6 +6,7 @@ import React, {
   useState,
 } from "react";
 import { Position, Rect } from "./useDragToResize";
+import { MouseEventButton } from "../../utils/mouseUtils";
 
 // https://stackoverflow.com/a/39192992/6236042
 
@@ -42,7 +43,9 @@ const useDragToMove = ({
     }
     const handleMouseDown = (e: MouseEvent) => {
       if (!(e.target as HTMLElement).classList.contains("drag-to-move")) return;
-      setPressed(true);
+      if (e.button === MouseEventButton.Left) {
+        setPressed(true);
+      }
     };
     elem.addEventListener("mousedown", handleMouseDown);
     unsubscribe.current = () => {
