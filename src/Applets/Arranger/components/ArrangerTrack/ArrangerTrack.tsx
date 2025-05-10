@@ -4,7 +4,7 @@ interface ArrangerTrackProps {
   width: number;
 }
 
-function ArrangerTrack({ width }: ArrangerTrackProps) {
+function ArrangerTrack({ width: _ }: ArrangerTrackProps) {
   return <div className="arranger-track"></div>;
 }
 

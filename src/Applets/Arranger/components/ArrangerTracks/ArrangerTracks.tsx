@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import ArrangerTrack from "../ArrangerTrack";
 import ArrangerGrid from "../ArrangerGrid";

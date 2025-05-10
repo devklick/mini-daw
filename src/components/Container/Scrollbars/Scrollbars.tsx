@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import React, { CSSProperties, useRef } from "react";
 import useScrollbars, {
-  useScrollbarReset,
+  // useScrollbarReset,
   useScrollbarV2,
 } from "./hooks/useScrollbars";
 

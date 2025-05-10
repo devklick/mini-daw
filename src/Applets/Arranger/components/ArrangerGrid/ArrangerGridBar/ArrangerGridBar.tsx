@@ -5,7 +5,7 @@ interface ArrangerGridBarProps {
   width: number;
 }
 
-function ArrangerGridBar({ barNo, width }: ArrangerGridBarProps) {
+function ArrangerGridBar({ barNo: _, width }: ArrangerGridBarProps) {
   return <div className="arranger-grid-bar" style={{ width }}></div>;
 }
 
