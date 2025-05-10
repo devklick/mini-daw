@@ -1,30 +1,31 @@
 import { useRef } from "react";
 import Container from "../../components/Container";
-import "./Arranger.scss";
 import ArrangerTracks from "./components/ArrangerTracks";
+import { useScrollbarV2 } from "../../components/Container/Scrollbars/hooks/useScrollbars";
+import { ScrollbarV2 } from "../../components/Container/Scrollbars/Scrollbars";
+
+import "./Arranger.scss";
 
 function Arranger() {
-  /**
-   * Ref to the scrollable container in which the content (arranger tracks) will be rendered
-   */
-  const containerRef = useRef<HTMLDivElement>(null);
-  /**
-   * Ref to the content (arranger tracks) that will be rendered inside the scrollable container
-   */
-  const scrollableContent = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const rowsRef = useRef<HTMLDivElement>(null);
+  const colsRef = useRef<HTMLDivElement>(null);
 
   return (
-    <Container
-      scrollX
-      scrollY
-      scrollXGrow
-      scrollYGrow
-      ref={containerRef}
-      contentRef={scrollableContent}
-      className="arranger"
-    >
-      <ArrangerTracks ref={scrollableContent} />
-    </Container>
+    <div className="arranger" ref={viewportRef}>
+      <div
+        className="arranger__rows"
+        ref={rowsRef}
+        onScroll={() => console.log("ROWS SCROLL")}
+      >
+        <ScrollbarV2
+          axis="y"
+          containerRef={viewportRef}
+          contentRef={rowsRef}
+          grow
+        />
+      </div>
+    </div>
   );
 }
 

@@ -8,21 +8,20 @@ $scroll-padding: 2px;
 .scrollbar {
     padding: $scroll-padding;
     background-color: $scroll-background-color;
-    position: relative;
+    position: absolute;
     box-sizing: border-box;
     border-radius: 5px;
 
     &--x {
-        grid-area: scroll-x;
         width: 100%;
         bottom: 0;
         left: 0;
     }
     &--y {
-        grid-area: scroll-y;
         height: 100%;
         top: 0;
         right: 0;
+        width: 10px;
     }
 
     &-slider {

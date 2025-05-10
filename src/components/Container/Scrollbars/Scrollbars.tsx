@@ -1,6 +1,9 @@
 import clsx from "clsx";
 import React, { CSSProperties, useRef } from "react";
-import useScrollbars, { useScrollbarReset } from "./hooks/useScrollbars";
+import useScrollbars, {
+  useScrollbarReset,
+  useScrollbarV2,
+} from "./hooks/useScrollbars";
 
 import "./Scrollbars.scss";
 
@@ -107,6 +110,57 @@ function Scrollbar({
   } else {
     style.height = sliderSize;
     style.top = sliderOffset;
+  }
+
+  return (
+    <div className={clsx(`scrollbar`, `scrollbar--${axis}`)}>
+      <div
+        className={clsx("scrollbar-slider", `scrollbar-slider--${axis}`)}
+        style={style}
+        ref={sliderRef}
+      />
+    </div>
+  );
+}
+
+interface ScrollbarV2Props {
+  /**
+   * A reference to the scrollable area within the container.
+   */
+  containerRef: React.RefObject<HTMLDivElement | null>;
+  /**
+   * A reference to the content that's rendered within the scrollable container.
+   *
+   * Since we may need to resize the content within the container,
+   * we need a reference to it to apply the resize.
+   */
+  contentRef: React.RefObject<HTMLDivElement | null>;
+  axis: "x" | "y";
+  grow?: boolean;
+}
+
+export function ScrollbarV2({
+  axis,
+  containerRef,
+  contentRef,
+  grow,
+}: ScrollbarV2Props) {
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const { offset, size } = useScrollbarV2({
+    axis,
+    containerRef,
+    contentRef,
+    enabled: true,
+    scrollGrow: grow ?? false,
+    sliderRef,
+  });
+  const style: CSSProperties = {};
+  if (axis === "x") {
+    style.width = size;
+    style.left = offset;
+  } else {
+    style.height = size;
+    style.top = offset;
   }
 
   return (
